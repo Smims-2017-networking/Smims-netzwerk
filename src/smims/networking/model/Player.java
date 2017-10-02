@@ -21,6 +21,10 @@ public class Player {
 		myBoard = pBoard;
 	}
 	
+	public int getPlayerId()
+	{
+		return this.playerId;
+	}
 	/**
 	 * wuerfelt den wuerfel
 	 */
@@ -35,15 +39,14 @@ public class Player {
 	 */
 	public void moveCharacters(int posCharacter)
 	{
-		ArrayList<ICharacter> allCharacters = myBoard.getAllCharacters();
-		
-		
-		for(ICharacter currentCharacter : allCharacters)
+		if(myBoard.fieldOccupied(posCharacter))
 		{
-			if(currentCharacter.getPlayer() == this && currentCharacter.getPosition() == posCharacter) {
+			if(myBoard.getCharacterAt(posCharacter).getPlayer().getPlayerId() == this.playerId)
+			{
 				myBoard.moveCharacters(currentCharacter, myDice.getResult());
 			}
 		}
+		
 	}
 	
 	public int charactersCanMove() {

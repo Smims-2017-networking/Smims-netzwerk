@@ -1,6 +1,6 @@
 package smims.networking.model;
 
 public interface IReadonlyCharacter {
-	int getPosition();
+	Position getPosition();
 	Player getPlayer();
 }

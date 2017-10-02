@@ -1,7 +1,8 @@
 package smims.networking.model;
 
 public class Character implements ICharacter {
-	private int position;
+	
+	private Position position;
 	private final Player player;
 	
 	public Character(Player player) {
@@ -10,18 +11,18 @@ public class Character implements ICharacter {
 	
 	
 	@Override
-	public int getPosition() {
+	public Position getPosition() {
 		return position;
 	}
 
 	@Override
 	public Player getPlayer() {
-		return null;
+		return player;
 	}
 
 	@Override
-	public void setPosition(int value) {
-		position = value;
+	public void setPosition(Position p) {
+		position = p;
 	}
 	
 	public boolean canMove() {
