@@ -13,18 +13,18 @@ public class Rundenmanager {
 	}
 
 	/**
-	 * Diese Methode sorgt für die Ausführung einer Spielrunde
+	 * Diese Methode sorgt fï¿½r die Ausfï¿½hrung einer Spielrunde
 	 */
 	public void round() {
-		// Dies wird für jeden Player in der Reihenfolge des Beitretens
-		// durchgeführt
+		// Dies wird fï¿½r jeden Player in der Reihenfolge des Beitretens
+		// durchgefï¿½hrt
 		for (int i=0; i<allPlayers.size(); i++) 
 		{
 			Player p = allPlayers.get(i);
 			IPlayerChoice iPlayer = allChoices.get(i);
 			
 			if (p.charactersCanMove() == 0) {
-				this.doThreeTurns(p);
+				this.doThreeTurns(p, iPlayer);
 			}
 
 			else {
@@ -38,27 +38,32 @@ public class Rundenmanager {
 	}
 
 	/**
-	 * fuehrt einen Zug für einen beliebigen Spieler aus: wuerfeln und ziehen
+	 * fuehrt einen Zug fï¿½r einen beliebigen Spieler aus: wuerfeln und ziehen
 	 * 
 	 * @param Player p ist der Spieler
 	 */
 	private void turn(Player p, IPlayerChoice iPlayer) {
 		p.rollDice();
-		int x = iPlayer.chooseCharacter;	//Feld, auf dem die zu bewegende Figur steht
+		turnWithoutRoll(p, iPlayer);
+	}
+	
+	private void turnWithoutRoll(Player p, IPlayerChoice iPlayer) {
+		int x = iPlayer.chooseCharacter();	//Feld, auf dem die zu bewegende Figur steht
 		p.moveCharacters(x);
 	}
 
 	/**
-	 * Diese Methode führt bis zu drei Züge aus, bis der Spieler eine sechs
-	 * gewürfelt hat
+	 * Diese Methode fï¿½hrt bis zu drei Zï¿½ge aus, bis der Spieler eine sechs
+	 * gewï¿½rfelt hat
 	 * 
 	 * @param Player p ist der Spieler
 	 */
 
-	public void doThreeTurns(Player p) {
+	private void doThreeTurns(Player p, IPlayerChoice iPlayer) {
 		for (int i = 0; i < 3; i++) {
-			turn(p);
+			p.rollDice();
 			if (p.myDice.getResult() == 6) {
+				turnWithoutRoll(p, iPlayer);
 				break;
 			}
 		}
