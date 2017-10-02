@@ -48,7 +48,9 @@ public class Player {
 		}
 		
 	}
-	
+	/*
+	 * Gibt die Anzahl der Character des Spielers zurück, die sich bewegen lassen
+	 */
 	public int charactersCanMove() 
 	{
 		int ret=0;
@@ -60,6 +62,5 @@ public class Player {
 			}
 		}
 		return ret;
-		
 	}
 }
