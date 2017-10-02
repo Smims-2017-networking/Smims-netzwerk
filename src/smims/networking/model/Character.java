@@ -23,4 +23,12 @@ public class Character implements ICharacter {
 	public void setPosition(int value) {
 		position = value;
 	}
+	
+	public boolean canMove() {
+		boolean re=true;
+		if(position==0) {
+			re=false;
+		}
+		return re;
+	}
 }

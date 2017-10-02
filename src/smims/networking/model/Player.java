@@ -46,5 +46,9 @@ public class Player {
 		}
 	}
 	
-	
+	public int charactersCanMove() {
+		int ret=0;
+		return ret;
+		}
+	}
 }
