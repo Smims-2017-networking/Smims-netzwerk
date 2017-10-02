@@ -11,7 +11,7 @@ public class Character implements ICharacter {
 	
 	
 	@Override
-	public Position getPosition() {
+	public Position getCurrentPosition() {
 		return position;
 	}
 
@@ -20,45 +20,44 @@ public class Character implements ICharacter {
 		return player;
 	}
 
-	@Override
-	public void setPosition(Position p) {
+	private void setPosition(Position p) {
 		position = p;
 	}
 	
 	@Override
 	public boolean isOnField(int pFieldNumber) {
-		return getPosition().isOnField(pFieldNumber);
+		return getCurrentPosition().isOnField(pFieldNumber);
 	}
 	
 	@Override
 	public boolean isAtStartingPosition() {
-		return getPosition().isAtStartingPosition();
+		return getCurrentPosition().isAtStartingPosition();
 	}
 	
 	@Override
 	public void moveIntoHouse(int possibleNewDistanz) {
-		getPosition().moveIntoHouse(possibleNewDistanz);
+		setPosition(Position.movedIntoHouse(possibleNewDistanz));
 	}
 	
 	@Override
 	public void move(int possibleNewPosition, int possibleNewDistanz) {
-		getPosition().move(possibleNewPosition, possibleNewDistanz);
+		setPosition(getCurrentPosition().movedBy(possibleNewPosition, possibleNewDistanz));
 	}
 	
 	@Override
 	public void moveOutOfBase(int characterSpawnPosition) {
-		getPosition().moveOutOfBase(characterSpawnPosition);
+		setPosition(Position.spawnedAt(characterSpawnPosition));
 	}
 	
 	@Override
 	public void werdeGeschlagen() 
 	{
-		getPosition().werdeGeschlagen();
+		setPosition(Position.thrownOut());
 	}
 	
 	@Override
 	public boolean isInBase() {
-		return getPosition().getStatus() == CharacterStatus.BASE;
+		return getCurrentPosition().getStatus() == CharacterStatus.BASE;
 	}
 	
 	/*public boolean canMove() {

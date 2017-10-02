@@ -54,7 +54,7 @@ public class Board implements IBoard {
 			return charactersOnBoard.stream()
 				.anyMatch(character -> character.isAtStartingPosition());
 		}
-		else 
+		else
 		{
 			return charactersOnBoard.stream()
 				.anyMatch(character -> characterPositionsAreEqual(pCharacter, pDistance, character));
@@ -62,7 +62,7 @@ public class Board implements IBoard {
 	}
 
 	boolean characterPositionsAreEqual(ICharacter pCharacter, int pDistance, ICharacter TestCharacter) {
-		return pCharacter.getPosition().getDistanz() + pDistance == TestCharacter.getPosition().getDistanz();
+		return pCharacter.getCurrentPosition().getDistanz() + pDistance == TestCharacter.getCurrentPosition().getDistanz();
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class Board implements IBoard {
 	}
 
 	boolean characterWouldMoveOutOfHouse(ICharacter character, int pDistance) {
-		return character.getPosition().getDistanz() + pDistance > (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
+		return character.getCurrentPosition().getDistanz() + pDistance > (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
 	}
 
 	boolean characterCanExitBase(ICharacter character, int pDistance) {
@@ -99,8 +99,8 @@ public class Board implements IBoard {
 		if(characterCanMove(character, distance))
 		{
 			int characterSpawnPosition = character.getPlayer().getPlayerId() * DistanceBetweenSpawns; 	
-			int possibleNewPosition = (character.getPosition().getIndex() + distance) % (DistanceBetweenSpawns * PlayerCount);
-			int possibleNewDistanz = character.getPosition().getDistanz() + distance;
+			int possibleNewPosition = (character.getCurrentPosition().getIndex() + distance) % (DistanceBetweenSpawns * PlayerCount);
+			int possibleNewDistanz = character.getCurrentPosition().getDistanz() + distance;
 			
 			if(character.isInBase())			//in Basis
 			{
