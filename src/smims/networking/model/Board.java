@@ -2,7 +2,6 @@ package smims.networking.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class Board implements IBoard {
 	private static final int PlayerCount = 4;
@@ -58,20 +57,62 @@ public class Board implements IBoard {
 	 */
 	public boolean characterWouldHitTeammate(ICharacter pCharacter, int pDistance)
 	{
-		if(pCharacter.getPosition().getStatus() == CharacterStatus.BASE)
+		if(pCharacter.getPosition().getStatus() == CharacterStatus.BASE && pDistance == 6)
 		{
-			pDistance = 0;
-		}
-		for(ICharacter TestCharacter: charactersOnBoard)
-		{
-			if(pCharacter.getPosition().getDistanz() + pDistance == TestCharacter.getPosition().getDistanz())
+			for(ICharacter TestCharacter: charactersOnBoard)
 			{
-				return true;
+				if(0 == TestCharacter.getPosition().getDistanz())
+				{
+					return true;
+				}
+			}
+		}
+		else 
+		{
+			for(ICharacter TestCharacter: charactersOnBoard)
+			{
+				if(pCharacter.getPosition().getDistanz() + pDistance == TestCharacter.getPosition().getDistanz())
+				{
+					return true;
+				}
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param character, der überprüft werden soll
+	 * @param pDistance	Distanz, die der character sich bewegt
+	 * @return true wenn er sich bewegen kann (kein Teammate im weg, Wenn in Basis eine 6 gewürfelt und falls er in das Haus geht ist das Haus lang genug)
+	 */
+	public boolean characterCanMove(ICharacter character, int pDistance)
+	{
+		if(characterWouldHitTeammate(character, pDistance))			//Würde teammate treffen
+		{
+			return false;
+		}
+		if(character.getPosition().getStatus() == CharacterStatus.BASE && pDistance != 6)		//In Basis und keine 6
+		{
+			return false;
+		}
+		if(character.getPosition().getDistanz() + pDistance > (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer)		//Haus nicht lang genug
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 
+	 * @param character zurück in die Basis setzen (Distanz = -1; Index = -1; Status = BASE)
+	 */
+	public void characterSchlagen(ICharacter character)
+	{
+		character.getPosition().setIndex(-1);
+		character.getPosition().setStatus(CharacterStatus.BASE);
+		character.getPosition().setDistanz(-1);
+	}
 	
 	
 	/**
@@ -82,51 +123,45 @@ public class Board implements IBoard {
 	@Override
 	public void moveCharacter(ICharacter character, int distance) throws Exception{
 		
-		int characterSpawnPosition = character.getPlayer().getPlayerId() * this.DistanceBetweenSpawns; 	
+		int characterSpawnPosition = character.getPlayer().getPlayerId() * DistanceBetweenSpawns; 	
 		int possibleNewPosition = (character.getPosition().getIndex() + distance) % (DistanceBetweenSpawns * PlayerCount);
 		int possibleNewDistanz = character.getPosition().getDistanz() + distance;
 		
-		if(characterWouldHitTeammate(character, distance))
+		if(characterCanMove(character, distance))
 		{
-			throw new MoveNotAllowedException();
-		}
-		else if(character.getPosition().getStatus() == CharacterStatus.BASE)					// Spieler in der Basis
-		{
-			if(distance == 6) {
-					character.getPosition().setIndex(characterSpawnPosition);
-					character.getPosition().setDistanz(character.getPosition().getDistanz()+distance);
-				
-			} else {
-				throw new MoveNotAllowedException();
+			if(character.getPosition().getStatus() == CharacterStatus.BASE)			//in Basis
+			{
+				character.getPosition().setStatus(CharacterStatus.FIELD);
+				character.getPosition().setDistanz(0);
+				character.getPosition().setIndex(characterSpawnPosition);
 			}
+			else if(possibleNewDistanz > (DistanceBetweenSpawns * PlayerCount)) 		//geht in das Haus bzw. ist im Haus
+			{
+				character.getPosition().setDistanz(possibleNewDistanz);
+				character.getPosition().setStatus(CharacterStatus.HOUSE);
+				character.getPosition().setIndex(-1);
+			}
+			else														//normal im feld
+			{
+				character.getPosition().setDistanz(possibleNewDistanz);
+				character.getPosition().setIndex(possibleNewPosition);
+			}
+			
+			if(fieldOccupied(possibleNewPosition))						//Spieler schlagen, wenn vorhanden
+			{
+				characterSchlagen(getCharacterAt(possibleNewPosition));
+			}
+			
 		}
 		else
 		{
-			if(possibleNewDistanz > (DistanceBetweenSpawns * PlayerCount))		//muss in das Haus rein oder ist im Haus drin.
-			{
-				if(possibleNewDistanz - (DistanceBetweenSpawns * PlayerCount) > CharactersPerPlayer)	
-				{
-					throw new MoveNotAllowedException();
-				}
-				else
-				{
-					character.getPosition().setDistanz(character.getPosition().getDistanz()+distance);
-					character.getPosition().setStatus(CharacterStatus.HOUSE);
-					character.getPosition().setIndex(-1);
-				}
-			}
-			else{
-				character.getPosition().setDistanz(character.getPosition().getDistanz()+distance);
-				character.getPosition().setIndex(possibleNewPosition);
-			}
+			throw new MoveNotAllowedException();
 		}
-		
-		
 		
 	}
 
 	/**
-	 * returns
+	 * returns all Characters in an ArrayList<IReadonlyCharacter>
 	 */
 	@Override
 	public Collection<IReadonlyCharacter> getAllCharachters() {
