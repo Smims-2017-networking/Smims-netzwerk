@@ -26,12 +26,7 @@ public class Board implements IBoard {
 	 */
 	public boolean fieldOccupied(int pFieldNumber) {
 		return charactersOnBoard.stream()
-				.anyMatch((character) -> characterOccupiesField(pFieldNumber, character));
-	}
-
-	boolean characterOccupiesField(int pFieldNumber, ICharacter currentCharacter) {
-		return currentCharacter.getPosition().getIndex() == pFieldNumber
-				&& currentCharacter.getPosition().getStatus() == CharacterStatus.FIELD;
+				.anyMatch((character) -> character.isOnField(pFieldNumber));
 	}
 
 	/**
@@ -41,8 +36,8 @@ public class Board implements IBoard {
 	 */
 	public ICharacter getCharacterAt(int pFieldNumber) {
 		return charactersOnBoard.stream()
-				.filter((character) -> characterOccupiesField(pFieldNumber, character))
-				.findFirst()
+				.filter((character) -> character.isOnField(pFieldNumber))
+				.findAny()
 				.orElse(null);
 	}
 
@@ -54,15 +49,15 @@ public class Board implements IBoard {
 	 */
 	public boolean characterWouldHitTeammate(ICharacter pCharacter, int pDistance)
 	{
-		if(characterIsInBase(pCharacter) && pDistance == 6)
+		if(pCharacter.isInBase() && pDistance == 6)
 		{
 			return charactersOnBoard.stream()
-				.anyMatch(character -> characterIsAtStartingPosition(character));
+				.anyMatch(character -> character.isAtStartingPosition());
 		}
 		else 
 		{
 			return charactersOnBoard.stream()
-					.anyMatch(character -> characterPositionsAreEqual(pCharacter, pDistance, character));
+				.anyMatch(character -> characterPositionsAreEqual(pCharacter, pDistance, character));
 		}
 	}
 
@@ -70,10 +65,6 @@ public class Board implements IBoard {
 		return pCharacter.getPosition().getDistanz() + pDistance == TestCharacter.getPosition().getDistanz();
 	}
 
-	boolean characterIsAtStartingPosition(ICharacter character) {
-		return character.getPosition().getDistanz() == 0;
-	}
-	
 	/**
 	 * 
 	 * @param character, der �berpr�ft werden soll
@@ -93,7 +84,7 @@ public class Board implements IBoard {
 	}
 
 	boolean characterCanExitBase(ICharacter character, int pDistance) {
-		return characterIsInBase(character) && pDistance == 6;
+		return character.isInBase() && pDistance == 6;
 	}
 	
 	
@@ -111,22 +102,22 @@ public class Board implements IBoard {
 			int possibleNewPosition = (character.getPosition().getIndex() + distance) % (DistanceBetweenSpawns * PlayerCount);
 			int possibleNewDistanz = character.getPosition().getDistanz() + distance;
 			
-			if(characterIsInBase(character))			//in Basis
+			if(character.isInBase())			//in Basis
 			{
-				moveCharacterOutOfBase(character, characterSpawnPosition);
+				character.moveOutOfBase(characterSpawnPosition);
 			}
 			else if(characterWouldBeInHouse(possibleNewDistanz)) 		//geht in das Haus bzw. ist im Haus
 			{
-				moveCharacterIntoHouse(character, possibleNewDistanz);
+				character.moveIntoHouse(possibleNewDistanz);
 			}
 			else														//normal im feld
 			{
-				moveCharacter(character, possibleNewPosition, possibleNewDistanz);
+				character.move(possibleNewPosition, possibleNewDistanz);
 			}
 			
 			if(fieldOccupied(possibleNewPosition))						//Spieler schlagen, wenn vorhanden
 			{
-				characterSchlagen(getCharacterAt(possibleNewPosition));
+				getCharacterAt(possibleNewPosition).werdeGeschlagen();
 			}
 			
 		}
@@ -139,38 +130,6 @@ public class Board implements IBoard {
 
 	boolean characterWouldBeInHouse(int possibleNewDistanz) {
 		return possibleNewDistanz > (DistanceBetweenSpawns * PlayerCount);
-	}
-
-	boolean characterIsInBase(ICharacter character) {
-		return character.getPosition().getStatus() == CharacterStatus.BASE;
-	}
-
-	void moveCharacterIntoHouse(ICharacter character, int possibleNewDistanz) {
-		character.getPosition().setDistanz(possibleNewDistanz);
-		character.getPosition().setStatus(CharacterStatus.HOUSE);
-		character.getPosition().setIndex(-1);
-	}
-
-	void moveCharacter(ICharacter character, int possibleNewPosition, int possibleNewDistanz) {
-		character.getPosition().setDistanz(possibleNewDistanz);
-		character.getPosition().setIndex(possibleNewPosition);
-	}
-
-	void moveCharacterOutOfBase(ICharacter character, int characterSpawnPosition) {
-		character.getPosition().setStatus(CharacterStatus.FIELD);
-		character.getPosition().setDistanz(0);
-		character.getPosition().setIndex(characterSpawnPosition);
-	}
-	
-	/**
-	 * 
-	 * @param character zur�ck in die Basis setzen (Distanz = -1; Index = -1; Status = BASE)
-	 */
-	public void characterSchlagen(ICharacter character)
-	{
-		character.getPosition().setIndex(-1);
-		character.getPosition().setStatus(CharacterStatus.BASE);
-		character.getPosition().setDistanz(-1);
 	}
 
 	/**
