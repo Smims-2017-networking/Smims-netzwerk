@@ -1,21 +1,23 @@
 package smims.networking.model;
 
+import java.util.ArrayList;
+
 public class Player {
 	
 	int playerId;
-	Dice dice ;
+	Dice myDice ;
 	Board myBoard;
 	
 	
 	/**
 	 * 
 	 * @param pPlayerID ID des Spielers
-	 * @param pBoard das verwendete Spielbrett
+	 * @param pBoard das verwendete Spielbrett 
 	 */
 	Player(int pPlayerID, Board pBoard)
 	{
 		playerId = pPlayerID;
-		dice = new Dice();
+		myDice = new Dice();
 		myBoard = pBoard;
 	}
 	
@@ -33,11 +35,15 @@ public class Player {
 	 */
 	public void moveCharacters(int posCharacter)
 	{
-		allCharacters = myBoard.getAllCharacters();
+		ArrayList<ICharacter> allCharacters = myBoard.getAllCharacters();
 		
 		
-		for(int i = 0; i< allCharacters ;i++)
-		board.moveCharacters(selectedCharacter, dice.getResult());
+		for(ICharacter currentCharacter : allCharacters)
+		{
+			if(currentCharacter.getPlayer() == this && currentCharacter.getPosition() == posCharacter) {
+				myBoard.moveCharacters(currentCharacter, myDice.getResult());
+			}
+		}
 	}
 	
 	
