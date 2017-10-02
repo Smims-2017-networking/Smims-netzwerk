@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Player {
 	
 	int playerId;
-	Dice myDice ;
+	DiceRoller myDice ;
 	Board myBoard;
 	
 	
@@ -17,7 +17,7 @@ public class Player {
 	Player(int pPlayerID, Board pBoard)
 	{
 		playerId = pPlayerID;
-		myDice = new Dice();
+		myDice = new DiceRoller();
 		myBoard = pBoard;
 	}
 	
@@ -46,5 +46,9 @@ public class Player {
 		}
 	}
 	
-	
+	public int charactersCanMove() {
+		int ret=0;
+		return ret;
+		}
+	}
 }
