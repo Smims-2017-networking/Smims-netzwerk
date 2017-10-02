@@ -1,5 +1,10 @@
 package smims.networking.model;
 
+/**
+ * Element order is important because it is used to compare positions.
+ */
 public enum CharacterStatus {
-	HOUSE, FIELD, BASE
+	BASE,
+	HOUSE,
+	FIELD,
 }
