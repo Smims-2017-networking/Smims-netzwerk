@@ -49,9 +49,17 @@ public class Player {
 		
 	}
 	
-	public int charactersCanMove() {
+	public int charactersCanMove() 
+	{
 		int ret=0;
-		return ret;
+		for(Character character: myBoard.getAllCharacters())
+		{
+			if(myBoard.characterCanMove(character,dice.getResult()))
+			{
+				ret++;
+			}
 		}
+		return ret;
+		
 	}
 }
