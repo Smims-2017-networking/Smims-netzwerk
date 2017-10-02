@@ -48,10 +48,19 @@ public class Player {
 		}
 		
 	}
-	
-	public int charactersCanMove() {
+	/*
+	 * Gibt die Anzahl der Character des Spielers zurück, die sich bewegen lassen
+	 */
+	public int charactersCanMove() 
+	{
 		int ret=0;
-		return ret;
+		for(Character character: myBoard.getAllCharacters())
+		{
+			if(myBoard.characterCanMove(character,dice.getResult()))
+			{
+				ret++;
+			}
 		}
+		return ret;
 	}
 }
