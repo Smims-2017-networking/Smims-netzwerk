@@ -2,7 +2,7 @@ package smims.networking.model;
 
 public class Character implements ICharacter {
 	
-	private Position position;
+	private Position position = new Position();
 	private final Player player;
 	
 	public Character(Player player) {
@@ -27,41 +27,33 @@ public class Character implements ICharacter {
 	
 	@Override
 	public boolean isOnField(int pFieldNumber) {
-		return getPosition().getIndex() == pFieldNumber
-			&& getPosition().getStatus() == CharacterStatus.FIELD;
+		return getPosition().isOnField(pFieldNumber);
 	}
 	
 	@Override
 	public boolean isAtStartingPosition() {
-		return getPosition().getDistanz() == 0;
+		return getPosition().isAtStartingPosition();
 	}
 	
 	@Override
 	public void moveIntoHouse(int possibleNewDistanz) {
-		getPosition().setDistanz(possibleNewDistanz);
-		getPosition().setStatus(CharacterStatus.HOUSE);
-		getPosition().setIndex(-1);
+		getPosition().moveIntoHouse(possibleNewDistanz);
 	}
 	
 	@Override
 	public void move(int possibleNewPosition, int possibleNewDistanz) {
-		getPosition().setDistanz(possibleNewDistanz);
-		getPosition().setIndex(possibleNewPosition);
+		getPosition().move(possibleNewPosition, possibleNewDistanz);
 	}
 	
 	@Override
 	public void moveOutOfBase(int characterSpawnPosition) {
-		getPosition().setStatus(CharacterStatus.FIELD);
-		getPosition().setDistanz(0);
-		getPosition().setIndex(characterSpawnPosition);
+		getPosition().moveOutOfBase(characterSpawnPosition);
 	}
 	
 	@Override
 	public void werdeGeschlagen() 
 	{
-		getPosition().setIndex(-1);
-		getPosition().setStatus(CharacterStatus.BASE);
-		getPosition().setDistanz(-1);
+		getPosition().werdeGeschlagen();
 	}
 	
 	@Override

@@ -1,10 +1,14 @@
 package smims.networking.model;
 
 public class Position implements Comparable<Position> {
-
-	private CharacterStatus status;		//Status eines Characters im Spiel: in der Base, auf dem Feld (Field) oder im Zielhaus (House)
-	private int index;					//Absolute Position des Charakters auf dem Spielfeld: In der Basis und im Haus -1, auf dem Spielfeld hat das Startfeld des ersten Spielers den Wert 0, ab da wird aufwärts gezählt
-	private int distanz;				//Distanz des Spielers von seinem Spawnfeld, ist auch innerhalb des Hauses gültig (Wenn das Spielfeld 40 Felder hat, startet der Spieler bei distance = 0, distance = 40 ist dann der erste Platz im Haus, 41 ist der zweite,...)
+	//Status eines Characters im Spiel: in der Base, auf dem Feld (Field) oder im Zielhaus (House)
+	private CharacterStatus status;
+	
+	//Absolute Position des Charakters auf dem Spielfeld: In der Basis und im Haus -1, auf dem Spielfeld hat das Startfeld des ersten Spielers den Wert 0, ab da wird aufwärts gezählt
+	private int index;
+	
+	//Distanz des Spielers von seinem Spawnfeld, ist auch innerhalb des Hauses gültig (Wenn das Spielfeld 40 Felder hat, startet der Spieler bei distance = 0, distance = 40 ist dann der erste Platz im Haus, 41 ist der zweite,...)
+	private int distanz;
 	
 	public int getDistanz() {
 		return distanz;
@@ -19,6 +23,20 @@ public class Position implements Comparable<Position> {
 		status = CharacterStatus.BASE;
 		distanz = 0;
 		index = -1;
+	}
+	
+	/**
+	 * Copy constructor to support immutability.
+	 * @param other The instance to clone
+	 */
+	public Position(Position other) {
+		this(other.status, other.distanz, other.index);
+	}
+	
+	public Position(CharacterStatus status, int distanz, int index) {
+		this.status = status;
+		this.distanz = distanz;
+		this.index = index;
 	}
 
 	public CharacterStatus getStatus() {
@@ -35,6 +53,38 @@ public class Position implements Comparable<Position> {
 
 	public void setIndex(int index) {
 		this.index = index;
+	}
+	
+	public boolean isOnField(int pFieldNumber) {
+		return getIndex() == pFieldNumber
+			&& getStatus() == CharacterStatus.FIELD;
+	}
+	
+	public boolean isAtStartingPosition() {
+		return getDistanz() == 0;
+	}
+	
+	public void moveIntoHouse(int possibleNewDistanz) {
+		setDistanz(possibleNewDistanz);
+		setStatus(CharacterStatus.HOUSE);
+		setIndex(-1);
+	}
+	
+	public void move(int possibleNewPosition, int possibleNewDistanz) {
+		setDistanz(possibleNewDistanz);
+		setIndex(possibleNewPosition);
+	}
+	
+	public void moveOutOfBase(int characterSpawnPosition) {
+		setStatus(CharacterStatus.FIELD);
+		setDistanz(0);
+		setIndex(characterSpawnPosition);
+	}
+	
+	public void werdeGeschlagen() {
+		setIndex(-1);
+		setStatus(CharacterStatus.BASE);
+		setDistanz(-1);
 	}
 
 	/**
