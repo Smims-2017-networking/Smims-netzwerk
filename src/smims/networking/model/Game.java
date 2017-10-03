@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Game {
 	
-	DiceRoller myDice ;
-	Board myBoard;
-	ArrayList<Player> myPlayers;
-	final TurnManager myTurnManager;
+	private DiceRoller myDice ;
+	private Board myBoard;
+	private ArrayList<Player> myPlayers;
+	private final TurnManager myTurnManager;
 		
 	/**
 	 * 
@@ -32,7 +32,7 @@ public class Game {
 	
 	public int getDiceResult()
 	{
-		return myTurnManager.getResult();
+		return myDice.getResult();
 	}
 	
 	public Board getBoard()
