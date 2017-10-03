@@ -1,12 +1,10 @@
 package smims.networking.model;
 
-import java.util.ArrayList;
-
 public interface IGame {	
-	void rollDice(int playerID);
+	void rollDice(int playerID) throws NotYourTurnException, MoveNotAllowedException;
 	public int getDiceResult();
 	public Board getBoard();
 	
-	public void moveCharacter(int playerID, int characterPos);
+	public void moveCharacter(int playerID, int characterPos) throws MoveNotAllowedException, NotYourTurnException;
 	public int whoseTurn();
 }

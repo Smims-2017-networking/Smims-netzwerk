@@ -2,7 +2,7 @@ package smims.networking.model;
 
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements IGame {
 	
 	private DiceRoller myDice ;
 	private Board myBoard;
@@ -24,8 +24,11 @@ public class Game {
 	
 	/**
 	 * wuerfelt den wuerfel
+	 * @throws MoveNotAllowedException 
+	 * @throws NotYourTurnException 
 	 */
-	public void rollDice(int pPlayerID) throws Exception
+	@Override
+	public void rollDice(int pPlayerID) throws NotYourTurnException, MoveNotAllowedException
 	{
 		myTurnManager.rollDice(pPlayerID);
 	}
@@ -46,7 +49,8 @@ public class Game {
 	 * @param Position
 	 * @throws Exception
 	 */
-	public void moveCharacter(int pPlayerID, int Position) throws Exception
+	@Override
+	public void moveCharacter(int pPlayerID, int Position) throws MoveNotAllowedException, NotYourTurnException
 	{
 		myTurnManager.moveCharacter(pPlayerID, Position);
 	}
