@@ -1,27 +1,25 @@
 package smims.networking.model;
 
-public class Player {
-	private boolean wantsToStartGame = false;
+import java.util.Collection;
 
-	int PlayerID;
-	
-	Player(int pPlayerID)
-	{
-		this.PlayerID = pPlayerID;
-	}
-	
+public class Player {
+	private int playerID;
 	public void makePlayerWantToStartGame() {
 		wantsToStartGame = true;
 	}
 	
+	private boolean wantsToStartGame = false;
+
 	public int getPlayerId() {
-		
-		return 0;
+		return playerID;
 	}
 
 	public int charactersInBase() {
-		// TODO Auto-generated method stub
-		return 0;
+		int i=0;
+		for(charactersOnBoard c:each) {
+			if(c.myPlayer==playerID&&c.)
+		}
+		return i;
 	}
 
 	public void moveCharacters(int x) {
