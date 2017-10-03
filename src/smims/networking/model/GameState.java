@@ -1,10 +1,8 @@
 package smims.networking.model;
 
 public class GameState {
-	
-	DiceRoller myDice ;
+	DiceRoller myDice;
 	Board myBoard;
-	
 	
 	/**
 	 * 
