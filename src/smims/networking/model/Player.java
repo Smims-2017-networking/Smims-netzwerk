@@ -1,9 +1,12 @@
 package smims.networking.model;
 
-import java.util.Collection;
-
 public class Player {
 	private int playerID;
+	
+	public Player(int playerId) {
+		this.playerID = playerId;
+	}
+	
 	public void makePlayerWantToStartGame() {
 		wantsToStartGame = true;
 	}
@@ -14,7 +17,6 @@ public class Player {
 		return playerID;
 	}
 	public boolean wantsToStartGame() {
-		// TODO Auto-generated method stub
-		return false;
+		return wantsToStartGame;
 	}
 }
