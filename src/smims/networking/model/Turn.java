@@ -34,8 +34,9 @@ public class Turn {
 		}
 	}
 	
-	private void moveCharacterAtPosition(int characterPos, int playerId) {
-		board.moveCharacter();
+	private void moveCharacterAtPosition(int characterPos, int playerId) throws MoveNotAllowedException {
+		Character selectedCharacter = board.getCharacterAt(characterPos, playerId);
+		board.moveCharacter(selectedCharacter, diceRoller.getResult());
 	}
 
 	private void EnsurePlayerCanMoveCharacter() throws MoveNotAllowedException {
