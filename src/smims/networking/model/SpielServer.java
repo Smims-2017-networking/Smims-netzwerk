@@ -8,13 +8,18 @@ public class SpielServer extends Server {
 	private GameLobby lobby;
 	private int playerId = 0;
 	private String[] ips;
-	public static final int SPIELERANZAHL = 4;
+	private int spieleranzahl, boardgroesse;
 	private Game game;
 
-	public SpielServer(int port) {
+	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
 		super(port);
 		lobby = new GameLobby();
-		ips = new String[SPIELERANZAHL];
+		spieleranzahl = pSpieleranzahl;
+		boardgroesse = pBoardgroesse;
+		if(boardgroesse < spieleranzahl) {
+			boardgroesse = spieleranzahl;
+		}
+		ips = new String[spieleranzahl];
 	}
 
 	@Override
@@ -22,19 +27,28 @@ public class SpielServer extends Server {
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
 		case Protokoll.CS_Welcome:
-			lobby.registerPlayer(new Player(playerId));
-			ips[playerId] = pClientIP;
-			playerId++;
-			send(pClientIP, pClientPort, Protokoll.SC_Welcome);
+			
 			break;
 		case Protokoll.CS_GetBoard:
-
+			
 			break;
 		case Protokoll.CS_GetDiceResult:
 			String message = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
 			send(pClientIP, pClientPort, message);
 			break;
 		case Protokoll.CS_MoveCharacter:
+			int pos;
+			try {
+				pos = Integer.parseInt(array[1]);
+			} catch (NumberFormatException e) {
+				
+				break;
+			}
+			try {
+				game.moveCharacter(getPlayerId(pClientIP), pos);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
 			
 			break;
 		case Protokoll.CS_RollDice:
@@ -43,7 +57,7 @@ public class SpielServer extends Server {
 				game.rollDice(getPlayerId(pClientIP));
 				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
 			} catch (Exception e) {
-				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
+				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + Protokoll.SC_Exception;
 			}
 			send(pClientIP, pClientPort, message2);
 			break;
@@ -55,7 +69,7 @@ public class SpielServer extends Server {
 			int j = getPlayerId(pClientIP);
 			lobby.getPlayerAt(j).makePlayerWantToStartGame();
 			if (lobby.readyToStart()) {
-				game = lobby.startGame();
+				game = lobby.startGame(boardgroesse);
 				sendToAll(Protokoll.SC_GameStarts);
 			}
 			break;
@@ -66,7 +80,7 @@ public class SpielServer extends Server {
 
 	private int getPlayerId(String ip) {
 		int i = 0;
-		while (!ips[i].equals(ip) && i < SPIELERANZAHL) {
+		while (!ips[i].equals(ip) && i < spieleranzahl) {
 			i++;
 		}
 		return i;
@@ -75,7 +89,12 @@ public class SpielServer extends Server {
 	@Override
 	public void processNewConnection(String pClientIP, int pClientPort) {
 		// TODO Auto-generated method stub
-
+		if (playerId < spieleranzahl) {
+			lobby.registerPlayer(new Player(playerId));
+			ips[playerId] = pClientIP;
+			playerId++;
+			send(pClientIP, pClientPort, Protokoll.SC_Welcome);
+		}
 	}
 
 	@Override
