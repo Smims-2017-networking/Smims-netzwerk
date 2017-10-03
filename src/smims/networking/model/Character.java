@@ -5,7 +5,6 @@ public class Character{
 	
 	private Position position = new Position();
 	private final Player player;
-	private Board b=new Board(null);
 	
 	public Character(Player player) {
 		this.player = player; 
@@ -50,13 +49,5 @@ public class Character{
 	
 	public boolean isInBase() {
 		return getCurrentPosition().getStatus() == CharacterStatus.BASE;
-	}
-	
-	public boolean canMove(int dist) {
-		boolean re=true;
-		if(b.characterCanMove(this, dist)) {
-			re=false;
-		}
-		return re;
 	}
 }

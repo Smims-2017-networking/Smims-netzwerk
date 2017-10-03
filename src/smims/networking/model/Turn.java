@@ -2,14 +2,14 @@ package smims.networking.model;
 
 public class Turn {
 	private final Player player;
-	private final IBoard board;
+	private final Board board;
 	private final DiceRoller diceRoller;
 	private int rolledCount = 0;
 	private int maxRollCount = 1;
 	private TurnState turnState;
 	
 	
-	public Turn(Player player, IBoard board, DiceRoller diceRoller) {
+	public Turn(Player player, Board board, DiceRoller diceRoller) {
 		this.player = player;
 		this.board = board;
 		this.diceRoller = diceRoller;
