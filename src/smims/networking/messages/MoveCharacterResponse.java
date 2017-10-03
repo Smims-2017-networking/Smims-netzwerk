@@ -1,7 +1,9 @@
 package smims.networking.messages;
 
+import smims.networking.model.TurnState;
+
 public class MoveCharacterResponse extends SmimsMessage {
-	private boolean mustRollAgain;
+	private TurnState turnState;
 	
 	// Can be null
 	private TurnOverResponse turnOver;
@@ -12,14 +14,14 @@ public class MoveCharacterResponse extends SmimsMessage {
 	// Provided for gson support
 	protected MoveCharacterResponse() { }
 	
-	public MoveCharacterResponse(boolean mustRollAgain, TurnOverResponse turnOver, Character kickedCharacter) {
-		this.mustRollAgain = mustRollAgain;
+	public MoveCharacterResponse(TurnState turnState, TurnOverResponse turnOver, Character kickedCharacter) {
+		this.turnState = turnState;
 		this.turnOver = turnOver;
 		this.kickedCharacter = kickedCharacter;
 	}
 	
-	public boolean getMustRollAgain() {
-		return mustRollAgain;
+	public TurnState getTurnState() {
+		return turnState;
 	}
 	
 	public boolean characterWasKicked() {
