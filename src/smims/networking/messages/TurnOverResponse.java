@@ -1,22 +1,22 @@
 package smims.networking.messages;
 
-import smims.networking.model.Player;
+import smims.networking.model.IPlayer;
 
 public class TurnOverResponse extends SmimsMessage {
-	private Player nextPlayer;
+	private IPlayer nextPlayer;
 	
 	// Can be null
-	private Player winningPlayer;
+	private IPlayer winningPlayer;
 	
 	// Provided for gson support
 	protected TurnOverResponse() { }
 	
-	public TurnOverResponse(Player nextPlayer, Player winningPlayer) {
+	public TurnOverResponse(IPlayer nextPlayer, IPlayer winningPlayer) {
 		this.nextPlayer = nextPlayer;
 		this.winningPlayer = winningPlayer;
 	}
 	
-	public Player getNextPlayer() {
+	public IPlayer getNextPlayer() {
 		return nextPlayer;
 	}
 	
@@ -25,7 +25,7 @@ public class TurnOverResponse extends SmimsMessage {
 	}
 	
 	// Null iff !playerHasWon
-	public Player getWinner() {
+	public IPlayer getWinner() {
 		return winningPlayer;
 	}
 }

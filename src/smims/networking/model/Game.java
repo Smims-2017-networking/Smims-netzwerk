@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Game implements IGame {
 	
-	private DiceRoller myDice ;
-	private Board myBoard;
+	private IDiceRoller myDice ;
+	private IBoard myBoard;
 	private ArrayList<Player> myPlayers;
 	private final TurnManager myTurnManager;
 		
@@ -40,7 +40,7 @@ public class Game implements IGame {
 	}
 	
 	@Override
-	public Board getBoard()
+	public IBoard getBoard()
 	{
 		return myBoard;
 	}
@@ -72,7 +72,7 @@ public class Game implements IGame {
 	}
 
 	@Override
-	public Player getWinner() {
+	public IPlayer getWinner() {
 		return myBoard.getWinner();
 	}
 	

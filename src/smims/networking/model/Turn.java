@@ -1,26 +1,26 @@
 package smims.networking.model;
 
 public class Turn {
-	private final Player player;
-	private final Board board;
-	private final DiceRoller diceRoller;
+	private final IPlayer player;
+	private final IBoard board;
+	private final IDiceRoller diceRoller;
 	private final int maxRollCount;
 	private int rolledCount = 0;
 	private TurnState turnState;
 	
 	
-	public Turn(Player player, Board board, DiceRoller diceRoller) {
+	public Turn(IPlayer player, IBoard board, IDiceRoller diceRoller) {
 		this.player = player;
 		this.board = board;
 		this.diceRoller = diceRoller;
 		maxRollCount = playerHasCharactersOnBoard(player, board) ? 1 : 3;
 	}
 	
-	private static boolean playerHasCharactersOnBoard(Player player, Board board) {
+	private static boolean playerHasCharactersOnBoard(IPlayer player, IBoard board) {
 		return board.getAllCharacters().stream().anyMatch(character -> character.getPlayer() == player);
 	}
 
-	public Player getPlayer() {
+	public IPlayer getPlayer() {
 		return player;
 	}
 	

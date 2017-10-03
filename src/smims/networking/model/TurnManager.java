@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class TurnManager {
 	private Turn currentTurn;
 	private final ArrayList<Player> players;
-	private final Board board;
-	private final DiceRoller diceRoller;
+	private final IBoard board;
+	private final IDiceRoller diceRoller;
 	
-	public TurnManager(ArrayList<Player> players, Board board, DiceRoller diceRoller) {
+	public TurnManager(ArrayList<Player> players, IBoard board, IDiceRoller diceRoller) {
 		if (players == null || players.size() == 0 || board == null || diceRoller == null) {
 			throw new IllegalArgumentException();
 		}
@@ -19,7 +19,7 @@ public class TurnManager {
 		startNewTurn(players.get(0));
 	}
 	
-	private void startNewTurn(Player player) {
+	private void startNewTurn(IPlayer player) {
 		currentTurn = new Turn(player, board, diceRoller);
 	}
 	
@@ -35,12 +35,12 @@ public class TurnManager {
 
 	private void changeTurnIfOver() {
 		if (getCurrentTurn().isOver()) {
-			Player nextPlayer = getNextPlayer();
+			IPlayer nextPlayer = getNextPlayer();
 			startNewTurn(nextPlayer);
 		}
 	}
 
-	private Player getNextPlayer() {
+	private IPlayer getNextPlayer() {
 		int previousPlayerPosition = players.indexOf(getCurrentTurn().getPlayer());
 		return players.get((previousPlayerPosition + 1) % players.size());
 	}
