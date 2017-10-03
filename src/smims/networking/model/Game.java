@@ -33,11 +33,13 @@ public class Game implements IGame {
 		myTurnManager.rollDice(pPlayerID);
 	}
 	
+	@Override
 	public int getDiceResult()
 	{
 		return myDice.getResult();
 	}
 	
+	@Override
 	public Board getBoard()
 	{
 		return myBoard;
@@ -58,6 +60,7 @@ public class Game implements IGame {
 	/**
 	 * @return PlayerID des Spielers, der dran ist
 	 */
+	@Override
 	public int whoseTurn()
 	{
 		return myTurnManager.whoseTurn();
