@@ -5,47 +5,46 @@ import java.util.ArrayList;
 public class Rundenmanager {
 
 	private final ArrayList<Player> allPlayers;
-	private final ArrayList<IPlayerChoice> allChoices;
+	private final GameState gameState;
 
-	public Rundenmanager(ArrayList<Player> allPlayers, ArrayList<IPlayerChoice> allChoices) {
+	public Rundenmanager(ArrayList<Player> allPlayers, GameState gameState) {
 		this.allPlayers = allPlayers;
-		this.allChoices = allChoices;
+		this.gameState = gameState;
 	}
 
 	/**
 	 * Diese Methode sorgt fï¿½r die Ausfï¿½hrung einer Spielrunde
-	 * @throws PlayerWonException 
+	 * @throws Exception
 	 */
-	public void round() throws PlayerWonException {
+	public void round() throws Exception {
 		// Dies wird fï¿½r jeden Player in der Reihenfolge des Beitretens
 		// durchgefï¿½hrt
 		for (int i = 0; i < allPlayers.size(); i++) {
 			Player p = allPlayers.get(i);
-			IPlayerChoice iPlayer = allChoices.get(i);
 
-			if (p.charactersCanMove() == 0) {
-				this.doThreeTurns(p, iPlayer);
+			if (p.numberOfMovableCharacters() == 0) {
+				this.doThreeTurns(p);
 			}
 
 			else {
-				turn(p, iPlayer);
+				turn(p);
 			}
 			// bei einer 6 darf nochmal gezogen werden
-			while (p.myDice.getResult() == 6) {
-				turn(p, iPlayer);
+			while (gameState.myDice.getResult() == 6) {
+				turn(p);
 			}
-			//Am Ende des Zuges wird überprüft, ob der Spieler gewonnen hat.
-			if (abortion(allPlayers.get(i)) == true) {
+			//Am Ende des Zuges wird ï¿½berprï¿½ft, ob der Spieler gewonnen hat.
+			if (playerHasWon(allPlayers.get(i)) == true) {
 				throw new PlayerWonException();
 			}
 		}
 	}
 	
 	/**
-	 * @param p der zu überprüfende Spieler
+	 * @param p der zu ï¿½berprï¿½fende Spieler
 	 * @return true, wenn Spieler p gewonnen hat.
 	 */
-	private boolean abortion(Player p) {
+	private boolean playerHasWon(Player p) {
 		if(p.charactersInBase()==4) {
 			return true;
 		}
@@ -59,15 +58,16 @@ public class Rundenmanager {
 	 * 
 	 * @param Player
 	 *            p ist der Spieler
+	 * @throws Exception 
 	 */
-	private void turn(Player p, IPlayerChoice iPlayer) {
-		p.rollDice();
-		turnWithoutRoll(p, iPlayer);
+	private void turn(Player player) throws Exception {
+		gameState.rollDice();
+		turnWithoutRoll(player);
 	}
 
-	private void turnWithoutRoll(Player p, IPlayerChoice iPlayer) {
-		int x = iPlayer.chooseCharacter(); // Feld, auf dem die zu bewegende Figur steht
-		p.moveCharacters(x);
+	private void turnWithoutRoll(Player player) throws Exception {
+		int x = player.chooseCharacter(); // Feld, auf dem die zu bewegende Figur steht
+		player.moveCharacters(x);
 	}
 
 	/**
@@ -76,13 +76,14 @@ public class Rundenmanager {
 	 * 
 	 * @param Player
 	 *            p ist der Spieler
+	 * @throws Exception
 	 */
 
-	private void doThreeTurns(Player p, IPlayerChoice iPlayer) {
+	private void doThreeTurns(Player p) throws Exception {
 		for (int i = 0; i < 3; i++) {
-			p.rollDice();
-			if (p.myDice.getResult() == 6) {
-				turnWithoutRoll(p, iPlayer);
+			gameState.rollDice();
+			if (gameState.myDice.getResult() == 6) {
+				turnWithoutRoll(p);
 				break;
 			}
 		}

@@ -4,5 +4,5 @@ import java.util.Collection;
 
 public interface IBoard {
 	void moveCharacter(ICharacter iCharacter, int distance) throws Exception;
-	Collection<IReadonlyCharacter> getAllCharachters();
+	Collection<IReadonlyCharacter> getAllCharacters();
 }
