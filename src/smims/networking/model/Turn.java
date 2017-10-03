@@ -4,8 +4,8 @@ public class Turn {
 	private final Player player;
 	private final Board board;
 	private final DiceRoller diceRoller;
+	private final int maxRollCount;
 	private int rolledCount = 0;
-	private int maxRollCount = 1;
 	private TurnState turnState;
 	
 	
@@ -13,8 +13,13 @@ public class Turn {
 		this.player = player;
 		this.board = board;
 		this.diceRoller = diceRoller;
+		maxRollCount = playerHasCharactersOnBoard(player, board) ? 1 : 3;
 	}
 	
+	private static boolean playerHasCharactersOnBoard(Player player, Board board) {
+		return board.getAllCharacters().stream().anyMatch(character -> character.getPlayer() == player);
+	}
+
 	public Player getPlayer() {
 		return player;
 	}
@@ -29,8 +34,9 @@ public class Turn {
 		}
 	}
 	
-	private void moveCharacterAtPosition(int characterPos, int playerId) {
-		board.moveCharacter();
+	private void moveCharacterAtPosition(int characterPos, int playerId) throws MoveNotAllowedException {
+		Character selectedCharacter = board.getCharacterAt(characterPos, playerId);
+		board.moveCharacter(selectedCharacter, diceRoller.getResult());
 	}
 
 	private void EnsurePlayerCanMoveCharacter() throws MoveNotAllowedException {
