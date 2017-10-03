@@ -22,20 +22,17 @@ public class SpielServer extends Server {
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
 		case Protokoll.CS_Welcome:
-			lobby.registerPlayer(new Player(playerId));
-			ips[playerId] = pClientIP;
-			playerId++;
-			send(pClientIP, pClientPort, Protokoll.SC_Welcome);
+			
 			break;
 		case Protokoll.CS_GetBoard:
-
+			
 			break;
 		case Protokoll.CS_GetDiceResult:
 			String message = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
 			send(pClientIP, pClientPort, message);
 			break;
 		case Protokoll.CS_MoveCharacter:
-			
+
 			break;
 		case Protokoll.CS_RollDice:
 			String message2;
@@ -43,7 +40,7 @@ public class SpielServer extends Server {
 				game.rollDice(getPlayerId(pClientIP));
 				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
 			} catch (Exception e) {
-				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
+				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + Protokoll.SC_Exception;
 			}
 			send(pClientIP, pClientPort, message2);
 			break;
@@ -75,7 +72,12 @@ public class SpielServer extends Server {
 	@Override
 	public void processNewConnection(String pClientIP, int pClientPort) {
 		// TODO Auto-generated method stub
-
+		if (playerId < SPIELERANZAHL) {
+			lobby.registerPlayer(new Player(playerId));
+			ips[playerId] = pClientIP;
+			playerId++;
+			send(pClientIP, pClientPort, Protokoll.SC_Welcome);
+		}
 	}
 
 	@Override
