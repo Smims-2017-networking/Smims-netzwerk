@@ -5,10 +5,10 @@ import java.util.ArrayList;
 public class TurnManager {
 	private Turn currentTurn;
 	private final ArrayList<Player> players;
-	private final IBoard board;
+	private final Board board;
 	private final DiceRoller diceRoller;
 	
-	public TurnManager(ArrayList<Player> players, IBoard board, DiceRoller diceRoller) {
+	public TurnManager(ArrayList<Player> players, Board board, DiceRoller diceRoller) {
 		this.players = players;
 		this.board = board;
 		this.diceRoller = diceRoller;

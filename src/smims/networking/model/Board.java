@@ -3,7 +3,7 @@ package smims.networking.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Board implements IBoard {
+public class Board {
 	private static int PlayerCount = 4;
 	private static final int CharactersPerPlayer = 4;
 	private static final int DistanceBetweenSpawns = 10;
@@ -12,7 +12,7 @@ public class Board implements IBoard {
 
 	public Board(Collection<Player> players, int pPlayerCount) {
 		PlayerCount = pPlayerCount;
-		charactersOnBoard = new ArrayList<ICharacter>();
+		charactersOnBoard = new ArrayList<Character>();
 		if (players!=null) {
 			for (Player player : players) {
 				for (int i = 0; i < CharactersPerPlayer; ++i) {
