@@ -143,5 +143,28 @@ public class Board implements IBoard {
 		characters.addAll(charactersOnBoard);
 		return characters;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		for(IReadonlyCharacter character : getAllCharacters()) {
+			builder.append("Figur von Spieler ");
+			builder.append(character.getPlayer().getPlayerId());
+			switch (character.getCurrentPosition().getStatus()) {
+			case BASE:
+				builder.append(" ist in der Basis");
+				break;
+			case FIELD:
+				builder.append(" ist auf dem Spielfeld an Position ");
+				builder.append(character.getCurrentPosition().getIndex());
+				break;
+			case HOUSE:
+				builder.append(" ist im Zielhaus");
+				break;
+			}
+			builder.append("\n");
+		}
+		return builder.toString();
+	}
 
 }
