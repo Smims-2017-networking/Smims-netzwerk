@@ -65,5 +65,15 @@ public class Game implements IGame {
 	{
 		return myTurnManager.whoseTurn();
 	}
+
+	@Override
+	public TurnState getCurrentTurnState() {
+		return myTurnManager.getCurrentTurnState();
+	}
+
+	@Override
+	public Player getWinner() {
+		return myBoard.getWinner();
+	}
 	
 }

@@ -85,4 +85,8 @@ public class Turn {
 	boolean isOver() {
 		return turnState == TurnState.Finished;
 	}
+
+	public TurnState getCurrentTurnState() {
+		return turnState;
+	}
 }
