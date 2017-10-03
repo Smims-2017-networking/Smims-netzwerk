@@ -27,7 +27,7 @@ public class GameLobby {
 		return players.get(playerId);
 	}
 	
-	public Game startGame() {
-		return new Game(players, SpielServer.SPIELERANZAHL);
+	public Game startGame(int boardgroesse) {
+		return new Game(players, boardgroesse);
 	}
 }
