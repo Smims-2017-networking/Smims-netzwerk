@@ -1,9 +1,11 @@
 package smims.networking.model;
 import smims.networking.model.*;
 
-public class Character{
+public class Character  {
 	
-	private Position position = new Position();
+	private Position myPos;		//distance == -1, Wenn der Character in der Basis ist. Danach wird die gelaufende distanz gezaehlt
+	
+	// private Position position = new Position();
 	private final Player player;
 	
 	public Character(Player player) {
@@ -11,43 +13,59 @@ public class Character{
 	}
 	
 	
-	public Position getCurrentPosition() {
-		return position;
+	
+	public Position getPosition() {
+		return myPos;
 	}
+
+
+
+	public void setPosition(Position myPos) {
+		this.myPos = myPos;
+	}
+
+
+	
+	
+	public int getDistance() {
+		return myPos.getDistance();
+	}
+
+	
 	public Player getPlayer() {
 		return player;
 	}
 
-	private void setPosition(Position p) {
-		position = p;
+	private void setDistance(int pDistance) {
+		myPos.setDistance(pDistance);
 	}
 	
-	public boolean isOnField(int pFieldNumber) {
-		return getCurrentPosition().isOnField(pFieldNumber);
-	}
+	
 	
 	public boolean isAtStartingPosition() {
-		return getCurrentPosition().isAtStartingPosition();
+		return myPos.getDistance() == 0;
 	}
 	
-	public void moveIntoHouse(int possibleNewDistanz) {
-		setPosition(Position.movedIntoHouse(possibleNewDistanz));
+	
+	
+	public void moveForward(int pWalkDistance) {
+		myPos.setDistance(myPos.getDistance() + pWalkDistance);
 	}
 	
-	public void move(int possibleNewPosition, int possibleNewDistanz) {
-		setPosition(getCurrentPosition().movedBy(possibleNewPosition, possibleNewDistanz));
+	
+	public void moveOutOfBase() {
+		myPos.setDistance(0);
 	}
 	
-	public void moveOutOfBase(int characterSpawnPosition) {
-		setPosition(Position.spawnedAt(characterSpawnPosition));
-	}
 	
 	public void werdeGeschlagen() 
 	{
-		setPosition(Position.thrownOut());
+		myPos.setDistance(-1);
 	}
 	
+	
 	public boolean isInBase() {
-		return getCurrentPosition().getStatus() == CharacterStatus.BASE;
+		return myPos.getDistance() == -1;
 	}
+	
 }
