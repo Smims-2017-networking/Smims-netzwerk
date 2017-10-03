@@ -3,7 +3,7 @@ package smims.networking.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Board implements IBoard {
+public class Board {
 	private int PlayerCount;
 	private static final int CharactersPerPlayer = 4;
 	private static final int DistanceBetweenSpawns = 10;
@@ -106,7 +106,15 @@ public class Board implements IBoard {
 		return character.isInBase() && pDistance == 6 &&  !characterWouldHitTeammate(character, pDistance);
 	}
 	
-	
+	/**
+	 * 
+	 * @param pPlayerId
+	 * @return	true, wenn alle im Haus sind
+	 */
+	public boolean allCharactersInHouse(int pPlayerId) {
+		return charactersOnBoard.stream()
+				.filter((character) -> character.getPlayer().getPlayerId() == pPlayerId && character.getPosition().getDistance() <= DistanceBetweenSpawns * PlayerCount).count() == 0;	//keiner, der vor dem Haus ist
+	}
 	
 	/**
 	 * 
