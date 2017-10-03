@@ -23,7 +23,7 @@ public class Rundenmanager {
 			Player p = allPlayers.get(i);
 			IPlayerChoice iPlayer = allChoices.get(i);
 
-			if (p.charactersCanMove() == 0) {
+			if (p.numberOfMovableCharacters() == 0) {
 				this.doThreeTurns(p, iPlayer);
 			}
 
@@ -34,7 +34,7 @@ public class Rundenmanager {
 			while (p.myDice.getResult() == 6) {
 				turn(p, iPlayer);
 			}
-			//Am Ende des Zuges wird überprüft, ob der Spieler gewonnen hat.
+			//Am Ende des Zuges wird ï¿½berprï¿½ft, ob der Spieler gewonnen hat.
 			if (abortion(allPlayers.get(i)) == true) {
 				throw new PlayerWonException();
 			}
@@ -42,7 +42,7 @@ public class Rundenmanager {
 	}
 	
 	/**
-	 * @param p der zu überprüfende Spieler
+	 * @param p der zu ï¿½berprï¿½fende Spieler
 	 * @return true, wenn Spieler p gewonnen hat.
 	 */
 	private boolean abortion(Player p) {

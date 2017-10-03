@@ -47,7 +47,7 @@ public class Board implements IBoard {
 	 * @param pDistance
 	 * @return returns true, wenn an der Stelle die der Character nach dem bewegen um pDistance auf dem gleichen Feld wie ein Character vom gleichen Team ist.
 	 */
-	public boolean characterWouldHitTeammate(ICharacter pCharacter, int pDistance)
+	public boolean characterWouldHitTeammate(IReadonlyCharacter pCharacter, int pDistance)
 	{
 		if(pCharacter.isInBase() && pDistance == 6)
 		{
@@ -61,7 +61,7 @@ public class Board implements IBoard {
 		}
 	}
 
-	boolean characterPositionsAreEqual(ICharacter pCharacter, int pDistance, ICharacter TestCharacter) {
+	boolean characterPositionsAreEqual(IReadonlyCharacter pCharacter, int pDistance, ICharacter TestCharacter) {
 		return pCharacter.getCurrentPosition().getDistanz() + pDistance == TestCharacter.getCurrentPosition().getDistanz();
 	}
 
@@ -71,7 +71,7 @@ public class Board implements IBoard {
 	 * @param pDistance	Distanz, die der character sich bewegt
 	 * @return true wenn er sich bewegen kann (kein Teammate im weg, Wenn in Basis eine 6 gew�rfelt und falls er in das Haus geht ist das Haus lang genug)
 	 */
-	public boolean characterCanMove(ICharacter character, int pDistance)
+	public boolean characterCanMove(IReadonlyCharacter character, int pDistance)
 	{
 		return 
 				(!characterWouldHitTeammate(character, pDistance)
@@ -79,11 +79,11 @@ public class Board implements IBoard {
 				|| characterCanExitBase(character, pDistance);
 	}
 
-	boolean characterWouldMoveOutOfHouse(ICharacter character, int pDistance) {
+	boolean characterWouldMoveOutOfHouse(IReadonlyCharacter character, int pDistance) {
 		return character.getCurrentPosition().getDistanz() + pDistance > (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
 	}
 
-	boolean characterCanExitBase(ICharacter character, int pDistance) {
+	boolean characterCanExitBase(IReadonlyCharacter character, int pDistance) {
 		return character.isInBase() && pDistance == 6;
 	}
 	
@@ -136,7 +136,7 @@ public class Board implements IBoard {
 	 * returns all Characters in an ArrayList<IReadonlyCharacter>
 	 */
 	@Override
-	public Collection<IReadonlyCharacter> getAllCharachters() {
+	public Collection<IReadonlyCharacter> getAllCharacters() {
 		Collection<IReadonlyCharacter> characters = new ArrayList<IReadonlyCharacter>();
 		characters.addAll(charactersOnBoard);
 		return characters;

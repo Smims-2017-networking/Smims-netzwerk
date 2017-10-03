@@ -11,7 +11,7 @@ public class BoardTest {
 
 	@Test
 	public void testCreatesCorrectNumberOfCharacters() {
-		assertEquals(4*4, board.getAllCharachters().size());
+		assertEquals(4*4, board.getAllCharacters().size());
 	}
 
 }

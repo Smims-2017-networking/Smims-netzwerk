@@ -1,7 +1,5 @@
 package smims.networking.model;
 
-import java.util.ArrayList;
-
 public class Player {
 	
 	int playerId;
@@ -30,33 +28,34 @@ public class Player {
 	 */
 	public void rollDice()
 	{
-		dice.diceRoll();
+		myDice.rollDice();
 	}
 	
 	/**
 	 * bewegt die Spielfigur and der gewaehlten position.
 	 * @param posCharacter Position der Spielfigur, die bewegt werden soll.
+	 * @throws Exception
 	 */
-	public void moveCharacters(int posCharacter)
+	public void moveCharacters(int posCharacter) throws Exception
 	{
 		if(myBoard.fieldOccupied(posCharacter))
 		{
-			if(myBoard.getCharacterAt(posCharacter).getPlayer().getPlayerId() == this.playerId)
+			ICharacter currentCharacter = myBoard.getCharacterAt(posCharacter);
+			if(currentCharacter.getPlayer().getPlayerId() == this.playerId)
 			{
-				myBoard.moveCharacters(currentCharacter, myDice.getResult());
+				myBoard.moveCharacter(currentCharacter, myDice.getResult());
 			}
 		}
-		
 	}
 	/*
-	 * Gibt die Anzahl der Character des Spielers zurück, die sich bewegen lassen
+	 * Gibt die Anzahl der Character des Spielers zurï¿½ck, die sich bewegen lassen
 	 */
-	public int charactersCanMove() 
+	public int numberOfMovableCharacters() 
 	{
 		int ret=0;
-		for(Character character: myBoard.getAllCharacters())
+		for(IReadonlyCharacter character: myBoard.getAllCharacters())
 		{
-			if(myBoard.characterCanMove(character,dice.getResult()))
+			if(myBoard.characterCanMove(character, myDice.getResult()))
 			{
 				ret++;
 			}
