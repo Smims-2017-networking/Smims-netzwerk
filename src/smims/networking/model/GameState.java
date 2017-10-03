@@ -52,7 +52,7 @@ public class GameState {
 	public int numberOfMovableCharacters() 
 	{
 		int ret=0;
-		for(IReadonlyCharacter character: myBoard.getAllCharacters())
+		for(Character character: myBoard.getAllCharacters())
 		{
 			if(myBoard.characterCanMove(character, myDice.getResult()))
 			{
