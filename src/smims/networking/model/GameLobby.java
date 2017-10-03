@@ -3,7 +3,6 @@ package smims.networking.model;
 import java.util.ArrayList;
 
 public class GameLobby {
-	private static final int BoardSize = 10;
 	private final ArrayList<Player> players = new ArrayList<>();
 	
 	public void registerPlayer(Player player) {
@@ -24,7 +23,11 @@ public class GameLobby {
 		return true;
 	}
 	
+	public Player getPlayerAt(int playerId) {
+		return players.get(playerId);
+	}
+	
 	public Game startGame() {
-		return new Game(players, BoardSize);
+		return new Game(players, SpielServer.SPIELERANZAHL);
 	}
 }
