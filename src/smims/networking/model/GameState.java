@@ -1,6 +1,6 @@
 package smims.networking.model;
 
-public class Player {
+public class GameState {
 	
 	int playerId;
 	DiceRoller myDice ;
@@ -12,7 +12,7 @@ public class Player {
 	 * @param pPlayerID ID des Spielers
 	 * @param pBoard das verwendete Spielbrett 
 	 */
-	Player(int pPlayerID, Board pBoard)
+	GameState(int pPlayerID, Board pBoard)
 	{
 		playerId = pPlayerID;
 		myDice = new DiceRoller();

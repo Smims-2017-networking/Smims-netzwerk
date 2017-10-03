@@ -12,7 +12,7 @@ public class Board implements IBoard {
 
 	public Board(ICharacterFactory characterFactory, Collection<Player> players) {
 		charactersOnBoard = new ArrayList<ICharacter>();
-		for (Player player : players) {
+		for (Player player: players) {
 			for (int i = 0; i < CharactersPerPlayer; ++i) {
 				charactersOnBoard.add(new Character(player));
 			}
