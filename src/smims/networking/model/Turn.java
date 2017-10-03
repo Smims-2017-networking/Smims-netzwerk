@@ -1,12 +1,14 @@
 package smims.networking.model;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public class Turn {
 	private final IPlayer player;
 	private final IBoard board;
 	private final IDiceRoller diceRoller;
 	private final int maxRollCount;
 	private int rolledCount = 0;
-	private TurnState turnState;
+	private TurnState turnState = TurnState.ExpectRoll;
 	
 	
 	public Turn(IPlayer player, IBoard board, IDiceRoller diceRoller) {
@@ -17,7 +19,7 @@ public class Turn {
 	}
 	
 	private static boolean playerHasCharactersOnBoard(IPlayer player, IBoard board) {
-		return board.getAllCharacters().stream().anyMatch(character -> character.getPlayer() == player);
+		throw new NotImplementedException();
 	}
 
 	public IPlayer getPlayer() {
@@ -73,8 +75,11 @@ public class Turn {
 	}
 
 	private void EnsurePlayerCanRollDice() throws MoveNotAllowedException {
-		if(!(turnState == TurnState.ExpectRoll) && rolledCount < maxRollCount) {
+		if(turnState != TurnState.ExpectRoll) {
 			throw new MoveNotAllowedException();
+		}
+		else {
+			assert rolledCount < maxRollCount;
 		}
 	}
 
