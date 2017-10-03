@@ -2,6 +2,9 @@ package smims.networking.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 public class Board {
 	private int PlayerCount;
@@ -159,6 +162,21 @@ public class Board {
 		Collection<Character> characters = new ArrayList<Character>();
 		characters.addAll(charactersOnBoard);
 		return characters;
+	}
+
+	public Player getWinner() {
+		// HACK This is a pretty ugly way of checking which house is full; I
+		// think modeling each house would be better.
+		Map<Player, java.util.List<Character>> charactersByPlayer = getAllCharacters().stream()
+				.collect(Collectors.groupingBy(Character::getPlayer));
+		
+		return charactersByPlayer.keySet().stream()
+				.filter(
+					(player) -> charactersByPlayer.get(player).stream()
+						.allMatch(Character::isInHouse)
+				)
+				.findAny()
+				.orElse(null);
 	}
 
 }

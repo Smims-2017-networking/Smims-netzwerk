@@ -72,9 +72,8 @@ public class Game implements IGame {
 	}
 
 	@Override
-	public boolean anyPlayerHasWon() {
-		// TODO Auto-generated method stub
-		return false;
+	public Player getWinner() {
+		return myBoard.getWinner();
 	}
 	
 }

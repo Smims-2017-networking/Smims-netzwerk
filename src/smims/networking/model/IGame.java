@@ -7,5 +7,5 @@ public interface IGame {
 	public TurnState getCurrentTurnState();
 	public void moveCharacter(int playerID, int characterPos) throws MoveNotAllowedException, NotYourTurnException;
 	public int whoseTurn();
-	public boolean anyPlayerHasWon();
+	public Player getWinner();
 }
