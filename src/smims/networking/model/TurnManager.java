@@ -9,9 +9,14 @@ public class TurnManager {
 	private final DiceRoller diceRoller;
 	
 	public TurnManager(ArrayList<Player> players, Board board, DiceRoller diceRoller) {
+		if (players == null || players.size() == 0 || board == null || diceRoller == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		this.players = players;
 		this.board = board;
 		this.diceRoller = diceRoller;
+		startNewTurn(players.get(0));
 	}
 	
 	private void startNewTurn(Player player) {
