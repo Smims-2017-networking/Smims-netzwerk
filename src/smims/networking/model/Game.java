@@ -65,5 +65,16 @@ public class Game implements IGame {
 	{
 		return myTurnManager.whoseTurn();
 	}
+
+	@Override
+	public TurnState getCurrentTurnState() {
+		return myTurnManager.getCurrentTurnState();
+	}
+
+	@Override
+	public boolean anyPlayerHasWon() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

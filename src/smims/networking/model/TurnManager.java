@@ -60,4 +60,8 @@ public class TurnManager {
 	public int whoseTurn() {
 		return getCurrentTurn().getPlayer().getPlayerId();
 	}
+
+	public TurnState getCurrentTurnState() {
+		return currentTurn.getCurrentTurnState();
+	}
 }
