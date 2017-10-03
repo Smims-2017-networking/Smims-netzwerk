@@ -23,6 +23,29 @@ public class GameState {
 		myDice.rollDice();
 	}
 	
+	public int getDiceResult()
+	{
+		return myDice.getResult();
+	}
+	
+	public Board getBoard()
+	{
+		return myBoard;
+	}
+	
+	
+	public void MoveCharacter(int PlayerID, int Position) throws Exception
+	{
+		if(PlayerID == myBoard.getCharacterAt(Position).getPlayer().getPlayerId())
+		{	
+				myBoard.moveCharacter(myBoard.getCharacterAt(Position), getDiceResult());
+		}
+		else
+		{
+			throw new NotYourTurnException();
+		}
+	}
+	
 	/*
 	 * Gibt die Anzahl der Character des Spielers zur�ck, die sich bewegen lassen
 	 */

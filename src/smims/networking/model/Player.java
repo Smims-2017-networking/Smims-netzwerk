@@ -3,12 +3,19 @@ package smims.networking.model;
 public class Player {
 	private boolean wantsToStartGame = false;
 
+	int PlayerID;
+	
+	Player(int pPlayerID)
+	{
+		this.PlayerID = pPlayerID;
+	}
+	
 	public void makePlayerWantToStartGame() {
 		wantsToStartGame = true;
 	}
 	
 	public int getPlayerId() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 

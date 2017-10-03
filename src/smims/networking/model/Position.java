@@ -1,6 +1,7 @@
 package smims.networking.model;
 
 public class Position implements Comparable<Position> {
+	
 	private static final int NOT_ON_BOARD = -1;
 	
 	//Status eines Characters im Spiel: in der Base, auf dem Feld (Field) oder im Zielhaus (House)
@@ -19,7 +20,7 @@ public class Position implements Comparable<Position> {
 	public Position()
 	{
 		status = CharacterStatus.BASE;
-		distanz = 0;
+		distanz = -1;
 		index = NOT_ON_BOARD;
 	}
 	

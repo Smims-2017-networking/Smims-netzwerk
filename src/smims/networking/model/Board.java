@@ -65,6 +65,7 @@ public class Board implements IBoard {
 		return pCharacter.getCurrentPosition().getDistanz() + pDistance == TestCharacter.getCurrentPosition().getDistanz();
 	}
 
+	
 	/**
 	 * 
 	 * @param character, der �berpr�ft werden soll
@@ -95,7 +96,7 @@ public class Board implements IBoard {
 	 * @param distance Distanz, die der Character bewegt werden soll
 	 */
 	@Override
-	public void moveCharacter(ICharacter character, int distance) throws Exception{
+	public void moveCharacter(ICharacter character, int distance) throws MoveNotAllowedException{
 		if(characterCanMove(character, distance))
 		{
 			int characterSpawnPosition = character.getPlayer().getPlayerId() * DistanceBetweenSpawns; 	
