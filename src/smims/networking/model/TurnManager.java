@@ -8,7 +8,7 @@ public class TurnManager {
 	private final IBoard board;
 	private final DiceRoller diceRoller;
 	
-	private TurnManager(ArrayList<Player> players, IBoard board, DiceRoller diceRoller) {
+	public TurnManager(ArrayList<Player> players, IBoard board, DiceRoller diceRoller) {
 		this.players = players;
 		this.board = board;
 		this.diceRoller = diceRoller;
@@ -22,7 +22,7 @@ public class TurnManager {
 		return currentTurn;
 	}
 	
-	public void rollDice(int playerId) throws NotYourTurnException {
+	public void rollDice(int playerId) throws NotYourTurnException, MoveNotAllowedException {
 		ensureIsPlayersTurn(playerId);
 		getCurrentTurn().rollDice();
 		changeTurnIfOver();
@@ -46,9 +46,9 @@ public class TurnManager {
 		}
 	}
 	
-	public void moveCharacter(int playerId, int characterPos) throws NotYourTurnException {
+	public void moveCharacter(int playerId, int characterPos) throws NotYourTurnException, MoveNotAllowedException {
 		ensureIsPlayersTurn(playerId);
-		getCurrentTurn().moveCharacter(characterPos);
+		getCurrentTurn().moveCharacter(playerId, characterPos);
 		changeTurnIfOver();
 	}
 	

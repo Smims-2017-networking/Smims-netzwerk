@@ -19,9 +19,9 @@ public class Turn {
 		return player;
 	}
 	
-	public void moveCharacter(int characterPos) throws MoveNotAllowedException {
+	public void moveCharacter(int characterPos, int playerId) throws MoveNotAllowedException {
 		EnsurePlayerCanMoveCharacter();
-		moveCharacterAtPosition(characterPos);
+		moveCharacterAtPosition(characterPos, playerId);
 		if (diceRoller.getResult() == 6) {
 			transitionToRollingState();
 		} else {
@@ -29,8 +29,8 @@ public class Turn {
 		}
 	}
 	
-	private void moveCharacterAtPosition(int characterPos) {
-		board.moveCharacter(iCharacter, distance);
+	private void moveCharacterAtPosition(int characterPos, int playerId) {
+		board.moveCharacter();
 	}
 
 	private void EnsurePlayerCanMoveCharacter() throws MoveNotAllowedException {
