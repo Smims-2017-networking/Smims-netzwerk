@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 // Starts and stops games; tracks their progress
 public class Game {
-	final ArrayList<IPlayerChoice> players;
+	final ArrayList<Player> players;
 
-	public Game(ArrayList<IPlayerChoice> players) {
+	public Game(ArrayList<Player> players) {
 		this.players = players;
 	}
 	
@@ -15,11 +15,11 @@ public class Game {
 		signOffPlayers(players);
 	}
 
-	private static void signOffPlayers(ArrayList<IPlayerChoice> players) {
+	private static void signOffPlayers(ArrayList<Player> players) {
 		// TODO Auto-generated method stub
 	}
 
-	private static void playGame(ArrayList<IPlayerChoice> players) {
+	private static void playGame(ArrayList<Player> players) {
 		// TODO Auto-generated method stub
 	}
 }

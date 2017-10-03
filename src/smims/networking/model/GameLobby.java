@@ -3,20 +3,20 @@ package smims.networking.model;
 import java.util.ArrayList;
 
 public class GameLobby {
-	final ArrayList<IPlayerChoice> players = new ArrayList<>();
+	final ArrayList<Player> players = new ArrayList<>();
 	
-	public void registerPlayer(IPlayerChoice player) {
+	public void registerPlayer(Player player) {
 		player.greet();
 		players.add(player);
 	}
 	
-	public void unregisterPlayer(IPlayerChoice player) {
+	public void unregisterPlayer(Player player) {
 		player.signOff();
 		players.remove(player);
 	}
 	
 	public boolean readyToStart() {
-		for (IPlayerChoice player : players) {
+		for (Player player : players) {
 			if (!player.wantsToStartGame())
 				return false;
 		}
