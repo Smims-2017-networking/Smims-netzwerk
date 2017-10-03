@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Board implements IBoard {
-	private static final int PlayerCount = 4;
+	private static int PlayerCount = 4;
 	private static final int CharactersPerPlayer = 4;
 	private static final int DistanceBetweenSpawns = 10;
 
 	private final Collection<ICharacter> charactersOnBoard;
 
-	public Board(Collection<Player> players) {
+	public Board(Collection<Player> players, int pPlayerCount) {
+		PlayerCount = pPlayerCount;
 		charactersOnBoard = new ArrayList<ICharacter>();
 		for (Player player: players) {
 			for (int i = 0; i < CharactersPerPlayer; ++i) {
