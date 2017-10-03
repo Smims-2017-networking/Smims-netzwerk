@@ -79,13 +79,5 @@ public class Rundenmanager {
 	 * @throws Exception
 	 */
 
-	private void doThreeTurns(Player p) throws Exception {
-		for (int i = 0; i < 3; i++) {
-			gameState.rollDice();
-			if (gameState.myDice.getResult() == 6) {
-				turnWithoutRoll(p);
-				break;
-			}
-		}
-	}
+	
 }
