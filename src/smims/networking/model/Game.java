@@ -5,21 +5,12 @@ import java.util.ArrayList;
 // Starts and stops games; tracks their progress
 public class Game {
 	final ArrayList<Player> players;
+	final GameState gameState;
 
-	public Game(ArrayList<Player> players) {
+	public Game(ArrayList<Player> players, GameState gameState) {
 		this.players = players;
+		this.gameState = gameState;
 	}
 	
-	public void play() {
-		playGame(players);
-		signOffPlayers(players);
-	}
-
-	private static void signOffPlayers(ArrayList<Player> players) {
-		// TODO Auto-generated method stub
-	}
-
-	private static void playGame(ArrayList<Player> players) {
-		// TODO Auto-generated method stub
-	}
+	
 }

@@ -3,15 +3,15 @@ package smims.networking.model;
 import java.util.ArrayList;
 
 public class GameLobby {
-	final ArrayList<Player> players = new ArrayList<>();
+	private final ArrayList<Player> players = new ArrayList<>();
 	
 	public void registerPlayer(Player player) {
-		player.greet();
+		//player.greet();
 		players.add(player);
 	}
 	
 	public void unregisterPlayer(Player player) {
-		player.signOff();
+		//player.signOff();
 		players.remove(player);
 	}
 	
@@ -24,6 +24,7 @@ public class GameLobby {
 	}
 	
 	public Game startGame() {
-		return new Game(players);
+		GameState gameState = new GameState(new Board(players));
+		return new Game(players, gameState);
 	}
 }
