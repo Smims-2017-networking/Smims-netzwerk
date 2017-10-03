@@ -40,7 +40,12 @@ public class Game {
 		return myBoard;
 	}
 	
-	
+	/**
+	 * Bewegt den Character an der Position, wenn er zu dem Player gehoert.
+	 * @param pPlayerID
+	 * @param Position
+	 * @throws Exception
+	 */
 	public void moveCharacter(int pPlayerID, int Position) throws Exception
 	{
 		myTurnManager.moveCharacter(pPlayerID, Position);
