@@ -1,15 +1,22 @@
 package smims.networking.model;
 
-public class Player {
+import java.util.Collection;
 
+public class Player {
+	private int playerID;
+	private Board myBoard;
+	private Collection<ICharacter> charactersOnBoard;
+	
 	public int getPlayerId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return playerID;
 	}
 
 	public int charactersInBase() {
-		// TODO Auto-generated method stub
-		return 0;
+		int i=0;
+		for(charactersOnBoard c:each) {
+			if(c.myPlayer==playerID&&c.)
+		}
+		return i;
 	}
 
 	public void moveCharacters(int x) {
