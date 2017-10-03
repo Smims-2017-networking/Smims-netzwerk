@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Board {
-	private static int PlayerCount = 4;
+	private int PlayerCount;
 	private static final int CharactersPerPlayer = 4;
 	private static final int DistanceBetweenSpawns = 10;
 
@@ -13,33 +13,35 @@ public class Board {
 	public Board(Collection<Player> players, int pPlayerCount) {
 		PlayerCount = pPlayerCount;
 		charactersOnBoard = new ArrayList<Character>();
-		if (players!=null) {
-			for (Player player : players) {
-				for (int i = 0; i < CharactersPerPlayer; ++i) {
-					charactersOnBoard.add(new Character(player));
-				}
+		for (Player player: players) {
+			for (int i = 0; i < CharactersPerPlayer; ++i) {
+				charactersOnBoard.add(new Character(player));
 			}
 		}
 	}
 
 	/**
 	 * Checht ob auf dem Feld ein Character steht
-	 * 
-	 * @param pFieldNumber
-	 *            Nummer des zu ueberpruefenden Feldes
+	 * @param pFieldNumber Nummer des zu ueberpruefenden Feldes, Durchnummeriert von dem Spawn mit der PlayerID 0 bis zu dem Feld vor dem Spawn von Player 0
 	 * @return true wenn ein Character auf dem Feld ist
 	 */
 	public boolean fieldOccupied(int pFieldNumber) {
-		return charactersOnBoard.stream().anyMatch((character) -> character.isOnField(pFieldNumber));
+		return charactersOnBoard.stream()
+				.anyMatch((character) -> (character.getDistance() + character.getPlayer().getPlayerId() * DistanceBetweenSpawns) == pFieldNumber);
+		
 	}
 
+	
 	/**
 	 * 
-	 * @param pFieldNumber
-	 * @return Character an der Steller auf dem Feld, wenn keiner vorhanden null
+	 * @param pDistance   
+	 * @param pPlayer
+	 * @return Es wird der Character zurueckgegeben, der bei der die gesuchte Distanz zurueckgelegt und von dem Player ist.
 	 */
-	public Character getCharacterAt(int pFieldNumber) {
-		return charactersOnBoard.stream().filter((character) -> character.isOnField(pFieldNumber)).findAny()
+	public Character getCharacterAt(int pDistance, int pPlayerID) {
+		return charactersOnBoard.stream()
+				.filter((character) -> character.getPosition().getDistance() == pDistance && character.getPlayer().getPlayerId() == pPlayerID)
+				.findAny()
 				.orElse(null);
 	}
 
@@ -51,19 +53,21 @@ public class Board {
 	 *         um pDistance auf dem gleichen Feld wie ein Character vom gleichen
 	 *         Team ist.
 	 */
-	public boolean characterWouldHitTeammate(Character pCharacter, int pDistance) {
-		if (pCharacter.isInBase() && pDistance == 6) {
-			return charactersOnBoard.stream().anyMatch(character -> character.isAtStartingPosition());
-		} else {
+	public boolean characterWouldHitTeammate(Character pCharacter, int pDistance)
+	{
+		if(pCharacter.isInBase() && pDistance == 6)
+		{
 			return charactersOnBoard.stream()
-					.anyMatch(character -> characterPositionsAreEqual(pCharacter, pDistance, character));
+				.anyMatch(character -> character.isAtStartingPosition() && character.getPlayer() == pCharacter.getPlayer());
+		}
+		else
+		{
+			return charactersOnBoard.stream()
+				.anyMatch(character -> (pCharacter.getPosition().getDistance() + pDistance) == character.getPosition().getDistance() && character.getPlayer() == pCharacter.getPlayer());
 		}
 	}
 
-	boolean characterPositionsAreEqual(Character pCharacter, int pDistance, Character TestCharacter) {
-		return pCharacter.getCurrentPosition().getDistanz() + pDistance == TestCharacter.getCurrentPosition()
-				.getDistanz();
-	}
+	
 
 	
 	/**
@@ -76,20 +80,42 @@ public class Board {
 	 *         eine 6 gew�rfelt und falls er in das Haus geht ist das Haus lang
 	 *         genug)
 	 */
-	public boolean characterCanMove(Character character, int pDistance) {
-		return (!characterWouldHitTeammate(character, pDistance) && !characterWouldMoveOutOfHouse(character, pDistance))
-				|| characterCanExitBase(character, pDistance);
+	public boolean characterCanMove(Character character, int pDistance)
+	{
+		return 
+				!characterWouldHitTeammate(character, pDistance)
+				&& !characterWouldMoveInHouse(character, pDistance)
+				&& characterCanExitBase(character, pDistance);
 	}
 
-	boolean characterWouldMoveOutOfHouse(Character character, int pDistance) {
-		return character.getCurrentPosition().getDistanz() + pDistance > (DistanceBetweenSpawns * PlayerCount)
-				+ CharactersPerPlayer;
+	/**
+	 * 
+	 * @param character
+	 * @param pDistance
+	 * @return
+	 */
+	boolean characterWouldMoveInHouse(Character character, int pDistance) {
+		return character.getPosition().getDistance() + pDistance > (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
 	}
 
+	boolean characterCanEnterHouse(Character character, int pDistance) {
+		return !characterWouldHitTeammate(character, pDistance) && character.getPosition().getDistance() + pDistance <= (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
+	}
+	
 	boolean characterCanExitBase(Character character, int pDistance) {
-		return character.isInBase() && pDistance == 6;
+		return character.isInBase() && pDistance == 6 &&  !characterWouldHitTeammate(character, pDistance);
 	}
-
+	
+	/**
+	 * 
+	 * @param pPlayerId
+	 * @return	true, wenn alle im Haus sind
+	 */
+	public boolean allCharactersInHouse(int pPlayerId) {
+		return charactersOnBoard.stream()
+				.filter((character) -> character.getPlayer().getPlayerId() == pPlayerId && character.getPosition().getDistance() <= DistanceBetweenSpawns * PlayerCount).count() == 0;	//keiner, der vor dem Haus ist
+	}
+	
 	/**
 	 * 
 	 * @param character
@@ -97,38 +123,34 @@ public class Board {
 	 * @param distance
 	 *            Distanz, die der Character bewegt werden soll
 	 */
-	public void moveCharacter(Character character, int distance) throws Exception {
-		if (characterCanMove(character, distance)) {
-			int characterSpawnPosition = character.getPlayer().getPlayerId() * DistanceBetweenSpawns;
-			int possibleNewPosition = (character.getCurrentPosition().getIndex() + distance)
-					% (DistanceBetweenSpawns * PlayerCount);
-			int possibleNewDistanz = character.getCurrentPosition().getDistanz() + distance;
-
-			if (character.isInBase()) // in Basis
+	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException{
+		if(characterCanMove(pCharacter, distance))
+		{
+			int possibleNewDistance = pCharacter.getPosition().getDistance() + distance;
+			if(pCharacter.isInBase())			//in Basis
 			{
-				character.moveOutOfBase(characterSpawnPosition);
-			} else if (characterWouldBeInHouse(possibleNewDistanz)) // geht in das Haus bzw. ist im Haus
-			{
-				character.moveIntoHouse(possibleNewDistanz);
-			} else // normal im feld
-			{
-				character.move(possibleNewPosition, possibleNewDistanz);
+				pCharacter.moveOutOfBase();
 			}
-
-			if (fieldOccupied(possibleNewPosition)) // Spieler schlagen, wenn vorhanden
+			else
 			{
-				getCharacterAt(possibleNewPosition).werdeGeschlagen();
+				pCharacter.moveForward(distance);
 			}
-
-		} else {
+			
+			if(fieldOccupied(possibleNewDistance))						//Spieler schlagen, wenn vorhanden
+			{
+			
+				charactersOnBoard.stream()
+				.filter((character) -> (character.getDistance() + character.getPlayer().getPlayerId() * DistanceBetweenSpawns)% (DistanceBetweenSpawns * PlayerCount) == 
+										(possibleNewDistance + character.getPlayer().getPlayerId() * DistanceBetweenSpawns) % (DistanceBetweenSpawns * PlayerCount)).findAny().get().werdeGeschlagen();
+			}
+		}
+		else
+		{
 			throw new MoveNotAllowedException();
 		}
 
 	}
 
-	boolean characterWouldBeInHouse(int possibleNewDistanz) {
-		return possibleNewDistanz > (DistanceBetweenSpawns * PlayerCount);
-	}
 
 	/**
 	 * returns all Characters in an ArrayList<IReadonlyCharacter>
