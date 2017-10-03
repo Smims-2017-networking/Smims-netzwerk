@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 public class Game {
 	
-	DiceRoller myDice ;
-	Board myBoard;
-	ArrayList<Player> myPlayers;
-	final TurnManager myTurnManager;
+	private DiceRoller myDice ;
+	private Board myBoard;
+	private ArrayList<Player> myPlayers;
+	private final TurnManager myTurnManager;
 		
 	/**
 	 * 
@@ -25,14 +25,14 @@ public class Game {
 	/**
 	 * wuerfelt den wuerfel
 	 */
-	public void rollDice(int pPlayerID) throws NotYourTurnException
+	public void rollDice(int pPlayerID) throws Exception
 	{
 		myTurnManager.rollDice(pPlayerID);
 	}
 	
 	public int getDiceResult()
 	{
-		return myTurnManager.getResult();
+		return myDice.getResult();
 	}
 	
 	public Board getBoard()
@@ -40,7 +40,12 @@ public class Game {
 		return myBoard;
 	}
 	
-	
+	/**
+	 * Bewegt den Character an der Position, wenn er zu dem Player gehoert.
+	 * @param pPlayerID
+	 * @param Position
+	 * @throws Exception
+	 */
 	public void moveCharacter(int pPlayerID, int Position) throws Exception
 	{
 		myTurnManager.moveCharacter(pPlayerID, Position);
