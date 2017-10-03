@@ -25,7 +25,7 @@ public class Game {
 	/**
 	 * wuerfelt den wuerfel
 	 */
-	public void rollDice(int pPlayerID) throws NotYourTurnException
+	public void rollDice(int pPlayerID) throws Exception
 	{
 		myTurnManager.rollDice(pPlayerID);
 	}
