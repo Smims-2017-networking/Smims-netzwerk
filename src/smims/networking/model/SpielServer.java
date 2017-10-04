@@ -1,5 +1,7 @@
 package smims.networking.model;
 
+import com.google.gson.Gson;
+
 public class SpielServer extends Server {
 
 	// TODO: Objekt des Spiels erzeugen
@@ -32,9 +34,14 @@ public class SpielServer extends Server {
 		case Protokoll.CS_Welcome:
 			
 			break;
-		case Protokoll.CS_GetBoard:
-			
+		case Protokoll.CS_GetBoard: {
+			Gson gson = new Gson();
+			String message = Protokoll.SC_SendBoard + Protokoll.Splitter + gson.toJson(game.getBoard());
+			System.out.println(message);
+			send(pClientIP, pClientPort, message);
 			break;
+		}
+			
 		case Protokoll.CS_GetDiceResult:
 			String message = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
 			System.out.println(message);
