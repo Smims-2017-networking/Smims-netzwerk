@@ -49,10 +49,11 @@ public class Game implements IGame {
 	 * Bewegt den Character an der Position, wenn er zu dem Player gehoert.
 	 * @param pPlayerID
 	 * @param Position
+	 * @throws NoSuchCharacterException 
 	 * @throws Exception
 	 */
 	@Override
-	public void moveCharacter(int pPlayerID, int Position) throws MoveNotAllowedException, NotYourTurnException
+	public void moveCharacter(int pPlayerID, int Position) throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException
 	{
 		myTurnManager.moveCharacter(pPlayerID, Position);
 	}
