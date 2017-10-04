@@ -22,6 +22,7 @@ public class Protokoll {
 	public static final String SC_ThrowsLeft = "scthrowsleft";
 	public static final String SC_OwnPlayerId = "scownplayerid";
 	public static final String SC_Error = "scerror";
+	public static final String SC_MoveOk = "scmoveok";
 	
 	public static final String SC_Exception = "scFEHLER!!!";
 	public static final String SC_NotYourTurn = "scnotyourturn";
