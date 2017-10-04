@@ -1,5 +1,6 @@
 package smims.networking.model;
 
+import Client.Client;
 
 public class SpielClient extends Client {
 
