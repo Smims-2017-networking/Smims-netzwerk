@@ -95,4 +95,8 @@ public class Turn {
 	public TurnState getCurrentTurnState() {
 		return turnState;
 	}
+
+	public int getRemainingRolls() {
+		return getCurrentTurnState() == TurnState.ExpectRoll ? maxRollCount - rolledCount : 0;
+	}
 }

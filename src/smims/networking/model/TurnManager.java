@@ -64,4 +64,8 @@ public class TurnManager {
 	public TurnState getCurrentTurnState() {
 		return currentTurn.getCurrentTurnState();
 	}
+
+	public int getRemainingRolls() {
+		return getCurrentTurn().getRemainingRolls();
+	}
 }
