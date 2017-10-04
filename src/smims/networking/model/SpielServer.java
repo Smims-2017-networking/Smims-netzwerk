@@ -10,9 +10,9 @@ public class SpielServer extends Server {
 	private String[] ips;
 	private int spieleranzahl, boardgroesse;
 	private Game game;
-	
+
 	public static void main(String[] args) {
-		new SpielServer(4242, 1, 2);
+		new SpielServer(4242, 3, 3);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
@@ -20,7 +20,7 @@ public class SpielServer extends Server {
 		lobby = new GameLobby(pSpieleranzahl);
 		spieleranzahl = pSpieleranzahl;
 		boardgroesse = pBoardgroesse;
-		if(boardgroesse < spieleranzahl) {
+		if (boardgroesse < spieleranzahl) {
 			boardgroesse = spieleranzahl;
 		}
 		ips = new String[spieleranzahl];
@@ -32,7 +32,7 @@ public class SpielServer extends Server {
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
 		case Protokoll.CS_Welcome:
-			
+
 			break;
 		case Protokoll.CS_GetBoard: {
 			Gson gson = new Gson();
@@ -41,7 +41,7 @@ public class SpielServer extends Server {
 			send(pClientIP, pClientPort, message);
 			break;
 		}
-			
+
 		case Protokoll.CS_GetDiceResult:
 			String message = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
 			System.out.println(message);
@@ -49,6 +49,7 @@ public class SpielServer extends Server {
 			break;
 		case Protokoll.CS_MoveCharacter:
 			int pos;
+			String message5;
 			try {
 				pos = Integer.parseInt(array[1]);
 			} catch (NumberFormatException e) {
@@ -56,14 +57,17 @@ public class SpielServer extends Server {
 				break;
 			}
 			try {
+				message5 = Protokoll.SC_MoveOk;
 				game.moveCharacter(getPlayerId(pClientIP), pos);
 			} catch (MoveNotAllowedException e) {
-				send(pClientIP, pClientPort, Protokoll.SC_MoveNotAllowed);
+				message5 = Protokoll.SC_MoveNotAllowed;
 			} catch (NotYourTurnException e) {
-				send(pClientIP, pClientPort, Protokoll.SC_NotYourTurn);
+				message5 = Protokoll.SC_NotYourTurn;
 			} catch (NoSuchCharacterException e) {
-				send(pClientIP, pClientPort, Protokoll.SC_NoSuchCharacter);
+				message5 = Protokoll.SC_NoSuchCharacter;
 			}
+			System.out.println(message5);
+			send(pClientIP, pClientPort, message5);
 			break;
 		case Protokoll.CS_GetTurnState:
 			String message3 = Protokoll.SC_TurnState + Protokoll.Splitter + game.getCurrentTurnState();
@@ -89,12 +93,17 @@ public class SpielServer extends Server {
 			send(pClientIP, pClientPort, message1);
 			break;
 		case Protokoll.CS_Ready:
-			int j = getPlayerId(pClientIP);
-			lobby.getPlayerAt(j).makePlayerWantToStartGame();
-			if (lobby.readyToStart()) {
-				game = lobby.startGame(boardgroesse);
-				System.out.println(Protokoll.SC_GameStarts);
-				sendToAll(Protokoll.SC_GameStarts);
+			if (game == null) {
+				int j = getPlayerId(pClientIP);
+				lobby.getPlayerAt(j).makePlayerWantToStartGame();
+				if (lobby.readyToStart()) {
+					game = lobby.startGame(boardgroesse);
+					System.out.println(Protokoll.SC_GameStarts);
+					sendToAll(Protokoll.SC_GameStarts);
+				}
+			} else {
+				System.out.println(Protokoll.SC_Error);
+				send(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
 		case Protokoll.CS_GetOwnPlayerId:
@@ -103,7 +112,7 @@ public class SpielServer extends Server {
 			send(pClientIP, pClientPort, message4);
 			break;
 		case Protokoll.CS_GetThrowsLeft:
-			
+
 			break;
 		default:
 			System.out.println(Protokoll.SC_Error);
