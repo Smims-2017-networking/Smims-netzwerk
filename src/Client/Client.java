@@ -20,7 +20,7 @@ public class Client {
 	
 	public Client()
 	{
-		
+		new Client("localhost", 1111);
 	}
 
 	public Client(String serverIP, int serverPort) {
