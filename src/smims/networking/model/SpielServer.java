@@ -61,6 +61,8 @@ public class SpielServer extends Server {
 				send(pClientIP, pClientPort, Protokoll.SC_MoveNotAllowed);
 			} catch (NotYourTurnException e) {
 				send(pClientIP, pClientPort, Protokoll.SC_NotYourTurn);
+			} catch (NoSuchCharacterException e) {
+				send(pClientIP, pClientPort, Protokoll.SC_NoSuchCharacter);
 			}
 			break;
 		case Protokoll.CS_GetTurnState:
