@@ -1,7 +1,5 @@
 package smims.networking.model;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class Turn {
 	private final IPlayer player;
 	private final IBoard board;
