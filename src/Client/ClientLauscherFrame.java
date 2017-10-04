@@ -85,7 +85,7 @@ public class ClientLauscherFrame extends Frame {
 			} catch (IOException io) {
 				this.Inhalt.setText("(ClientLauscher) " + io.getMessage());
 			}
-		} while (nachricht != null && !nachricht.startsWith(Protokoll.SC_Stop));
+		} while (nachricht != null);
 		Inhalt.setText("Beendet!");
 	}
 }
