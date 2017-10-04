@@ -2,7 +2,6 @@ package smims.networking.model;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -31,13 +30,55 @@ public class TurnTest {
 
 	@Test
 	public void allowsThreeThrowsWhenAllCharactersAreInTheBase() throws Exception {
-		Turn turn = new Turn(player, new PermissiveBoard(characters, true), new LambdaDiceRoller(prev -> 3));
+		Turn turn = new Turn(player, new PermissiveBoard(characters, false, false), new LambdaDiceRoller(prev -> 3));
 		
 		turn.rollDice();
 		turn.rollDice();
 		turn.rollDice();
 		
 		exception.expect(MoveNotAllowedException.class);
+		turn.rollDice();
+	}
+	
+	@Test
+	public void allowsOneThrowWhenNotAllCharactersAreInTheBase() throws Exception {
+		Turn turn = new Turn(player, new PermissiveBoard(characters, false, true), new LambdaDiceRoller(prev -> 3));
+		
+		turn.rollDice();
+		
+		exception.expect(MoveNotAllowedException.class);
+		turn.rollDice();
+	}
+	
+	@Test
+	public void allowsTwoRollsWhenRolling6() throws Exception {
+		Turn turn = new Turn(player, new PermissiveBoard(characters, false, false), new SequentialDiceRoller(Arrays.stream(new int[] {5,6})));
+		
+		turn.rollDice();
+		turn.rollDice();
+		
+		exception.expect(MoveNotAllowedException.class);
+		turn.rollDice();
+	}
+	
+	@Test
+	public void allowsCharacterToMoveAfterRolling() throws Exception {
+		Turn turn = new Turn(player, new PermissiveBoard(characters, false, true), new LambdaDiceRoller(x -> 3));
+		
+		turn.rollDice();
+		turn.moveCharacter(0, DefaultPlayerId);
+
+		assertEquals(turn.getCurrentTurnState(), TurnState.Finished);
+	}
+	
+	@Test
+	public void allowsToRollAgainAfter6() throws Exception {
+		Turn turn = new Turn(player, new PermissiveBoard(characters, false, true), new LambdaDiceRoller(x -> 6));
+		
+		turn.rollDice();
+		turn.moveCharacter(0, DefaultPlayerId);
+		
+		assertEquals(turn.getCurrentTurnState(), TurnState.ExpectRoll);
 		turn.rollDice();
 	}
 }
