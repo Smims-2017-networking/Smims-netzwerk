@@ -14,14 +14,16 @@ import smims.networking.model.MoveNotAllowedException;
 public class PermissiveBoard implements IBoard {
 	private final Collection<Character> allCharacters;
 	private boolean allCharactersInHouse;
+	private boolean playerHasCharactersOnBoard;
 	
-	public PermissiveBoard(Collection<Character> allCharacters, boolean allCharactersInHouse) {
+	public PermissiveBoard(Collection<Character> allCharacters, boolean allCharactersInHouse, boolean playerHasCharactersOnBoard) {
 		if (allCharacters == null) {
 			throw new IllegalArgumentException();
 		}
 		
 		this.allCharacters = allCharacters;
 		this.allCharactersInHouse = allCharactersInHouse;
+		this.playerHasCharactersOnBoard = playerHasCharactersOnBoard;
 	}
 
 	@Override
@@ -65,6 +67,15 @@ public class PermissiveBoard implements IBoard {
 	@Override
 	public IPlayer getWinner() {
 		return null;
+	}
+
+	@Override
+	public boolean playerHasCharactersOnBoard(IPlayer player) {
+		return playerHasCharactersOnBoard;
+	}
+	
+	public void setPlayerHasCharactersOnBoard(boolean value) {
+		playerHasCharactersOnBoard = value;
 	}
 
 }

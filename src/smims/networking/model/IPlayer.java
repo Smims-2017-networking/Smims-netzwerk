@@ -7,5 +7,7 @@ public interface IPlayer {
 	int getPlayerId();
 
 	boolean wantsToStartGame();
+	
+	boolean equals(Object other);
 
 }

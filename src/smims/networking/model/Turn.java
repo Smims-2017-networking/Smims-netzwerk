@@ -19,7 +19,7 @@ public class Turn {
 	}
 	
 	private static boolean playerHasCharactersOnBoard(IPlayer player, IBoard board) {
-		throw new NotImplementedException();
+		return board.playerHasCharactersOnBoard(player);
 	}
 
 	public IPlayer getPlayer() {

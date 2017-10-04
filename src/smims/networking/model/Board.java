@@ -188,4 +188,11 @@ public class Board implements IBoard {
 				.orElse(null);
 	}
 
+	@Override
+	public boolean playerHasCharactersOnBoard(IPlayer player) {
+		return getAllCharacters().stream()
+				.filter(c -> (c.getPlayer().equals(player)))
+				.allMatch(c -> c.getDistance() == -1);
+	}
+
 }

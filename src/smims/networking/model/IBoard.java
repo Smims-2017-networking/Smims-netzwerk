@@ -64,4 +64,6 @@ public interface IBoard {
 
 	IPlayer getWinner();
 
+	boolean playerHasCharactersOnBoard(IPlayer player);
+
 }
