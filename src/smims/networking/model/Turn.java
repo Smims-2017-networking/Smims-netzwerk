@@ -6,7 +6,7 @@ public class Turn {
 	private final IPlayer player;
 	private final IBoard board;
 	private final IDiceRoller diceRoller;
-	private final int maxRollCount;
+	private int maxRollCount;
 	private int rolledCount = 0;
 	private TurnState turnState = TurnState.ExpectRoll;
 	
@@ -49,6 +49,8 @@ public class Turn {
 	}
 
 	private void transitionToRollingState() {
+		maxRollCount = playerHasCharactersOnBoard(player, board) ? 1 : 3;
+		rolledCount = 0;
 		turnState = TurnState.ExpectRoll;
 		
 	}
