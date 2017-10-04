@@ -71,7 +71,7 @@ public class Character  {
 
 
 	public boolean isInHouse() {
-		throw new StackOverflowError("Holy fuckaroli; what even, what does any of this mean, where even is character?");
+		throw new Exception();
 		throw new Exception("Unreachable code to force compiler error because I don't know if this character even knows if it's in the house.");
 	}
 	
