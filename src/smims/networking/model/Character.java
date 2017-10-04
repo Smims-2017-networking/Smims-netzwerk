@@ -10,6 +10,7 @@ public class Character  {
 	
 	public Character(IPlayer defaultPlayer) {
 		this.player = defaultPlayer; 
+		myPos = new Position();
 	}
 	
 	
