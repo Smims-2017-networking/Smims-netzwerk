@@ -89,10 +89,12 @@ public class Board implements IBoard {
 	@Override
 	public boolean characterCanMove(Character character, int pDistance)
 	{
-		return 
-				!characterWouldHitTeammate(character, pDistance)
-				&& !characterWouldMoveInHouse(character, pDistance)
-				&& characterCanExitBase(character, pDistance);
+		if (character.isInBase()) {
+			return characterCanExitBase(character, pDistance);
+		} else {
+			return !characterWouldHitTeammate(character, pDistance) && !characterWouldMoveInHouse(character, pDistance);
+			
+		}
 	}
 
 	/**
