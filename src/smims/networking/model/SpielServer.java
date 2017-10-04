@@ -10,6 +10,10 @@ public class SpielServer extends Server {
 	private String[] ips;
 	private int spieleranzahl, boardgroesse;
 	private Game game;
+	
+	public static void main(String[] args) {
+		new SpielServer(4242, 2, 2);
+	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
 		super(port);
@@ -24,6 +28,7 @@ public class SpielServer extends Server {
 
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
+		System.out.println(pMessage);
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
 		case Protokoll.CS_Welcome:
@@ -34,6 +39,7 @@ public class SpielServer extends Server {
 			break;
 		case Protokoll.CS_GetDiceResult:
 			String message = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
+			System.out.println(message);
 			send(pClientIP, pClientPort, message);
 			break;
 		case Protokoll.CS_MoveCharacter:
@@ -59,10 +65,12 @@ public class SpielServer extends Server {
 			} catch (Exception e) {
 				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + Protokoll.SC_Exception;
 			}
+			System.out.println(message2);
 			send(pClientIP, pClientPort, message2);
 			break;
 		case Protokoll.CS_WhoseTurn:
 			String message1 = Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn();
+			System.out.println(message1);
 			send(pClientIP, pClientPort, message1);
 			break;
 		case Protokoll.CS_Ready:
@@ -70,6 +78,7 @@ public class SpielServer extends Server {
 			lobby.getPlayerAt(j).makePlayerWantToStartGame();
 			if (lobby.readyToStart()) {
 				game = lobby.startGame(boardgroesse);
+				System.out.println(Protokoll.SC_GameStarts);
 				sendToAll(Protokoll.SC_GameStarts);
 			}
 			break;
@@ -93,6 +102,7 @@ public class SpielServer extends Server {
 			lobby.registerPlayer(new Player(playerId));
 			ips[playerId] = pClientIP;
 			playerId++;
+			System.out.println(Protokoll.SC_Welcome);
 			send(pClientIP, pClientPort, Protokoll.SC_Welcome);
 		}
 	}
