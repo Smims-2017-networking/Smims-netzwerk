@@ -10,7 +10,7 @@ public class SpielServer extends Server {
 	private Game game;
 	
 	public static void main(String[] args) {
-		new SpielServer(4242, 2, 2);
+		new SpielServer(4242, 1, 2);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
