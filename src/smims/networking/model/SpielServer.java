@@ -1,7 +1,5 @@
 package smims.networking.model;
 
-import java.util.ArrayList;
-
 public class SpielServer extends Server {
 
 	// TODO: Objekt des Spiels erzeugen
@@ -17,7 +15,7 @@ public class SpielServer extends Server {
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
 		super(port);
-		lobby = new GameLobby();
+		lobby = new GameLobby(pSpieleranzahl);
 		spieleranzahl = pSpieleranzahl;
 		boardgroesse = pBoardgroesse;
 		if(boardgroesse < spieleranzahl) {
@@ -47,23 +45,31 @@ public class SpielServer extends Server {
 			try {
 				pos = Integer.parseInt(array[1]);
 			} catch (NumberFormatException e) {
-				
+				send(pClientIP, pClientPort, Protokoll.SC_Exception + Protokoll.Splitter + "parse");
 				break;
 			}
 			try {
 				game.moveCharacter(getPlayerId(pClientIP), pos);
-			} catch (Exception e) {
-				// TODO: handle exception
+			} catch (MoveNotAllowedException e) {
+				send(pClientIP, pClientPort, Protokoll.SC_MoveNotAllowed);
+			} catch (NotYourTurnException e) {
+				send(pClientIP, pClientPort, Protokoll.SC_NotYourTurn);
 			}
-			
+			break;
+		case Protokoll.CS_GetTurnState:
+			String message3 = Protokoll.SC_TurnState + Protokoll.Splitter + game.getCurrentTurnState();
+			System.out.println(message3);
+			send(pClientIP, pClientPort, message3);
 			break;
 		case Protokoll.CS_RollDice:
 			String message2;
 			try {
 				game.rollDice(getPlayerId(pClientIP));
 				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
-			} catch (Exception e) {
-				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + Protokoll.SC_Exception;
+			} catch (MoveNotAllowedException e) {
+				message2 = Protokoll.SC_MoveNotAllowed;
+			} catch (NotYourTurnException e) {
+				message2 = Protokoll.SC_NotYourTurn;
 			}
 			System.out.println(message2);
 			send(pClientIP, pClientPort, message2);

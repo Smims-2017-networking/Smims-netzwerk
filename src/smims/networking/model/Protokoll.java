@@ -9,6 +9,7 @@ public class Protokoll {
 	public static final String CS_GetDiceResult = "csgetdiceresult";
 	public static final String CS_WhoseTurn = "cswhoseturn";
 	public static final String CS_Ready = "csready";
+	public static final String CS_GetTurnState = "csgetturnstate";
 	
 	public static final String SC_Welcome = "scGoedeDag!!!!!!";
 	public static final String SC_SendBoard = "scsendboard";
@@ -17,6 +18,7 @@ public class Protokoll {
 	public static final String SC_GameStarts = "scgamestarts";
 	public static final String SC_MoveNotAllowed = "scmovenotallowed";
 	public static final String SC_NotYourTurn = "scnotyourturn";
+	public static final String SC_TurnState = "scturnstate";
 	
 	public static final String SC_Exception = "scFEHLER!!!";
 	

@@ -123,7 +123,7 @@ public class Board implements IBoard {
 	{
 		return charactersOnBoard.stream()
 		.filter((character) -> character.getPlayer()==pPlayer && characterInField(character))
-		.count() == 0;
+		.count() != 0;
  	}
 	
 	/**
