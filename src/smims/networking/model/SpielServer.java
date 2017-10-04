@@ -36,14 +36,14 @@ public class SpielServer extends Server {
 			break;
 		case Protokoll.CS_GetBoard: {
 			Gson gson = new Gson();
-			String message = Protokoll.SC_SendBoard + Protokoll.Splitter + gson.toJson(game.getBoard());
+			String message = Protokoll.SC_Board + Protokoll.Splitter + gson.toJson(game.getBoard());
 			System.out.println(message);
 			send(pClientIP, pClientPort, message);
 			break;
 		}
 			
 		case Protokoll.CS_GetDiceResult:
-			String message = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
+			String message = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
 			System.out.println(message);
 			send(pClientIP, pClientPort, message);
 			break;
@@ -72,7 +72,7 @@ public class SpielServer extends Server {
 			String message2;
 			try {
 				game.rollDice(getPlayerId(pClientIP));
-				message2 = Protokoll.SC_SendDiceResult + Protokoll.Splitter + game.getDiceResult();
+				message2 = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
 			} catch (MoveNotAllowedException e) {
 				message2 = Protokoll.SC_MoveNotAllowed;
 			} catch (NotYourTurnException e) {
@@ -95,7 +95,17 @@ public class SpielServer extends Server {
 				sendToAll(Protokoll.SC_GameStarts);
 			}
 			break;
+		case Protokoll.CS_GetOwnPlayerId:
+			String message4 = Protokoll.SC_OwnPlayerId + Protokoll.Splitter + getPlayerId(pClientIP);
+			System.out.println(message4);
+			send(pClientIP, pClientPort, message4);
+			break;
+		case Protokoll.CS_GetThrowsLeft:
+			
+			break;
 		default:
+			System.out.println(Protokoll.SC_Error);
+			send(pClientIP, pClientPort, Protokoll.SC_Error);
 			break;
 		}
 	}
