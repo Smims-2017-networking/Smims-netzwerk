@@ -8,4 +8,5 @@ public interface IGame {
 	public void moveCharacter(int playerID, int characterPos) throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException;
 	public int whoseTurn();
 	public IPlayer getWinner();
+	public int getRemainingRolls();
 }

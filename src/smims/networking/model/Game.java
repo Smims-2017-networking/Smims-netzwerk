@@ -77,4 +77,9 @@ public class Game implements IGame {
 		return myBoard.getWinner();
 	}
 	
+	@Override
+	public int getRemainingRolls() {
+		return myTurnManager.getRemainingRolls();
+	}
+	
 }
