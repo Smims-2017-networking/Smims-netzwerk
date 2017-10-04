@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Board implements IBoard {
@@ -116,13 +115,46 @@ public class Board implements IBoard {
 	
 	/**
 	 * 
+	 * @param pCharacter
+	 * @return true wenn kein Character Auf dem Feld ist (bzw. Characters nur in Basis und im Haus)
+	 */
+	@Override
+	public boolean playerHasCharactersOnBoard(IPlayer pPlayer)
+	{
+		return charactersOnBoard.stream()
+		.filter((character) -> character.getPlayer()==pPlayer && characterInField(character))
+		.count() == 0;
+ 	}
+	
+	/**
+	 * 
+	 * @param pCharacter
+	 * @return true wenn der Character im Ziel Haus ist
+	 */
+	private boolean isCharacterInHouse(Character pCharacter)
+	{
+		return pCharacter.getPosition().getDistance() > (DistanceBetweenSpawns * PlayerCount);
+	}
+	
+	/**
+	 * 
+	 * @param pCharacter
+	 * @return	true wenn der Character nicht in der Basis und auch nicht im Haus ist. (im Feld)
+	 */
+	private boolean characterInField(Character pCharacter)
+	{
+		return !pCharacter.isInBase() && pCharacter.getPosition().getDistance() <= (DistanceBetweenSpawns * PlayerCount);
+	}
+	
+	/**
+	 * 
 	 * @param pPlayerId
 	 * @return	true, wenn alle im Haus sind
 	 */
 	@Override
 	public boolean allCharactersInHouse(int pPlayerId) {
 		return charactersOnBoard.stream()
-				.filter((character) -> character.getPlayer().getPlayerId() == pPlayerId && character.getPosition().getDistance() <= DistanceBetweenSpawns * PlayerCount).count() == 0;	//keiner, der vor dem Haus ist
+				.filter((character) -> character.getPlayer().getPlayerId() == pPlayerId && !isCharacterInHouse(character)).count() == 0;	//keiner, der vor dem Haus ist
 	}
 	
 	/**
@@ -180,19 +212,10 @@ public class Board implements IBoard {
 				.collect(Collectors.groupingBy(Character::getPlayer));
 		
 		return charactersByPlayer.keySet().stream()
-				.filter(
-					(player) -> charactersByPlayer.get(player).stream()
-						.allMatch(Character::isInHouse)
-				)
+				.filter((player) -> allCharactersInHouse(player.getPlayerId())				)
 				.findAny()
 				.orElse(null);
 	}
 
-	@Override
-	public boolean playerHasCharactersOnBoard(IPlayer player) {
-		return getAllCharacters().stream()
-				.filter(c -> (c.getPlayer().equals(player)))
-				.allMatch(c -> c.getDistance() == -1);
-	}
 
 }

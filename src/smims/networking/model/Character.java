@@ -10,6 +10,7 @@ public class Character  {
 	
 	public Character(IPlayer defaultPlayer) {
 		this.player = defaultPlayer; 
+		myPos = new Position();
 	}
 	
 	
@@ -66,13 +67,6 @@ public class Character  {
 	
 	public boolean isInBase() {
 		return myPos.getDistance() == -1;
-	}
-
-
-
-	public boolean isInHouse() {
-		throw new Exception();
-		throw new Exception("Unreachable code to force compiler error because I don't know if this character even knows if it's in the house.");
 	}
 	
 }
