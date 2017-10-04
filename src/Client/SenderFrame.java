@@ -9,36 +9,32 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
- * Beschreibung
+ * Ein Frame, der mit Hilfe des RechenClients Strings an den Server sendet.
  * 
- * @version 1.0 vom 20.09.2010
+ * @version 2.1 vom 8.8.2014
  * @author Klaus Bovermann
  */
-public class ClientSenderFrame extends Frame {
+public class SenderFrame extends Frame {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6682979272885862251L;
+	private static final long serialVersionUID = -1856529007936600751L;
 	// Anfang Attribute
 	private JLabel label = new JLabel();
 	private JTextField Eingabe = new JTextField();
-	private PrintWriter zumServer;
 	private JButton schicken = new JButton();
 
-	private Socket socketZumServer;
+	private StartClient meinClient;
 
 	// Ende Attribute
 
-	public ClientSenderFrame(String title, Socket s) {
+	public SenderFrame(String title, StartClient pRechenClient) {
 		// Frame-Initialisierung
 		super(title);
 		addWindowListener(new WindowAdapter() {
@@ -74,22 +70,18 @@ public class ClientSenderFrame extends Frame {
 		cp.add(schicken);
 		// Ende Komponenten
 
+		this.meinClient = pRechenClient;
+
 		setResizable(false);
 		setVisible(true);
-		this.socketZumServer = s;
-		try {
-			this.zumServer = new PrintWriter(this.socketZumServer.getOutputStream(), true);
-		} catch (IOException e) {
-			Eingabe.setText("SockertFehler!");
-		}
 	}
 
 	public void schicken_ActionPerformed(ActionEvent evt) {
 		String s = this.Eingabe.getText();
-		if (!this.socketZumServer.isClosed()) {
-			zumServer.println(s);
+		if (this.meinClient.isConnected()) {
+			this.meinClient.send(s);
 		} else {
-			Eingabe.setText("Socket nicht mehr verbunden!");
+			this.meinClient.ausgabe("Nicht verbunden!");
 		}
 	}
 }

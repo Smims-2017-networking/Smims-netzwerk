@@ -79,9 +79,13 @@ public class IpEingabe extends Frame {
   
   
   public void bVerbinden_ActionPerformed(ActionEvent evt) {
-	  new Client(jTextFieldIp.getText(), Integer.parseInt(jTextFieldPort.getText()));
+	  new StartClient(jTextFieldIp.getText(), Integer.parseInt(jTextFieldPort.getText()));
 
   } // end of bVerbinden_ActionPerformed
 
+  public static void main(String[] args) {
+		new IpEingabe();
+	}
+  
   // Ende Methoden
 } // end of class ClientGUI

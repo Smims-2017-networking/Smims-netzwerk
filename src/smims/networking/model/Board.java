@@ -41,6 +41,7 @@ public class Board implements IBoard {
 	 * @param pDistance   
 	 * @param pPlayer
 	 * @return Es wird der Character zurueckgegeben, der bei der die gesuchte Distanz zurueckgelegt und von dem Player ist.
+	 * 
 	 */
 	@Override
 	public Character getCharacterAt(int pDistance, int pPlayerID) {
@@ -125,7 +126,7 @@ public class Board implements IBoard {
 	{
 		return charactersOnBoard.stream()
 		.filter((character) -> character.getPlayer()==pPlayer && characterInField(character))
-		.count() != 0;
+		.count() == 0;
  	}
 	
 	/**
