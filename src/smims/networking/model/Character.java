@@ -6,10 +6,10 @@ public class Character  {
 	private Position myPos;		//distance == -1, Wenn der Character in der Basis ist. Danach wird die gelaufende distanz gezaehlt
 	
 	// private Position position = new Position();
-	private final Player player;
+	private final IPlayer player;
 	
-	public Character(Player player) {
-		this.player = player; 
+	public Character(IPlayer defaultPlayer) {
+		this.player = defaultPlayer; 
 	}
 	
 	
@@ -32,7 +32,7 @@ public class Character  {
 	}
 
 	
-	public Player getPlayer() {
+	public IPlayer getPlayer() {
 		return player;
 	}
 
@@ -71,7 +71,7 @@ public class Character  {
 
 
 	public boolean isInHouse() {
-		throw new StackOverflowError("Holy fuckaroli; what even, what does any of this mean, where even is character?");
+		throw new Exception();
 		throw new Exception("Unreachable code to force compiler error because I don't know if this character even knows if it's in the house.");
 	}
 	

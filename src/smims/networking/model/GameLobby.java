@@ -10,20 +10,20 @@ public class GameLobby {
 		players.add(player);
 	}
 	
-	public void unregisterPlayer(Player player) {
+	public void unregisterPlayer(IPlayer player) {
 		//player.signOff();
 		players.remove(player);
 	}
 	
 	public boolean readyToStart() {
-		for (Player player : players) {
+		for (IPlayer player : players) {
 			if (!player.wantsToStartGame())
 				return false;
 		}
 		return true;
 	}
 	
-	public Player getPlayerAt(int playerId) {
+	public IPlayer getPlayerAt(int playerId) {
 		return players.get(playerId);
 	}
 	

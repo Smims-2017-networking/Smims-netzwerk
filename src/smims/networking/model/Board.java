@@ -2,11 +2,12 @@ package smims.networking.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-public class Board {
+public class Board implements IBoard {
 	private int PlayerCount;
 	private static final int CharactersPerPlayer = 4;
 	private static final int DistanceBetweenSpawns = 10;
@@ -28,6 +29,7 @@ public class Board {
 	 * @param pFieldNumber Nummer des zu ueberpruefenden Feldes, Durchnummeriert von dem Spawn mit der PlayerID 0 bis zu dem Feld vor dem Spawn von Player 0
 	 * @return true wenn ein Character auf dem Feld ist
 	 */
+	@Override
 	public boolean fieldOccupied(int pFieldNumber) {
 		return charactersOnBoard.stream()
 				.anyMatch((character) -> (character.getDistance() + character.getPlayer().getPlayerId() * DistanceBetweenSpawns) == pFieldNumber);
@@ -41,6 +43,7 @@ public class Board {
 	 * @param pPlayer
 	 * @return Es wird der Character zurueckgegeben, der bei der die gesuchte Distanz zurueckgelegt und von dem Player ist.
 	 */
+	@Override
 	public Character getCharacterAt(int pDistance, int pPlayerID) {
 		return charactersOnBoard.stream()
 				.filter((character) -> character.getPosition().getDistance() == pDistance && character.getPlayer().getPlayerId() == pPlayerID)
@@ -56,6 +59,7 @@ public class Board {
 	 *         um pDistance auf dem gleichen Feld wie ein Character vom gleichen
 	 *         Team ist.
 	 */
+	@Override
 	public boolean characterWouldHitTeammate(Character pCharacter, int pDistance)
 	{
 		if(pCharacter.isInBase() && pDistance == 6)
@@ -83,6 +87,7 @@ public class Board {
 	 *         eine 6 gew�rfelt und falls er in das Haus geht ist das Haus lang
 	 *         genug)
 	 */
+	@Override
 	public boolean characterCanMove(Character character, int pDistance)
 	{
 		return 
@@ -114,6 +119,7 @@ public class Board {
 	 * @param pPlayerId
 	 * @return	true, wenn alle im Haus sind
 	 */
+	@Override
 	public boolean allCharactersInHouse(int pPlayerId) {
 		return charactersOnBoard.stream()
 				.filter((character) -> character.getPlayer().getPlayerId() == pPlayerId && character.getPosition().getDistance() <= DistanceBetweenSpawns * PlayerCount).count() == 0;	//keiner, der vor dem Haus ist
@@ -126,6 +132,7 @@ public class Board {
 	 * @param distance
 	 *            Distanz, die der Character bewegt werden soll
 	 */
+	@Override
 	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException{
 		if(characterCanMove(pCharacter, distance))
 		{
@@ -158,16 +165,18 @@ public class Board {
 	/**
 	 * returns all Characters in an ArrayList<IReadonlyCharacter>
 	 */
+	@Override
 	public Collection<Character> getAllCharacters() {
 		Collection<Character> characters = new ArrayList<Character>();
 		characters.addAll(charactersOnBoard);
 		return characters;
 	}
 
-	public Player getWinner() {
+	@Override
+	public IPlayer getWinner() {
 		// HACK This is a pretty ugly way of checking which house is full; I
 		// think modeling each house would be better.
-		Map<Player, java.util.List<Character>> charactersByPlayer = getAllCharacters().stream()
+		Map<IPlayer, List<Character>> charactersByPlayer = getAllCharacters().stream()
 				.collect(Collectors.groupingBy(Character::getPlayer));
 		
 		return charactersByPlayer.keySet().stream()
@@ -177,6 +186,13 @@ public class Board {
 				)
 				.findAny()
 				.orElse(null);
+	}
+
+	@Override
+	public boolean playerHasCharactersOnBoard(IPlayer player) {
+		return getAllCharacters().stream()
+				.filter(c -> (c.getPlayer().equals(player)))
+				.allMatch(c -> c.getDistance() == -1);
 	}
 
 }
