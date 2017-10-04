@@ -78,9 +78,6 @@ public class Turn {
 		if(turnState != TurnState.ExpectRoll) {
 			throw new MoveNotAllowedException();
 		}
-		else {
-			assert rolledCount < maxRollCount;
-		}
 	}
 
 	public boolean isOfPlayer(int playerId) {
