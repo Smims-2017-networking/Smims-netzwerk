@@ -29,6 +29,9 @@ public class Protokoll {
 	public static final String SC_TurnState = "scturnstate";
 	public static final String SC_NoSuchCharacter = "scnosuchcharacter";
 	
+	public static final String SC_Exception = "scFEHLER!!!";
+	public static final String SC_Stop = "Stop";
+	
 	public static final String Splitter = "#";
 	
 	
