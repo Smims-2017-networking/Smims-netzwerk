@@ -17,7 +17,7 @@ public class SpielServer extends Server {
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
 		super(port);
-		lobby = new GameLobby();
+		lobby = new GameLobby(pSpieleranzahl);
 		spieleranzahl = pSpieleranzahl;
 		boardgroesse = pBoardgroesse;
 		if(boardgroesse < spieleranzahl) {
