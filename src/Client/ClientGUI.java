@@ -3,6 +3,7 @@ package Client;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -30,15 +31,15 @@ public class ClientGUI extends JFrame {
 	
 	private final Color[] Colors = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.ORANGE, Color.CYAN, Color.MAGENTA};
 	
+	
+	
 	private static final int FieldStartX = 50;
 	private static final int FieldStartY = 300;
 	private static final int distanceBetweenFields = 30;
 	private static final int circleSize = 20;
 	
 	
-	private int SpaceBetweenPlayers = 10;
-	private int PlayerAmountOnField = 4;
-	private int HouseSize = 4;
+	private BoardDescriptor myBoardDescriptor;
 	
 	
 	private JButton bWuerfeln = new JButton();
@@ -132,13 +133,13 @@ public class ClientGUI extends JFrame {
 	private void drawBoard()
 	{
 		Graphics g = this.getGraphics();
-		for(int i = 0; i< SpaceBetweenPlayers * PlayerAmountOnField; i++)
+		for(int i = 0; i< myBoardDescriptor.getBoardSize(); i++)
 		{
 			malFeld(getPunktByFieldNumber(i));
 		}
-		for(int j = 0; j < PlayerAmountOnField; j++)
+		for(int j = 0; j < myBoardDescriptor.getBoardSize() / myBoardDescriptor.getBoardSectionSize(); j++)
 		{
-			for(int a = 0; a< HouseSize; a++)
+			for(int a = 0; a< myBoardDescriptor.getHouseSize(); a++)
 			{
 				myGraphic.setColor(getColorByPlayerID(j));
 				malFeld(getPunktByBaseAndNumber(j, a));
@@ -148,6 +149,20 @@ public class ClientGUI extends JFrame {
 		myGraphic.setColor(Color.BLACK);
 	}
 
+	public void updateBoard(Board pBoard)
+	{
+		myBoardDescriptor = pBoard.getBoardDescriptor();
+		placeCharactersOnBoard(pBoard.getAllCharacters());
+	}
+	
+	private void placeCharactersOnBoard(Collection<Character> pCharacters)
+	{
+		for(Character character: pCharacters)
+		{
+			
+		}
+	}
+	
 	private void malFeld(Punkt pPunkt)
 	{
 		myGraphic.drawOval(pPunkt.getX(), pPunkt.getY(), circleSize, circleSize);
@@ -168,23 +183,16 @@ public class ClientGUI extends JFrame {
 	{
 		if(pHouse == 0)		//haus von Spieler 0 muss ganz rechts sein
 		{
-			return new Punkt(FieldStartX + distanceBetweenFields * (SpaceBetweenPlayers * PlayerAmountOnField - 1), FieldStartY + distanceBetweenFields * (pHouseFieldNumber + 1));
+			return new Punkt(FieldStartX + distanceBetweenFields * (myBoardDescriptor.getBoardSize() - 1), FieldStartY + distanceBetweenFields * (pHouseFieldNumber + 1));
 		}
-		return new Punkt(FieldStartX - distanceBetweenFields + distanceBetweenFields * SpaceBetweenPlayers * pHouse, FieldStartY + distanceBetweenFields * (pHouseFieldNumber + 1));
+		return new Punkt(FieldStartX - distanceBetweenFields + distanceBetweenFields * myBoardDescriptor.getBoardSectionSize() * pHouse, FieldStartY + distanceBetweenFields * (pHouseFieldNumber + 1));
 	}
 	
 	private Punkt getPunktByBaseAndNumber(int pBase, int pBaseFieldNumber)
 	{
-		return new Punkt(FieldStartX + distanceBetweenFields * SpaceBetweenPlayers * pBase, FieldStartY - distanceBetweenFields * (pBaseFieldNumber+ 2));
+		return new Punkt(FieldStartX + distanceBetweenFields *  myBoardDescriptor.getBoardSectionSize() * pBase, FieldStartY - distanceBetweenFields * (pBaseFieldNumber+ 2));
 	}
 	
-	private void placeCharactersOnBoard(ArrayList<Character> pCharacters)
-	{
-		for(Character character: pCharacters)
-		{
-			
-		}
-	}
 	
 	private Color getColorByPlayerID(int pPlayerId)
 	{
