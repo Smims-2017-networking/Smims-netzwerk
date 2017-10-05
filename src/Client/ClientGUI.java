@@ -61,6 +61,8 @@ public class ClientGUI extends JFrame {
   private JScrollPane textAreaInfoScrollPane = new JScrollPane(textAreaInfo);
   private JButton bAktuallisieren = new JButton();
   private JButton bReady = new JButton();
+  private JButton bTest = new JButton();
+  
   // Ende Attribute
 
   public ClientGUI(SpielClient pClient) {
@@ -92,7 +94,7 @@ public class ClientGUI extends JFrame {
    MainContainer.setLayout(null);
     
     GameField.setBounds(0, 0, frameWidth, 300);
-    Controlls.setBounds(0, 300,frameWidth, frameHeight - 300);
+    Controlls.setBounds(0, 300,frameWidth, frameHeight );
     
     
     
@@ -108,6 +110,19 @@ public class ClientGUI extends JFrame {
             bReady_ActionPerformed(evt);
           }
         });
+
+    Controlls.add(bReady);
+    
+    bTest.setBounds(40,200,120,60);
+    bTest.setText("Testen!");
+    bTest.setMargin(new Insets(2, 2, 2, 2));
+    bTest.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            bTest_ActionPerformed(evt);
+          }
+        });
+    
+    Controlls.add(bTest);
     
     bWuerfeln.setBounds(290, 0, 120, 60);
     bWuerfeln.setText("würfeln");
@@ -289,8 +304,24 @@ public class ClientGUI extends JFrame {
   
   public void selectCharacter(Position pPosition)
   {
-    myClient.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + pPosition.toString());
-    System.out.println("Move Character");
+	
+	  if(pPosition.isInBase())
+	  {
+		  myClient.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + Protokoll.Base + Protokoll.Splitter + 0);
+	  }
+	  else if(pPosition.isInHouse())
+	  {
+		  myClient.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + Protokoll.House + Protokoll.Splitter + pPosition.getHouseFieldNumber().get());
+	  }
+	  else if(pPosition.isOnField() && !pPosition.isAtStartingPosition())
+	  {
+		  myClient.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + Protokoll.Board + Protokoll.Splitter + pPosition.getFieldNumber().get());
+	  }
+	  else if(pPosition.isOnField() && pPosition.isAtStartingPosition())
+	  {
+		  myClient.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + Protokoll.Starting + Protokoll.Splitter + "0");
+	  }
+	  System.out.println("Move Character");
   }
   
   
@@ -322,6 +353,10 @@ public class ClientGUI extends JFrame {
   public void bReadyButtonAusblenden()
   {
 	  bReady.setVisible(false);
+  }
+  
+  public void bTest_ActionPerformed(ActionEvent evt) {
+	    myClient.testFunction();
   }
   
   public void bAktuallisieren_ActionPerformed(ActionEvent evt) {

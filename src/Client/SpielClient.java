@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import smims.networking.model.*;
+import smims.networking.messages.*;
 
 /**
  * Ein sehr einfacher CLient, der nur die Meldungen des Servers unbearbeitet
@@ -50,6 +54,7 @@ public class SpielClient extends Client {
 		myGUI.updateBoard(pBoard);
 	}
 	
+	
 	public void processMessage(String pMessage) {
 		String[] tags = pMessage.split(Protokoll.Splitter);
 		try {
@@ -60,6 +65,11 @@ public class SpielClient extends Client {
 			break;
 		
 		case Protokoll.SC_Board :
+			GsonBuilder myGsonBuilder = new GsonBuilder();
+			myGsonBuilder.registerTypeAdapter(BoardDescriptor.class, new BoardDescriptorDeserializer());
+			myGsonBuilder.registerTypeAdapter(Board.class, new BoardDeserializer());
+			Gson myGson = myGsonBuilder.create();
+			myGUI.updateBoard(myGson.fromJson(tags[1], Board.class));
 			//Board tempBoard = ;//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 				//myGUI.updateBoard(tempBoard);
 			//myBoard = recieved Board NOT YET IMPLEMENTED
