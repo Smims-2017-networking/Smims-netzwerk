@@ -8,6 +8,14 @@ public class Position implements Comparable<Position> {
 	private final int movedDistance;
 	private final int startingPosition;
 	
+	public BoardDescriptor getBoardDescriptor() {
+		return boardDescriptor;
+	}
+	
+	public int getStartingPosition() {
+		return startingPosition;
+	}
+	
 	public static BoardPositionBuilder on(BoardDescriptor boardDescriptor) {
 		return new BoardPositionBuilder(boardDescriptor);
 	}
