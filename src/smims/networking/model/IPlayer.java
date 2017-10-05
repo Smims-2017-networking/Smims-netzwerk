@@ -9,5 +9,7 @@ public interface IPlayer {
 	boolean wantsToStartGame();
 	
 	boolean equals(Object other);
+	
+	boolean equals(Player other);
 
 }

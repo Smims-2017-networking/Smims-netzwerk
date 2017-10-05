@@ -112,18 +112,48 @@ public class Board implements IBoard {
 	 */
 	@Override
 	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException {
-		if (distance == 6 && !pCharacter.isInBase()
-				&& getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null && charactersOnBoard.stream()
-					.anyMatch((character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase()))
+		if (couldLeaveBaseButDoesnt(pCharacter, distance))
 			throw new MoveNotAllowedException();
 		else {
-			Position possibleNewDistance = pCharacter.getPosition().movedBy(distance)
-					.orElseThrow(() -> new MoveNotAllowedException());
-			Optional<Character> characterAtTarget = getAllCharacters().stream()
-					.filter(c -> c.getPosition().equals(possibleNewDistance)).findAny();
-			characterAtTarget.ifPresent(c -> c.werdeGeschlagen());
+			Position possibleNewPosition = calculatePositionAfterMove(pCharacter, distance);
+			Optional<Character> characterAtTarget = findAnyCharacterAtPosition(possibleNewPosition);
+			if (characterAtTarget.isPresent()) {
+				if (characterAtTarget.get().isOfSamePlayerAs(pCharacter)) {
+					throw new MoveNotAllowedException();
+				} else {
+					characterAtTarget.get().werdeGeschlagen();
+				}
+			}
 			pCharacter.moveForward(distance);
 		}
+	}
+
+	private Optional<Character> findAnyCharacterAtPosition(Position possibleNewPosition) {
+		return getAllCharacters().stream()
+				.filter(c -> c.isAtPosition(possibleNewPosition)).findAny();
+	}
+
+	private Position calculatePositionAfterMove(Character pCharacter, int distance) throws MoveNotAllowedException {
+		return pCharacter.getPosition().movedBy(distance)
+				.orElseThrow(() -> new MoveNotAllowedException());
+	}
+
+	private boolean couldLeaveBaseButDoesnt(Character pCharacter, int distance) {
+		return couldMoveCharacterOutOfBase(pCharacter, distance)
+				&& startingPositionIsFree(pCharacter) && anyCharacterOfSamePlayerIsInBase(pCharacter);
+	}
+
+	private boolean anyCharacterOfSamePlayerIsInBase(Character pCharacter) {
+		return charactersOnBoard.stream()
+			.anyMatch((character) -> character.isOfSamePlayerAs(pCharacter) && character.isInBase());
+	}
+
+	private boolean startingPositionIsFree(Character pCharacter) {
+		return getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null;
+	}
+
+	private boolean couldMoveCharacterOutOfBase(Character pCharacter, int distance) {
+		return distance == 6 && !pCharacter.isInBase();
 	}
 
 	/**

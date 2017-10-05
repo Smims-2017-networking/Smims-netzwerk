@@ -53,4 +53,12 @@ public class Character  {
 		return myPos.isInHouse();
 	}
 	
+	public boolean isOfSamePlayerAs(Character other) {
+		return this.player.equals(other.player);
+	}
+	
+	public boolean isAtPosition(Position otherPosition) {
+		return myPos.equals(otherPosition);
+	}
+	
 }
