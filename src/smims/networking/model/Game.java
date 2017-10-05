@@ -16,12 +16,15 @@ public class Game implements IGame {
 	 * @param pPlayerID ID des Spielers
 	 * @param pBoard das verwendete Spielbrett 
 	 */
-	Game(ArrayList<Player> pPlayers, int BoardNumberOfPlayers)
+	Game(ArrayList<Player> pPlayers, int boardNumberOfPlayers)
 	{
-		myPlayers = pPlayers;
-		myDice = new DiceRoller();
-		myBoard = new Board(pPlayers, BoardNumberOfPlayers);
-		myTurnManager = new TurnManager(pPlayers,myBoard, myDice);
+		this(pPlayers, boardNumberOfPlayers, new DiceRoller());
+	}
+	
+	Game(ArrayList<Player> pPlayers, int boardNumberOfPlayers, IDiceRoller diceRoller) {
+		this.myDice = diceRoller;
+		this.myBoard = new Board(pPlayers, boardNumberOfPlayers);
+		this.myTurnManager = new TurnManager(pPlayers, myBoard, myDice);
 	}
 	
 	/**
