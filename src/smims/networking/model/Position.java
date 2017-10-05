@@ -134,7 +134,7 @@ public class Position implements Comparable<Position> {
 					if (this.isInBase() && other.isInBase()) {
 						return true;
 					} else {
-						return this.getHouseFieldNumber() == other.getHouseFieldNumber();
+						return this.getHouseFieldNumber().equals(other.getHouseFieldNumber());
 					}
 				}
 				else {
