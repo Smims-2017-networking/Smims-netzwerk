@@ -201,8 +201,8 @@ public class Board implements IBoard {
 	}
 
 	private boolean positionIsOccupiedByTeammateOf(Character character, Position newPosition) {
-		return getCharacterAtO(character.getPosition().resetToStartingPosition())
-			.map(c -> c.isOfSamePlayerAs(character))
+		return getCharacterAtO(newPosition)
+			.map(c -> c.isOfSamePlayerAs(character) && c != character)
 			.orElse(false);
 	}
 }
