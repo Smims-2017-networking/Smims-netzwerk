@@ -1,12 +1,7 @@
 package smims.networking.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 import smims.networking.model.Position.StartingPositionBuilder;
 
@@ -18,7 +13,7 @@ public class Board implements IBoard {
 	/**
 	 * 
 	 * @param players
-	 * @deprecated Use
+	 * @deprecated Use Board(BoardDescriptor, Collection<Character>, int)
 	 */
 	@Deprecated
 	public Board(Collection<Player> players, int pPlayerCount) {
@@ -81,8 +76,11 @@ public class Board implements IBoard {
 
 	@Override
 	public Character getCharacterAt(Position givenPosition) {
-		return charactersOnBoard.stream().filter((character) -> character.getPosition().equals(givenPosition)).findAny()
-				.orElse(null);
+		return getCharacterAtO(givenPosition).orElse(null);
+	}
+	
+	public Optional<Character> getCharacterAtO(Position givenPosition) {
+		return charactersOnBoard.stream().filter((character) -> character.getPosition().equals(givenPosition)).findAny();
 	}
 
 	@Override
@@ -112,19 +110,62 @@ public class Board implements IBoard {
 	 */
 	@Override
 	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException {
-		if (distance == 6 && !pCharacter.isInBase()
-				&& getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null) {
-			Stream<Character> characterObject=charactersOnBoard.stream()
-					.filter((character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase());
-					characterObject.findFirst().get().moveForward(distance);
-		} else {
-			Position possibleNewDistance = pCharacter.getPosition().movedBy(distance)
-					.orElseThrow(() -> new MoveNotAllowedException());
-			Optional<Character> characterAtTarget = getAllCharacters().stream()
-					.filter(c -> c.getPosition().equals(possibleNewDistance)).findAny();
-			characterAtTarget.ifPresent(c -> c.werdeGeschlagen());
+		if (couldLeaveBaseButDoesnt(pCharacter, distance)
+				|| couldLeaveStartingPositionButDoesnt(pCharacter, distance))
+			throw new MoveNotAllowedException();
+		else {
+			Position possibleNewPosition = calculatePositionAfterMove(pCharacter, distance);
+			Optional<Character> characterAtTarget = findAnyCharacterAtPosition(possibleNewPosition);
+			if (characterAtTarget.isPresent()) {
+				if (characterAtTarget.get().isOfSamePlayerAs(pCharacter)) {
+					throw new MoveNotAllowedException();
+				} else {
+					characterAtTarget.get().werdeGeschlagen();
+				}
+			}
 			pCharacter.moveForward(distance);
 		}
+	}
+
+	private boolean couldLeaveStartingPositionButDoesnt(Character pCharacter, int distance) {
+		return  anyCharacterOfSamePlayerIsInBase(pCharacter)
+				&& anyCharacterOfSamePlayerIsInStartingPosition(pCharacter)
+				&& canMoveByDistance(pCharacter, distance);
+	}
+
+	private boolean anyCharacterOfSamePlayerIsInStartingPosition(Character pCharacter) {
+		return getAllCharacters().stream()
+				.anyMatch(c -> c.isOfSamePlayerAs(pCharacter) && c.isAtStartingPosition());
+	}
+
+	private Optional<Character> findAnyCharacterAtPosition(Position possibleNewPosition) {
+		return getAllCharacters().stream()
+				.filter(c -> c.isAtPosition(possibleNewPosition)).findAny();
+	}
+
+	private Position calculatePositionAfterMove(Character pCharacter, int distance) throws MoveNotAllowedException {
+		return pCharacter.getPosition().movedBy(distance)
+				.orElseThrow(() -> new MoveNotAllowedException());
+	}
+
+	private boolean couldLeaveBaseButDoesnt(Character characterToMove, int distance) {
+		return couldMoveCharacterOutOfBase(characterToMove, distance)
+				&& anyCharacterOfSamePlayerIsInBase(characterToMove)
+				&& !startingPositionIsOccupiedBySamePlayer(characterToMove)
+				&& !characterToMove.isInBase();
+	}
+
+	private boolean anyCharacterOfSamePlayerIsInBase(Character pCharacter) {
+		return charactersOnBoard.stream()
+			.anyMatch((character) -> character.isOfSamePlayerAs(pCharacter) && character.isInBase());
+	}
+
+	private boolean startingPositionIsOccupiedBySamePlayer(Character pCharacter) {
+		return positionIsOccupiedByTeammateOf(pCharacter, pCharacter.getPosition().resetToStartingPosition());
+	}
+
+	private boolean couldMoveCharacterOutOfBase(Character pCharacter, int distance) {
+		return distance == 6 && !pCharacter.isInBase();
 	}
 
 	/**
@@ -141,7 +182,7 @@ public class Board implements IBoard {
 	public IPlayer getWinner() {
 		// HACK This is a pretty ugly way of checking which house is full; I
 		// think modeling each house would be better.
-		Map<IPlayer, List<Character>> charactersByPlayer = getAllCharacters().stream()
+		Map<IPlayer, java.util.List<Character>> charactersByPlayer = getAllCharacters().stream()
 				.collect(Collectors.groupingBy(Character::getPlayer));
 
 		return charactersByPlayer.keySet().stream().filter((player) -> allCharactersInHouse(player.getPlayerId()))
@@ -153,4 +194,15 @@ public class Board implements IBoard {
 		return Position.on(boardDescriptor).startingAt(getStartingPosition(playerId));
 	}
 
+	@Override
+	public boolean canMoveByDistance(Character character, int distance) {
+		Optional<Position> newPosition = character.getPosition().movedBy(distance);
+		return newPosition.isPresent() && !positionIsOccupiedByTeammateOf(character, newPosition.get());
+	}
+
+	private boolean positionIsOccupiedByTeammateOf(Character character, Position newPosition) {
+		return getCharacterAtO(character.getPosition().resetToStartingPosition())
+			.map(c -> c.isOfSamePlayerAs(character))
+			.orElse(false);
+	}
 }

@@ -8,7 +8,6 @@ public class Turn {
 	private int rolledCount = 0;
 	private TurnState turnState = TurnState.ExpectRoll;
 	
-	
 	public Turn(IPlayer player, IBoard board, IDiceRoller diceRoller) {
 		this.player = player;
 		this.board = board;
@@ -19,10 +18,10 @@ public class Turn {
 	public IPlayer getPlayer() {
 		return player;
 	}
-	
-	public void moveCharacter(Position position, int playerId) throws MoveNotAllowedException, NoSuchCharacterException {
+
+	public void moveCharacter(Position position) throws MoveNotAllowedException, NoSuchCharacterException {
 		EnsurePlayerCanMoveCharacter();
-		moveCharacterAtPosition(position, playerId);
+		moveCharacterAtPosition(position);
 		if (diceRoller.getResult() == 6) {
 			transitionToRollingState();
 		} else {
@@ -30,7 +29,7 @@ public class Turn {
 		}
 	}
 	
-	private void moveCharacterAtPosition(Position position, int playerId) throws MoveNotAllowedException, NoSuchCharacterException {
+	private void moveCharacterAtPosition(Position position) throws MoveNotAllowedException, NoSuchCharacterException {
 		Character selectedCharacter = board.getCharacterAt(position);
 		if (selectedCharacter == null) {
 			throw new NoSuchCharacterException("No character at position" + position);
@@ -63,15 +62,24 @@ public class Turn {
 		diceRoller.rollDice();
 		rolledCount++;
 		if ((maxRollCount != 1 && diceRoller.getResult() == 6) || maxRollCount == 1) {
-			transitionToMoveState();
+			attemptToTransitionToMoveState();
 		} else if (maxRollCount == rolledCount) {
 			transitionToFinishedState();
 		}
 	}
 
-	private void transitionToMoveState() {
-		turnState = TurnState.ExpectMove;
+	private void attemptToTransitionToMoveState() {
+		if (anyMoveIsValid()) {
+			turnState = TurnState.ExpectMove;
+		} else {
+			turnState = TurnState.Finished;
+		}
 		
+	}
+
+	private boolean anyMoveIsValid() {
+		return board.getAllCharacters().stream()
+				.anyMatch(c -> c.isOfPlayer(player) && board.canMoveByDistance(c, diceRoller.getResult()));
 	}
 
 	private void EnsurePlayerCanRollDice() throws MoveNotAllowedException {

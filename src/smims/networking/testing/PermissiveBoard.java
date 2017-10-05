@@ -89,4 +89,10 @@ public class PermissiveBoard implements IBoard {
 		return Position.on(getBoardDescriptor()).startingAt(0);
 	}
 
+	@Override
+	public boolean canMoveByDistance(Character c, int result) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
