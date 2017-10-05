@@ -5,9 +5,16 @@ import java.util.ArrayList;
 public class GameLobby {
 	private final ArrayList<Player> players = new ArrayList<>();
 	private int spieleranzahl;
+	private final DiceRoller diceRoller;
 
+	public GameLobby(int spieleranzahl, DiceRoller diceRoller) {
+		this.spieleranzahl = spieleranzahl;
+		this.diceRoller = diceRoller;
+	}
+	
 	public GameLobby(int spieleranzahl) {
 		this.spieleranzahl = spieleranzahl;
+		this.diceRoller = new DiceRoller();
 	}
 
 	public void registerPlayer(Player player) {
@@ -38,6 +45,6 @@ public class GameLobby {
 	}
 
 	public Game startGame(int boardgroesse) {
-		return new Game(players, boardgroesse);
+		return new Game(players, boardgroesse, diceRoller);
 	}
 }
