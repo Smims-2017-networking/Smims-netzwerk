@@ -113,11 +113,10 @@ public class Board implements IBoard {
 	@Override
 	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException {
 		if (distance == 6 && !pCharacter.isInBase()
-				&& getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null) {
-			Stream<Character> characterObject=charactersOnBoard.stream()
-					.filter((character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase());
-					characterObject.findFirst().get().moveForward(distance);
-		} else {
+				&& getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null && charactersOnBoard.stream()
+					.anyMatch((character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase()))
+			throw new MoveNotAllowedException();
+		else {
 			Position possibleNewDistance = pCharacter.getPosition().movedBy(distance)
 					.orElseThrow(() -> new MoveNotAllowedException());
 			Optional<Character> characterAtTarget = getAllCharacters().stream()
