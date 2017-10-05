@@ -150,7 +150,7 @@ public class Board implements IBoard {
 		return couldMoveCharacterOutOfBase(characterToMove, distance)
 				&& anyCharacterOfSamePlayerIsInBase(characterToMove)
 				&& !startingPositionIsOccupiedBySamePlayer(characterToMove)
-				&& characterToMove.isInBase();
+				&& !characterToMove.isInBase();
 	}
 
 	private boolean anyCharacterOfSamePlayerIsInBase(Character pCharacter) {
