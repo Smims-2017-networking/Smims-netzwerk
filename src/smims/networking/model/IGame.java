@@ -1,5 +1,7 @@
 package smims.networking.model;
 
+import java.util.function.Consumer;
+
 import smims.networking.model.Position.StartingPositionBuilder;
 
 public interface IGame {	
@@ -15,4 +17,5 @@ public interface IGame {
 		return getStartingPositionBuilder(player.getPlayerId());
 	}
 	public StartingPositionBuilder getStartingPositionBuilder(int playerId);
+	public void registerTurnChangedCallback(Consumer<IPlayer> callback);
 }
