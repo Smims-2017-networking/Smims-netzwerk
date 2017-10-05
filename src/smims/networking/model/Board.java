@@ -205,4 +205,14 @@ public class Board implements IBoard {
 			.map(c -> c.isOfSamePlayerAs(character))
 			.orElse(false);
 	}
+
+	@Override
+	public boolean anyCharacterInHouseCanMove(IPlayer player) {
+		return getAllCharacters().stream()
+				.anyMatch(c -> c.isOfPlayer(player)
+						&& c.isInBase()
+						&& c.getPosition().movedBy(1).isPresent()
+						&& !positionIsOccupiedByTeammateOf(c, c.getPosition().movedBy(1).get()));
+		
+	}
 }

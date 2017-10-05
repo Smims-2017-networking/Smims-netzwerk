@@ -51,4 +51,6 @@ public interface IBoard {
 
 	boolean canMoveByDistance(Character c, int result);
 
+	boolean anyCharacterInHouseCanMove(IPlayer player);
+
 }

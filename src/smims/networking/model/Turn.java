@@ -12,7 +12,7 @@ public class Turn {
 		this.player = player;
 		this.board = board;
 		this.diceRoller = diceRoller;
-		maxRollCount = board.playerHasCharactersOnBoard(player) ? 1 : 3;
+		maxRollCount = calculateMaxRollCount();
 	}
 	
 	public IPlayer getPlayer() {
@@ -46,10 +46,14 @@ public class Turn {
 	}
 
 	private void transitionToRollingState() {
-		maxRollCount = board.playerHasCharactersOnBoard(player) ? 1 : 3;
+		maxRollCount = calculateMaxRollCount();
 		rolledCount = 0;
 		turnState = TurnState.ExpectRoll;
 		
+	}
+
+	private int calculateMaxRollCount() {
+		return board.playerHasCharactersOnBoard(player) || board.anyCharacterInHouseCanMove(player) ? 1 : 3;
 	}
 
 	private void transitionToFinishedState() {
