@@ -42,5 +42,11 @@ public interface IBoard {
 	BoardDescriptor getBoardDescriptor();
 
 	int getBoardSectionSize();
+	
+	default Position.StartingPositionBuilder getStartingPositionBuilderFor(IPlayer player) {
+		return getStartingPositionBuilderFor(player.getPlayerId());
+	}
+	
+	Position.StartingPositionBuilder getStartingPositionBuilderFor(int playerId);
 
 }
