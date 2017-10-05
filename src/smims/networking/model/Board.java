@@ -34,12 +34,22 @@ public class Board implements IBoard {
 		}
 	}
 
+	// Likely to be used, if we start passing around players instead of playerIds.
+	@SuppressWarnings("unused")
 	private int getStartingPosition(Player player) {
 		return getStartingPosition(player.getPlayerId());
 	}
 
 	private int getStartingPosition(int playerId) {
 		return playerId * boardSectionSize;
+	}
+	
+	public int getBoardSectionSize() {
+		return boardSectionSize;
+	}
+	
+	public BoardDescriptor getBoardDescriptor() {
+		return boardDescriptor;
 	}
 
 	public Board(BoardDescriptor boardDescriptor, Collection<Character> charactersOnBoard, int playerCount) {
