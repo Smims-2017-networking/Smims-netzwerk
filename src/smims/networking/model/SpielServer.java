@@ -177,6 +177,10 @@ public class SpielServer extends Server {
 					game.registerTurnChangedCallback(new Consumer<IPlayer>() {
 						@Override
 						public void accept(IPlayer t) {
+							if(game.getWinner() != null){
+								sendToAll(Protokoll.SC_Winner + Protokoll.Splitter + game.getWinner().getPlayerId());
+								close();
+							}
 							sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
 						}
 					});
