@@ -19,18 +19,21 @@ public class gameCharacterOnGUI extends Button{
 	private Character myCharacter;
 	private ClientGUI myGUI;
 	private int positionInBasis = 0;
-	private int breite = 20;
-	private int hoehe = 20;
+	private int breite = 18;
+	private int hoehe = 18;
 	
-	gameCharacterOnGUI(ClientGUI pGUI, Character pCharacter)
+	gameCharacterOnGUI(ClientGUI pGUI)
 	{
+		super();
 		myGUI = pGUI;
-		myCharacter = pCharacter;
-		positionieren();
+		
+		//positionieren();
 		this.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				clicked(evt);
 			}});
+		System.out.println("Button Created");
+		this.setVisible(true);
 	}
 	
 	private void clicked(ActionEvent evt)
@@ -38,27 +41,32 @@ public class gameCharacterOnGUI extends Button{
 		myGUI.selectCharacter(myCharacter.getPosition());
 	}
 		
-	private void changeCharacter(Character pNewCharacter)
+	public void changeCharacter(Character pNewCharacter)
 	{		
 		myCharacter = pNewCharacter;
+		positionieren();
 	}
 	
 	public void positionieren()
 	{
+		Punkt tempPunkt = new Punkt(0,0);
 		if(myCharacter.isInBase())
 		{
-			this.setBounds(myGUI.getPunktByBaseAndNumber(myCharacter.getPlayer().getPlayerId(),positionInBasis).getX(), myGUI.getPunktByBaseAndNumber(myCharacter.getPlayer().getPlayerId(),positionInBasis).getY(), breite, hoehe);
+			tempPunkt = myGUI.getPunktByBaseAndNumber(myCharacter.getPlayer().getPlayerId(),positionInBasis);
+			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()-hoehe/2, breite, hoehe);
 		}
 		else if(myCharacter.isInHouse())
 		{
-			Punkt tempPunkt = myGUI.getPunktByHouseAndNumber(myCharacter.getPlayer().getPlayerId(), myCharacter.getHouseFieldNumber().get());
-			this.setBounds(tempPunkt.getX(), tempPunkt.getY(), breite, hoehe);
+			tempPunkt = myGUI.getPunktByHouseAndNumber(myCharacter.getPlayer().getPlayerId(), myCharacter.getHouseFieldNumber().get());
+			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()- hoehe/2, breite, hoehe);
 		}
 		else if(myCharacter.isOnField())
 		{
-			Punkt tempPunkt = myGUI.getPunktByFieldNumber(myCharacter.getFieldNumber().get());
-			this.setBounds(tempPunkt.getX(), tempPunkt.getY(), breite, hoehe);
+			tempPunkt = myGUI.getPunktByFieldNumber(myCharacter.getFieldNumber().get());
+			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()- hoehe /2, breite, hoehe);
 		}
+		this.setBackground(myGUI.getColorByPlayerID(myCharacter.getPlayer().getPlayerId()));
+		
 	}
 	
 	

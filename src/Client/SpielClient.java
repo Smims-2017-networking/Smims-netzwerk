@@ -3,6 +3,8 @@ package Client;
 
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import smims.networking.model.*;
@@ -30,6 +32,24 @@ public class SpielClient extends Client {
 	
 	}
 
+	public void testFunction()
+	{
+		System.out.println("testFunciton");
+		ArrayList<Player> players= new ArrayList<Player>();
+		for(int i = 0; i<=3; i++)
+		{
+			players.add(new Player(i));
+		}
+		Board pBoard = new Board(players, 4);
+		try {
+			pBoard.moveCharacter(pBoard.getAllCharacters().stream().findAny().get(), 6);
+		} catch (MoveNotAllowedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		myGUI.updateBoard(pBoard);
+	}
+	
 	public void processMessage(String pMessage) {
 		String[] tags = pMessage.split(Protokoll.Splitter);
 		try {
@@ -41,7 +61,7 @@ public class SpielClient extends Client {
 		
 		case Protokoll.SC_Board :
 			//Board tempBoard = ;//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-				myGUI.updateBoard(tempBoard);
+				//myGUI.updateBoard(tempBoard);
 			//myBoard = recieved Board NOT YET IMPLEMENTED
 			break;
 		case Protokoll.SC_DiceResult :
@@ -52,6 +72,7 @@ public class SpielClient extends Client {
 			break;
 		case Protokoll.SC_GameStarts :
 				myGUI.appendChat("Spiel faengt an");
+				myGUI.bReadyButtonAusblenden();
 			break;
 		case Protokoll.SC_MoveNotAllowed :
 				myGUI.setInfoText("Aktion nicht erlaubt!");
@@ -94,28 +115,8 @@ public class SpielClient extends Client {
 		
 	}
 
-	public void moveCharacter(Position pPosition)
-	{
-		this.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + Position.toString());
-	}
 
-	public void requestInfo()
-	{
-		try {
-		this.send(Protokoll.CS_GetBoard);
-		TimeUnit.MILLISECONDS.sleep(10);
-		this.send(Protokoll.CS_GetDiceResult);
-		TimeUnit.MILLISECONDS.sleep(10);
-		this.send(Protokoll.CS_GetOwnPlayerId);
-		TimeUnit.MILLISECONDS.sleep(10);
-		this.send(Protokoll.CS_WhoseTurn);
-		TimeUnit.MILLISECONDS.sleep(10);
-		this.send(Protokoll.CS_GetTurnState);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+
+
 	
 }
