@@ -23,7 +23,7 @@ public class SpielServer extends Server {
 	private boolean wuerfelresult;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 3, 3);
+		new SpielServer(4242, 2, 4);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
