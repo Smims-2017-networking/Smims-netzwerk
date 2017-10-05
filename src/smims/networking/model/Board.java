@@ -130,7 +130,8 @@ public class Board implements IBoard {
 	private boolean couldLeaveStartingPositionButDoesnt(Character pCharacter, int distance) {
 		return  anyCharacterOfSamePlayerIsInBase(pCharacter)
 				&& anyCharacterOfSamePlayerIsInStartingPosition(pCharacter)
-				&& canMoveByDistance(pCharacter, distance);
+				&& canMoveByDistance(pCharacter, distance)
+				&& !pCharacter.isAtStartingPosition();
 	}
 
 	private boolean anyCharacterOfSamePlayerIsInStartingPosition(Character pCharacter) {
