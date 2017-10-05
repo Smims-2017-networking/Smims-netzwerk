@@ -152,7 +152,7 @@ public class Board implements IBoard {
 		return couldMoveCharacterOutOfBase(characterToMove, distance)
 				&& anyCharacterOfSamePlayerIsInBase(characterToMove)
 				&& !startingPositionIsOccupiedBySamePlayer(characterToMove)
-				&& !characterToMove.isInBase();
+				&& characterToMove.isInBase();
 	}
 
 	private boolean anyCharacterOfSamePlayerIsInBase(Character pCharacter) {
@@ -210,7 +210,7 @@ public class Board implements IBoard {
 	public boolean anyCharacterInHouseCanMove(IPlayer player) {
 		return getAllCharacters().stream()
 				.anyMatch(c -> c.isOfPlayer(player)
-						&& c.isInBase()
+						&& c.isInHouse()
 						&& c.getPosition().movedBy(1).isPresent()
 						&& !positionIsOccupiedByTeammateOf(c, c.getPosition().movedBy(1).get()));
 		
