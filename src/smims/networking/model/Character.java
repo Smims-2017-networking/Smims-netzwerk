@@ -1,72 +1,56 @@
 package smims.networking.model;
-import smims.networking.model.*;
+import java.util.Optional;
 
 public class Character  {
 	
-	private Position myPos;		//distance == -1, Wenn der Character in der Basis ist. Danach wird die gelaufende distanz gezaehlt
-	
-	// private Position position = new Position();
+	private Position myPos;	
 	private final IPlayer player;
 	
-	public Character(IPlayer defaultPlayer) {
+	public Character(IPlayer defaultPlayer, BoardDescriptor boardDescriptor, int startingPosition) {
 		this.player = defaultPlayer; 
-		myPos = new Position();
+		myPos = Position.on(boardDescriptor).startingAt(startingPosition).inBase();
 	}
-	
-	
+
+	public IPlayer getPlayer() {
+		return player;
+	}
 	
 	public Position getPosition() {
 		return myPos;
 	}
 
-
-
-	public void setPosition(Position myPos) {
-		this.myPos = myPos;
-	}
-
-
-	
-	
-	public int getDistance() {
-		return myPos.getDistance();
-	}
-
-	
-	public IPlayer getPlayer() {
-		return player;
-	}
-
-	private void setDistance(int pDistance) {
-		myPos.setDistance(pDistance);
+	public Optional<Integer> getFieldNumber() {
+		return myPos.getFieldNumber();
 	}
 	
+	public Optional<Integer> getHouseFieldNumber() {
+		return myPos.getHouseFieldNumber();
+	}
 	
 	
 	public boolean isAtStartingPosition() {
-		return myPos.getDistance() == 0;
+		return myPos.isAtStartingPosition();
 	}
 	
-	
-	
-	public void moveForward(int pWalkDistance) {
-		myPos.setDistance(myPos.getDistance() + pWalkDistance);
+	public void moveForward(int pWalkDistance) throws MoveNotAllowedException {
+		myPos = myPos.movedBy(pWalkDistance).orElseThrow(() -> new MoveNotAllowedException());
 	}
-	
-	
-	public void moveOutOfBase() {
-		myPos.setDistance(0);
-	}
-	
 	
 	public void werdeGeschlagen() 
 	{
-		myPos.setDistance(-1);
+		myPos = myPos.resetToBase();
 	}
 	
-	
 	public boolean isInBase() {
-		return myPos.getDistance() == -1;
+		return myPos.isInBase();
+	}
+
+	public boolean isOnField() {
+		return myPos.isOnField();
+	}
+
+	public boolean isInHouse() {
+		return myPos.isInHouse();
 	}
 	
 }
