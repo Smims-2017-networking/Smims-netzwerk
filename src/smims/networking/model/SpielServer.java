@@ -29,6 +29,8 @@ public class SpielServer extends Server {
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
 		// TODO: Abfangen von NullPointerException, wenn Spiel noch nicht läuft
+		// TODO: NullPointerException bei fehlernder Wertemitlieferung (array[1] ==
+		// null)
 		System.out.println(pMessage);
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
@@ -38,15 +40,13 @@ public class SpielServer extends Server {
 		case Protokoll.CS_GetBoard: {
 			Gson gson = new Gson();
 			String message = Protokoll.SC_Board + Protokoll.Splitter + gson.toJson(game.getBoard());
-			System.out.println(message);
-			send(pClientIP, pClientPort, message);
+			sendMessage(pClientIP, pClientPort, message);
 			break;
 		}
 
 		case Protokoll.CS_GetDiceResult:
 			String message = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
-			System.out.println(message);
-			send(pClientIP, pClientPort, message);
+			sendMessage(pClientIP, pClientPort, message);
 			break;
 		case Protokoll.CS_MoveCharacter:
 			int pos;
@@ -54,7 +54,8 @@ public class SpielServer extends Server {
 			try {
 				pos = Integer.parseInt(array[1]);
 			} catch (Exception e) {
-				send(pClientIP, pClientPort, Protokoll.SC_Exception + Protokoll.Splitter + "parse");
+				String message1 = Protokoll.SC_ParseError;
+				sendMessage(pClientIP, pClientPort, message1);
 				break;
 			}
 			try {
@@ -67,17 +68,14 @@ public class SpielServer extends Server {
 			} catch (NoSuchCharacterException e) {
 				message5 = Protokoll.SC_NoSuchCharacter;
 			}
-			System.out.println(message5);
-			send(pClientIP, pClientPort, message5);
+			sendMessage(pClientIP, pClientPort, message5);
 			break;
 		case Protokoll.CS_GetTurnState:
 			if (game != null) {
 				String message3 = Protokoll.SC_TurnState + Protokoll.Splitter + game.getCurrentTurnState();
-				System.out.println(message3);
-				send(pClientIP, pClientPort, message3);
+				sendMessage(pClientIP, pClientPort, message3);
 			} else {
-				System.out.println(Protokoll.SC_Error);
-				send(pClientIP, pClientPort, Protokoll.SC_Error);
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
 		case Protokoll.CS_RollDice:
@@ -90,17 +88,14 @@ public class SpielServer extends Server {
 			} catch (NotYourTurnException e) {
 				message2 = Protokoll.SC_NotYourTurn;
 			}
-			System.out.println(message2);
-			send(pClientIP, pClientPort, message2);
+			sendMessage(pClientIP, pClientPort, message2);
 			break;
 		case Protokoll.CS_WhoseTurn:
 			if (game != null) {
 				String message1 = Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn();
-				System.out.println(message1);
-				send(pClientIP, pClientPort, message1);
+				sendMessage(pClientIP, pClientPort, message1);
 			} else {
-				System.out.println(Protokoll.SC_Error);
-				send(pClientIP, pClientPort, Protokoll.SC_Error);
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
 		case Protokoll.CS_Ready:
@@ -113,23 +108,31 @@ public class SpielServer extends Server {
 					sendToAll(Protokoll.SC_GameStarts);
 				}
 			} else {
-				System.out.println(Protokoll.SC_Error);
-				send(pClientIP, pClientPort, Protokoll.SC_Error);
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
 		case Protokoll.CS_GetOwnPlayerId:
 			String message4 = Protokoll.SC_OwnPlayerId + Protokoll.Splitter + getPlayerId(pClientIP);
-			System.out.println(message4);
-			send(pClientIP, pClientPort, message4);
+			sendMessage(pClientIP, pClientPort, message4);
 			break;
-		case Protokoll.CS_GetThrowsLeft:
-
+		case Protokoll.CS_GetThrowsLeft: 
+			String message1;
+			if (game != null) {
+				message1 = Protokoll.SC_ThrowsLeft + Protokoll.Splitter + game.getRemainingRolls();
+			} else {
+				message1 = Protokoll.SC_Error;
+			}
+			sendMessage(pClientIP, pClientPort, message1);
 			break;
 		default:
-			System.out.println(Protokoll.SC_Error);
-			send(pClientIP, pClientPort, Protokoll.SC_Error);
+			sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			break;
 		}
+	}
+
+	private void sendMessage(String ip, int port, String message) {
+		System.out.println(message);
+		send(ip, port, message);
 	}
 
 	private int getPlayerId(String ip) {
