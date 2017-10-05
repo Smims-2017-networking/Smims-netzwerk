@@ -1,6 +1,7 @@
 package smims.networking.model;
 
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
@@ -92,7 +93,6 @@ public class SpielServer extends Server {
 		case Protokoll.CS_MoveCharacter:
 			if (game != null) {
 				int pos;
-				boolean change = false;
 				StartingPositionBuilder spb = game.getStartingPositionBuilder(getPlayerId(pClientIP));
 				String message5;
 				try {
@@ -124,9 +124,6 @@ public class SpielServer extends Server {
 				try {
 					message5 = Protokoll.SC_MoveOk;
 					game.moveCharacter(getPlayerId(pClientIP), position);
-					if (game.whoseTurn() != getPlayerId(pClientIP)) {
-						change = true;
-					}
 				} catch (MoveNotAllowedException e) {
 					message5 = Protokoll.SC_MoveNotAllowed;
 				} catch (NotYourTurnException e) {
@@ -135,9 +132,6 @@ public class SpielServer extends Server {
 					message5 = Protokoll.SC_NoSuchCharacter;
 				}
 				sendMessage(pClientIP, pClientPort, message5);
-				if (change) {
-					sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
-				}
 			} else {
 				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
@@ -180,6 +174,12 @@ public class SpielServer extends Server {
 				lobby.getPlayerAt(j).makePlayerWantToStartGame();
 				if (lobby.readyToStart()) {
 					game = lobby.startGame(boardgroesse);
+					game.registerTurnChangedCallback(new Consumer<IPlayer>() {
+						@Override
+						public void accept(IPlayer t) {
+							sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
+						}
+					});
 					bpb = Position.on(game.getBoard().getBoardDescriptor());
 					System.out.println(Protokoll.SC_GameStarts);
 					sendToAll(Protokoll.SC_GameStarts);
