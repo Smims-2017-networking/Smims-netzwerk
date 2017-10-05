@@ -34,12 +34,24 @@ public class Board implements IBoard {
 		}
 	}
 
+	// Likely to be used, if we start passing around players instead of playerIds.
+	@SuppressWarnings("unused")
 	private int getStartingPosition(Player player) {
 		return getStartingPosition(player.getPlayerId());
 	}
 
 	private int getStartingPosition(int playerId) {
 		return playerId * boardSectionSize;
+	}
+	
+	@Override
+	public int getBoardSectionSize() {
+		return boardSectionSize;
+	}
+	
+	@Override
+	public BoardDescriptor getBoardDescriptor() {
+		return boardDescriptor;
 	}
 
 	public Board(BoardDescriptor boardDescriptor, Collection<Character> charactersOnBoard, int playerCount) {
@@ -64,7 +76,8 @@ public class Board implements IBoard {
 		return getCharacterAt(givenPosition);
 	}
 
-	Character getCharacterAt(Position givenPosition) {
+	@Override
+	public Character getCharacterAt(Position givenPosition) {
 		return charactersOnBoard.stream().filter((character) -> character.getPosition().equals(givenPosition)).findAny()
 				.orElse(null);
 	}

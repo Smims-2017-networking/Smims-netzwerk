@@ -8,7 +8,7 @@ import java.util.Collection;
 import org.junit.Test;
 
 public class BoardTest {
-	private final Board board = new Board(Arrays.asList(new Player[]{
+	private final IBoard board = new Board(Arrays.asList(new Player[]{
 		new Player(0),
 		new Player(1),
 		new Player(2),
