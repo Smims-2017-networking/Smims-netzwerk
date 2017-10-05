@@ -2,6 +2,8 @@ package smims.networking.model;
 
 import java.util.ArrayList;
 
+import smims.networking.model.Position.StartingPositionBuilder;
+
 public class Game implements IGame {
 	
 	private IDiceRoller myDice ;
@@ -80,6 +82,11 @@ public class Game implements IGame {
 	@Override
 	public int getRemainingRolls() {
 		return myTurnManager.getRemainingRolls();
+	}
+
+	@Override
+	public StartingPositionBuilder getStartingPositionBuilder(int playerId) {
+		return myBoard.getStartingPositionBuilderFor(playerId);
 	}
 	
 }
