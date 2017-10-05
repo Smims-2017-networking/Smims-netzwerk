@@ -7,7 +7,7 @@ public interface IGame {
 	public int getDiceResult();
 	public IBoard getBoard();
 	public TurnState getCurrentTurnState();
-	public void moveCharacter(int playerID, int characterPos) throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException;
+	public void moveCharacter(int playerID, Position characterPos) throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException;
 	public int whoseTurn();
 	public IPlayer getWinner();
 	public int getRemainingRolls();
