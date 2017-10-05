@@ -24,7 +24,8 @@ public class TurnTest {
 	}
 
 	private Collection<Character> generateDefaultCharacters(IPlayer player) {
-		Character[] characters = new Character[] { new Character(player), new Character(player) };
+		BoardDescriptor boardDescriptor = new BoardDescriptor(4, 40);
+		Character[] characters = new Character[] { new Character(player, boardDescriptor, 0), new Character(player, boardDescriptor, 0) };
 		return Arrays.asList(characters);
 	}
 

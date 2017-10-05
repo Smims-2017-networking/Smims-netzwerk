@@ -2,25 +2,17 @@ package smims.networking.model;
 
 public class BoardDescriptor {
 	private final int houseSize;
-	private final int baseSize;
-	private final int boardSectionSize;
 	private final int boardSize;
 	
-	public BoardDescriptor(int houseSize, int boardSectionSize, int boardSize, int baseSize) {
+	public BoardDescriptor(int houseSize, int boardSize) {
 		this.houseSize = houseSize;
-		this.boardSectionSize = boardSectionSize;
 		this.boardSize = boardSize;
-		this.baseSize = baseSize;
 	}
 	
 	public int getHouseSize() {
 		return houseSize;
 	}
-	
-	public int getBoardSectionSize() {
-		return boardSectionSize;
-	}
-	
+		
 	public int getBoardSize() {
 		return boardSize;
 	}
@@ -29,7 +21,6 @@ public class BoardDescriptor {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + boardSectionSize;
 		result = prime * result + boardSize;
 		result = prime * result + houseSize;
 		return result;
@@ -44,8 +35,6 @@ public class BoardDescriptor {
 		if (getClass() != obj.getClass())
 			return false;
 		BoardDescriptor other = (BoardDescriptor) obj;
-		if (boardSectionSize != other.boardSectionSize)
-			return false;
 		if (boardSize != other.boardSize)
 			return false;
 		if (houseSize != other.houseSize)

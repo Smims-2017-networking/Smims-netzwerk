@@ -27,23 +27,8 @@ public class PermissiveBoard implements IBoard {
 	}
 
 	@Override
-	public boolean fieldOccupied(int pFieldNumber) {
-		return false;
-	}
-
-	@Override
 	public Character getCharacterAt(int pDistance, int pPlayerID) {
-		return null;
-	}
-
-	@Override
-	public boolean characterWouldHitTeammate(Character pCharacter, int pDistance) {
-		return false;
-	}
-
-	@Override
-	public boolean characterCanMove(Character character, int pDistance) {
-		return true;
+		return allCharacters.stream().findAny().get();
 	}
 
 	@Override
