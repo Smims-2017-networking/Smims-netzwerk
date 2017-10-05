@@ -2,6 +2,9 @@ package smims.networking.model;
 
 import com.google.gson.Gson;
 
+import smims.networking.model.Position.BoardPositionBuilder;
+import smims.networking.model.Position.StartingPositionBuilder;
+
 public class SpielServer extends Server {
 
 	// TODO: Objekt des Spiels erzeugen
@@ -10,6 +13,7 @@ public class SpielServer extends Server {
 	private String[] ips;
 	private int spieleranzahl, boardgroesse;
 	private Game game;
+	private BoardPositionBuilder bpb;
 
 	public static void main(String[] args) {
 		new SpielServer(4242, 3, 3);
@@ -34,6 +38,11 @@ public class SpielServer extends Server {
 		System.out.println(pMessage);
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
+		case Protokoll.CS_Chat:
+			String message6 = Protokoll.SC_Chat + Protokoll.Splitter + getPlayerId(pClientIP) + Protokoll.Splitter + array[1];
+			System.out.println(message6);
+			sendToAll(message6);
+			break;
 		case Protokoll.CS_Welcome:
 
 			break;
@@ -104,6 +113,7 @@ public class SpielServer extends Server {
 				lobby.getPlayerAt(j).makePlayerWantToStartGame();
 				if (lobby.readyToStart()) {
 					game = lobby.startGame(boardgroesse);
+					bpb = Position.on(game.getBoard().getBoardDescriptor());
 					System.out.println(Protokoll.SC_GameStarts);
 					sendToAll(Protokoll.SC_GameStarts);
 				}

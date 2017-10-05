@@ -12,6 +12,7 @@ public class Protokoll {
 	public static final String CS_GetTurnState = "csgetturnstate";
 	public static final String CS_GetThrowsLeft = "csgetthrowsleft";
 	public static final String CS_GetOwnPlayerId = "csgetownplayerid";
+	public static final String CS_Chat = "cschat";
 	
 	public static final String SC_Welcome = "scGoedeDag!!!!!!";
 	public static final String SC_Board = "scsendboard";
@@ -23,6 +24,7 @@ public class Protokoll {
 	public static final String SC_OwnPlayerId = "scownplayerid";
 	public static final String SC_Error = "scerror";
 	public static final String SC_MoveOk = "scmoveok";
+	public static final String SC_Chat = "scchat";
 	
 	public static final String SC_Exception = "scFEHLER!!!";
 	public static final String SC_NotYourTurn = "scnotyourturn";
