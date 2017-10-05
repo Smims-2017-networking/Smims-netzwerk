@@ -180,7 +180,7 @@ public class SpielServer extends Server {
 		case Protokoll.CS_FakeDiceResult:
 			if (WUERFELBETUPPEN) {
 				try {
-					diceResult = Integer.parseInt(array[2]);
+					diceResult = Integer.parseInt(array[1]);
 					wuerfelresult = true;
 				} catch (Exception e) {
 					String message7 = Protokoll.SC_ParseError;
