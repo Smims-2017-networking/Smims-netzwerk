@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import smims.networking.model.Position.StartingPositionBuilder;
 
@@ -45,12 +46,12 @@ public class Board implements IBoard {
 	private int getStartingPosition(int playerId) {
 		return playerId * boardSectionSize;
 	}
-	
+
 	@Override
 	public int getBoardSectionSize() {
 		return boardSectionSize;
 	}
-	
+
 	@Override
 	public BoardDescriptor getBoardDescriptor() {
 		return boardDescriptor;
@@ -111,12 +112,20 @@ public class Board implements IBoard {
 	 */
 	@Override
 	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException {
-		Position possibleNewDistance = pCharacter.getPosition().movedBy(distance)
-				.orElseThrow(() -> new MoveNotAllowedException());
-		Optional<Character> characterAtTarget = getAllCharacters().stream()
-				.filter(c -> c.getPosition().equals(possibleNewDistance)).findAny();
-		characterAtTarget.ifPresent(c -> c.werdeGeschlagen());
-		pCharacter.moveForward(distance);
+		if (distance == 6 && !pCharacter.isInBase()
+				&& getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null) {
+			Stream<Character> characterObject=charactersOnBoard.stream()
+					.filter((character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase());
+					characterObject.findFirst().get().resetAtStartingPosition();
+					//TODO: reset at starting postion ?
+		} else {
+			Position possibleNewDistance = pCharacter.getPosition().movedBy(distance)
+					.orElseThrow(() -> new MoveNotAllowedException());
+			Optional<Character> characterAtTarget = getAllCharacters().stream()
+					.filter(c -> c.getPosition().equals(possibleNewDistance)).findAny();
+			characterAtTarget.ifPresent(c -> c.werdeGeschlagen());
+			pCharacter.moveForward(distance);
+		}
 	}
 
 	/**
