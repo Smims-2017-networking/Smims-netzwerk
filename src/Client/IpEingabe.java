@@ -79,7 +79,7 @@ public class IpEingabe extends Frame {
   
   
   public void bVerbinden_ActionPerformed(ActionEvent evt) {
-	  new StartClient(jTextFieldIp.getText(), Integer.parseInt(jTextFieldPort.getText()));
+	  new SpielClient(jTextFieldIp.getText(), Integer.parseInt(jTextFieldPort.getText()));
 
   } // end of bVerbinden_ActionPerformed
 
