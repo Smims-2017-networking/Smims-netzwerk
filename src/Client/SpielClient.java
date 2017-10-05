@@ -4,9 +4,6 @@ package Client;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.TimeUnit;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -25,7 +22,7 @@ import smims.networking.messages.*;
  */
 public class SpielClient extends Client {
 
-	private ClientGUI myGUI;
+	private final ClientGUI myGUI;
 	//private AusgabeFrame meinLauscher;
 
 	public SpielClient(String pIPAdresse, int pPortNr) {
@@ -56,24 +53,30 @@ public class SpielClient extends Client {
 	
 	
 	public void processMessage(String pMessage) {
+		System.out.println("Nachricht empfangen: " + pMessage);
 		String[] tags = pMessage.split(Protokoll.Splitter);
 		try {
 		switch(tags[0]) {
 		
 		case Protokoll.SC_Welcome: 
-				myGUI.appendChat(tags[1]);
+				myGUI.appendChat("Mit Server Verbunden :D");
 			break;
-		
+		case Protokoll.SC_Chat:
+				myGUI.appendChat("Spieler " + tags[1] + "schreibt: " + tags[2]);
+				break;
+		case Protokoll.SC_ServerDicht:
+				myGUI.setInfoText("Server voll");
+			break;
 		case Protokoll.SC_Board :
 			GsonBuilder myGsonBuilder = new GsonBuilder();
 			myGsonBuilder.registerTypeAdapter(BoardDescriptor.class, new BoardDescriptorDeserializer());
 			myGsonBuilder.registerTypeAdapter(Board.class, new BoardDeserializer());
 			Gson myGson = myGsonBuilder.create();
 			Board newBoard = myGson.fromJson(tags[1], Board.class);
+			System.out.println("myGson Board:  BoardSize: " + newBoard.getBoardDescriptor().getBoardSize() + " , HouseSize: " + newBoard.getBoardDescriptor().getHouseSize() );
 			myGUI.updateBoard(newBoard);
-			//Board tempBoard = ;//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-				//myGUI.updateBoard(tempBoard);
-			//myBoard = recieved Board NOT YET IMPLEMENTED
+	
+			
 			break;
 		case Protokoll.SC_DiceResult :
 				myGUI.displayDiceResult(tags[1]);
@@ -100,9 +103,6 @@ public class SpielClient extends Client {
 		case Protokoll.SC_MoveOk :
 				myGUI.setInfoText("Gut gemacht!"); 
 			break;
-		case Protokoll.SC_Exception :
-				myGUI.setInfoText("Du kannst das nicht machen");
-			break;
 		case Protokoll.SC_NotYourTurn :
 				myGUI.setInfoText("Du bist nicht dran!");
 			break;
@@ -118,7 +118,15 @@ public class SpielClient extends Client {
 			break;
 		}
 		}catch (Exception e) {
-			myGUI.setInfoText("Fehler: " + e.toString() + "Bei Befehl: "+ pMessage);
+			if(pMessage != null)
+			{
+				myGUI.setInfoText("Fehler bei Befehl: "+ pMessage);
+			}
+			else
+			{
+				System.out.println("keine Message");
+			}
+			
 		}
 		
 		

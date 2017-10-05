@@ -63,6 +63,10 @@ public class ClientGUI extends JFrame {
   private JButton bReady = new JButton();
   private JButton bTest = new JButton();
   
+  private JTextField textFieldChatEingabe = new JTextField();
+  private JButton bSenden = new JButton();
+ 
+  
   // Ende Attribute
 
   public ClientGUI(SpielClient pClient) {
@@ -110,8 +114,19 @@ public class ClientGUI extends JFrame {
             bReady_ActionPerformed(evt);
           }
         });
-
+    
     Controlls.add(bReady);
+    
+    bSenden.setBounds(900, 300, 75, 25);
+    bSenden.setText("senden");
+    bSenden.setMargin(new Insets(2, 2, 2, 2));
+    bSenden.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        bSenden_ActionPerformed(evt);
+      }
+    });
+
+    Controlls.add(bSenden);
     
     bTest.setBounds(40,200,120,60);
     bTest.setText("Testen!");
@@ -133,28 +148,41 @@ public class ClientGUI extends JFrame {
       }
     });
     Controlls.add(bWuerfeln);
+    
+    textFieldChatEingabe.setBounds(900, 250, 280, 33);
+    textFieldChatEingabe.setToolTipText("Hier die Chateingabe");
+    Controlls.add(textFieldChatEingabe);
+    
     labelEigeneSpielerID.setBounds(160, 0, 110, 20);
     labelEigeneSpielerID.setText("eigeneSpielerID");
     Controlls.add(labelEigeneSpielerID);
+    
     lEigeneSpielerID.setBounds(20, 0, 110, 20);
     lEigeneSpielerID.setText("Eigene Spieler ID:");
     Controlls.add(lEigeneSpielerID);
+    
     lAnderReiheist.setBounds(20, 40, 110, 20);
     lAnderReiheist.setText("An der Reihe ist :");
     Controlls.add(lAnderReiheist);
+    
     labelAktuelleSpielerID.setBounds(160, 40, 110, 20);
     labelAktuelleSpielerID.setText("aktuelleSpielerID");
     Controlls.add(labelAktuelleSpielerID);
+    
     lGewurfelt.setBounds(20, 80, 110, 20);
     lGewurfelt.setText("gewürfelt:");
     Controlls.add(lGewurfelt);
+    
     labelWuerfelergebniss.setBounds(160, 80, 110, 20);
     labelWuerfelergebniss.setText("wuerfelergebniss");
     Controlls.add(labelWuerfelergebniss);
+    
     textAreaChatScrollPane.setBounds(900, 0, 280, 200);
     Controlls.add(textAreaChatScrollPane);
+    
     textAreaInfoScrollPane.setBounds(500, 0, 280, 200);
     Controlls.add(textAreaInfoScrollPane);
+    
     bAktuallisieren.setBounds(290, 70, 120, 25);
     bAktuallisieren.setText("aktuallisieren");
     bAktuallisieren.setMargin(new Insets(2, 2, 2, 2));
@@ -164,6 +192,7 @@ public class ClientGUI extends JFrame {
       }
     });
     Controlls.add(bAktuallisieren);
+    
     // Ende Komponenten
 
     MainContainer.add(GameField);
@@ -178,7 +207,7 @@ public class ClientGUI extends JFrame {
   } // end of public ClientSpielGUI
   
    public void paint(Graphics g) {	   
-	 System.out.println("paint");
+	 //System.out.println("paint");
      //getContentPane().repaint();
      if(myBoardDescriptor != null && myBoard != null) {
        drawBoard();
@@ -357,6 +386,11 @@ public class ClientGUI extends JFrame {
   
   public void bTest_ActionPerformed(ActionEvent evt) {
 	    myClient.testFunction();
+  }
+  
+  public void bSenden_ActionPerformed(ActionEvent evt) {
+	  myClient.send(Protokoll.CS_Chat + Protokoll.Splitter + textFieldChatEingabe.getText());
+	  textFieldChatEingabe.setText("");
   }
   
   public void bAktuallisieren_ActionPerformed(ActionEvent evt) {
