@@ -3,6 +3,8 @@ package Client;
 
 
 
+import java.util.concurrent.TimeUnit;
+
 import smims.networking.model.*;
 
 /**
@@ -18,7 +20,7 @@ import smims.networking.model.*;
 public class SpielClient extends Client {
 
 	private ClientGUI myGUI;
-	private AusgabeFrame meinLauscher;
+	//private AusgabeFrame meinLauscher;
 
 	public SpielClient(String pIPAdresse, int pPortNr) {
 		super(pIPAdresse, pPortNr);
@@ -30,14 +32,16 @@ public class SpielClient extends Client {
 
 	public void processMessage(String pMessage) {
 		String[] tags = pMessage.split(Protokoll.Splitter);
+		try {
 		switch(tags[0]) {
+		
 		case Protokoll.SC_Welcome: 
 				myGUI.appendChat(tags[1]);
 			break;
 		
 		case Protokoll.SC_Board :
 			//Board tempBoard = ;//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
-			
+				myGUI.updateBoard(tempBoard);
 			//myBoard = recieved Board NOT YET IMPLEMENTED
 			break;
 		case Protokoll.SC_DiceResult :
@@ -81,14 +85,37 @@ public class SpielClient extends Client {
 			this.close();
 			break;
 		}
-		ausgabe("Empfangen :<" + pMessage + ">");
+		}catch (Exception e) {
+			myGUI.setInfoText("Fehler: " + e.toString());
+		}
+		
+		
+		
+		
 	}
 
-	public void ausgabe(String pText) {
-		if (this.meinLauscher != null && this.meinLauscher.getInhaltLabel() != null) {
-			this.meinLauscher.getInhaltLabel().setText(pText);
-		}
+	public void moveCharacter(Position pPosition)
+	{
+		this.send(Protokoll.CS_MoveCharacter + Protokoll.Splitter + Position.toString());
 	}
-	
+
+	public void requestInfo()
+	{
+		try {
+		this.send(Protokoll.CS_GetBoard);
+		TimeUnit.MILLISECONDS.sleep(10);
+		this.send(Protokoll.CS_GetDiceResult);
+		TimeUnit.MILLISECONDS.sleep(10);
+		this.send(Protokoll.CS_GetOwnPlayerId);
+		TimeUnit.MILLISECONDS.sleep(10);
+		this.send(Protokoll.CS_WhoseTurn);
+		TimeUnit.MILLISECONDS.sleep(10);
+		this.send(Protokoll.CS_GetTurnState);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

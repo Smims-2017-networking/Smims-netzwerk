@@ -10,6 +10,7 @@ import javax.swing.event.*;
 
 import smims.networking.model.*;
 import smims.networking.model.Character;
+import smims.networking.model.BoardDescriptor;
 /**
  *
  * Beschreibung
@@ -31,7 +32,7 @@ public class ClientGUI extends JFrame {
 	
 	private final Color[] Colors = {Color.BLUE, Color.RED, Color.GREEN, Color.YELLOW, Color.PINK, Color.ORANGE, Color.CYAN, Color.MAGENTA};
 	
-	
+	private Collection<gameCharacterOnGUI> gameCharacters;
 	
 	private static final int FieldStartX = 50;
 	private static final int FieldStartY = 300;
@@ -152,15 +153,14 @@ public class ClientGUI extends JFrame {
 	public void updateBoard(Board pBoard)
 	{
 		myBoardDescriptor = pBoard.getBoardDescriptor();
+		drawBoard();
 		placeCharactersOnBoard(pBoard.getAllCharacters());
+		
 	}
 	
 	private void placeCharactersOnBoard(Collection<Character> pCharacters)
 	{
-		for(Character character: pCharacters)
-		{
-			
-		}
+		pCharacters.stream().map(character -> new gameCharacterOnGUI(this, character));
 	}
 	
 	private void malFeld(Punkt pPunkt)
@@ -168,7 +168,7 @@ public class ClientGUI extends JFrame {
 		myGraphic.drawOval(pPunkt.getX(), pPunkt.getY(), circleSize, circleSize);
 	}
 	
-	private Punkt getPunktByFieldNumber(int pFieldNumber)
+	public Punkt getPunktByFieldNumber(int pFieldNumber)
 	{
 		return new Punkt(FieldStartX + distanceBetweenFields * pFieldNumber, FieldStartY);
 	}
@@ -179,7 +179,7 @@ public class ClientGUI extends JFrame {
 	 * @param pHouseFieldNumber	das wievielete haus feld
 	 * @return
 	 */
-	private Punkt getPunktByHouseAndNumber(int pHouse, int pHouseFieldNumber)
+	public Punkt getPunktByHouseAndNumber(int pHouse, int pHouseFieldNumber)
 	{
 		if(pHouse == 0)		//haus von Spieler 0 muss ganz rechts sein
 		{
@@ -188,7 +188,7 @@ public class ClientGUI extends JFrame {
 		return new Punkt(FieldStartX - distanceBetweenFields + distanceBetweenFields * myBoardDescriptor.getBoardSectionSize() * pHouse, FieldStartY + distanceBetweenFields * (pHouseFieldNumber + 1));
 	}
 	
-	private Punkt getPunktByBaseAndNumber(int pBase, int pBaseFieldNumber)
+	public Punkt getPunktByBaseAndNumber(int pBase, int pBaseFieldNumber)
 	{
 		return new Punkt(FieldStartX + distanceBetweenFields *  myBoardDescriptor.getBoardSectionSize() * pBase, FieldStartY - distanceBetweenFields * (pBaseFieldNumber+ 2));
 	}
@@ -210,9 +210,10 @@ public class ClientGUI extends JFrame {
 		textAreaInfo.setText(pText);
 	}
 	
-	public void showBoard(Board pBoard)
+	
+	public void selectCharacter(Position pPosition)
 	{
-		//TO DO
+		myClient.moveCharacter(pPosition);
 	}
 	
 	
