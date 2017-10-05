@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Board implements IBoard {
@@ -16,7 +17,7 @@ public class Board implements IBoard {
 	public Board(Collection<Player> players, int pPlayerCount) {
 		PlayerCount = pPlayerCount;
 		charactersOnBoard = new ArrayList<Character>();
-		for (Player player: players) {
+		for (Player player : players) {
 			for (int i = 0; i < CharactersPerPlayer; ++i) {
 				charactersOnBoard.add(new Character(player));
 			}
@@ -25,29 +26,31 @@ public class Board implements IBoard {
 
 	/**
 	 * Checht ob auf dem Feld ein Character steht
-	 * @param pFieldNumber Nummer des zu ueberpruefenden Feldes, Durchnummeriert von dem Spawn mit der PlayerID 0 bis zu dem Feld vor dem Spawn von Player 0
+	 * 
+	 * @param pFieldNumber
+	 *            Nummer des zu ueberpruefenden Feldes, Durchnummeriert von dem
+	 *            Spawn mit der PlayerID 0 bis zu dem Feld vor dem Spawn von Player
+	 *            0
 	 * @return true wenn ein Character auf dem Feld ist
 	 */
 	@Override
 	public boolean fieldOccupied(int pFieldNumber) {
-		return charactersOnBoard.stream()
-				.anyMatch((character) -> (character.getDistance() + character.getPlayer().getPlayerId() * DistanceBetweenSpawns) == pFieldNumber);
-		
+		return charactersOnBoard.stream().anyMatch((character) -> (character.getDistance()
+				+ character.getPlayer().getPlayerId() * DistanceBetweenSpawns) == pFieldNumber);
+
 	}
 
-	
 	/**
 	 * 
-	 * @param pDistance   
+	 * @param pDistance
 	 * @param pPlayer
-	 * @return Es wird der Character zurueckgegeben, der bei der die gesuchte Distanz zurueckgelegt und von dem Player ist.
+	 * @return Es wird der Character zurueckgegeben, der bei der die gesuchte
+	 *         Distanz zurueckgelegt und von dem Player ist.
 	 */
 	@Override
 	public Character getCharacterAt(int pDistance, int pPlayerID) {
-		return charactersOnBoard.stream()
-				.filter((character) -> character.getPosition().getDistance() == pDistance && character.getPlayer().getPlayerId() == pPlayerID)
-				.findAny()
-				.orElse(null);
+		return charactersOnBoard.stream().filter((character) -> character.getPosition().getDistance() == pDistance
+				&& character.getPlayer().getPlayerId() == pPlayerID).findAny().orElse(null);
 	}
 
 	/**
@@ -59,23 +62,17 @@ public class Board implements IBoard {
 	 *         Team ist.
 	 */
 	@Override
-	public boolean characterWouldHitTeammate(Character pCharacter, int pDistance)
-	{
-		if(pCharacter.isInBase() && pDistance == 6)
-		{
+	public boolean characterWouldHitTeammate(Character pCharacter, int pDistance) {
+		if (pCharacter.isInBase() && pDistance == 6) {
+			return charactersOnBoard.stream().anyMatch(
+					character -> character.isAtStartingPosition() && character.getPlayer() == pCharacter.getPlayer());
+		} else {
 			return charactersOnBoard.stream()
-				.anyMatch(character -> character.isAtStartingPosition() && character.getPlayer() == pCharacter.getPlayer());
-		}
-		else
-		{
-			return charactersOnBoard.stream()
-				.anyMatch(character -> (pCharacter.getPosition().getDistance() + pDistance) == character.getPosition().getDistance() && character.getPlayer() == pCharacter.getPlayer());
+					.anyMatch(character -> (pCharacter.getPosition().getDistance() + pDistance) == character
+							.getPosition().getDistance() && character.getPlayer() == pCharacter.getPlayer());
 		}
 	}
 
-	
-
-	
 	/**
 	 * 
 	 * @param character,
@@ -87,11 +84,8 @@ public class Board implements IBoard {
 	 *         genug)
 	 */
 	@Override
-	public boolean characterCanMove(Character character, int pDistance)
-	{
-		return 
-				!characterWouldHitTeammate(character, pDistance)
-				&& !characterWouldMoveInHouse(character, pDistance)
+	public boolean characterCanMove(Character character, int pDistance) {
+		return !characterWouldHitTeammate(character, pDistance) && !characterWouldMoveInHouse(character, pDistance)
 				&& characterCanExitBase(character, pDistance);
 	}
 
@@ -102,59 +96,73 @@ public class Board implements IBoard {
 	 * @return
 	 */
 	boolean characterWouldMoveInHouse(Character character, int pDistance) {
-		return character.getPosition().getDistance() + pDistance > (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
+		return character.getPosition().getDistance() + pDistance > (DistanceBetweenSpawns * PlayerCount)
+				+ CharactersPerPlayer;
 	}
 
 	boolean characterCanEnterHouse(Character character, int pDistance) {
-		return !characterWouldHitTeammate(character, pDistance) && character.getPosition().getDistance() + pDistance <= (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
+		return !characterWouldHitTeammate(character, pDistance) && character.getPosition().getDistance()
+				+ pDistance <= (DistanceBetweenSpawns * PlayerCount) + CharactersPerPlayer;
 	}
-	
+
 	boolean characterCanExitBase(Character character, int pDistance) {
-		return character.isInBase() && pDistance == 6 &&  !characterWouldHitTeammate(character, pDistance);
+		return character.isInBase() && pDistance == 6 && !characterWouldHitTeammate(character, pDistance);
 	}
-	
+
 	/**
 	 * 
 	 * @param pCharacter
-	 * @return true wenn kein Character Auf dem Feld ist (bzw. Characters nur in Basis und im Haus)
+	 * @return true wenn kein Character Auf dem Feld ist (bzw. Characters nur in
+	 *         Basis und im Haus)
 	 */
 	@Override
-	public boolean playerHasCharactersOnBoard(IPlayer pPlayer)
-	{
+	public boolean playerHasCharactersOnBoard(IPlayer pPlayer) {
 		return charactersOnBoard.stream()
-		.filter((character) -> character.getPlayer()==pPlayer && characterInField(character))
-		.count() != 0;
- 	}
-	
+				.filter((character) -> character.getPlayer() == pPlayer && characterInField(character)).count() != 0;
+	}
+
 	/**
 	 * 
 	 * @param pCharacter
 	 * @return true wenn der Character im Ziel Haus ist
 	 */
-	private boolean isCharacterInHouse(Character pCharacter)
-	{
+	private boolean isCharacterInHouse(Character pCharacter) {
 		return pCharacter.getPosition().getDistance() > (DistanceBetweenSpawns * PlayerCount);
 	}
-	
+
+
 	/**
 	 * 
 	 * @param pCharacter
-	 * @return	true wenn der Character nicht in der Basis und auch nicht im Haus ist. (im Feld)
+	 * @return true wenn der Character nicht in der Basis und auch nicht im Haus
+	 *         ist. (im Feld)
 	 */
-	private boolean characterInField(Character pCharacter)
-	{
-		return !pCharacter.isInBase() && pCharacter.getPosition().getDistance() <= (DistanceBetweenSpawns * PlayerCount);
+	private boolean characterInField(Character pCharacter) {
+		return !pCharacter.isInBase()
+				&& pCharacter.getPosition().getDistance() <= (DistanceBetweenSpawns * PlayerCount);
+	}
+
+	/**
+	 * 
+	 * @param pPlayerId
+	 * @return true, wenn alle im Haus sind
+	 */
+	@Override
+	public boolean allCharactersInHouse(int pPlayerId) {
+		return charactersOnBoard.stream().filter(
+				(character) -> character.getPlayer().getPlayerId() == pPlayerId && !isCharacterInHouse(character))
+				.count() == 0; // keiner, der vor dem Haus ist
 	}
 	
 	/**
 	 * 
 	 * @param pPlayerId
-	 * @return	true, wenn alle im Haus sind
+	 * @return true, wenn alle in der base sind
 	 */
-	@Override
-	public boolean allCharactersInHouse(int pPlayerId) {
-		return charactersOnBoard.stream()
-				.filter((character) -> character.getPlayer().getPlayerId() == pPlayerId && !isCharacterInHouse(character)).count() == 0;	//keiner, der vor dem Haus ist
+	public boolean allCharactersInBase(int pPlayerId) {
+		return charactersOnBoard.stream().filter(
+				(character) -> character.getPlayer().getPlayerId() == pPlayerId && !character.isInBase())
+				.count() == 0;
 	}
 	
 	/**
@@ -165,34 +173,38 @@ public class Board implements IBoard {
 	 *            Distanz, die der Character bewegt werden soll
 	 */
 	@Override
-	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException{
-		if(characterCanMove(pCharacter, distance))
-		{
+	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException {
+		if(distance==6 && !allCharactersInBase(pCharacter.getPlayer().getPlayerId())&& !fieldOccupied(0)) {
+			Optional<Character> c=charactersOnBoard.stream().filter(
+					(character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase()).findFirst();
+			c.get().moveOutOfBase();
+		}
+		else {
+		if (characterCanMove(pCharacter, distance)) {
 			int possibleNewDistance = pCharacter.getPosition().getDistance() + distance;
-			if(pCharacter.isInBase())			//in Basis
+			if (pCharacter.isInBase()) // in Basis
 			{
 				pCharacter.moveOutOfBase();
-			}
-			else
-			{
+			} else {
 				pCharacter.moveForward(distance);
 			}
-			
-			if(fieldOccupied(possibleNewDistance))						//Spieler schlagen, wenn vorhanden
+
+			if (fieldOccupied(possibleNewDistance)) // Spieler schlagen, wenn vorhanden
 			{
-			
+
 				charactersOnBoard.stream()
-				.filter((character) -> (character.getDistance() + character.getPlayer().getPlayerId() * DistanceBetweenSpawns)% (DistanceBetweenSpawns * PlayerCount) == 
-										(possibleNewDistance + character.getPlayer().getPlayerId() * DistanceBetweenSpawns) % (DistanceBetweenSpawns * PlayerCount)).findAny().get().werdeGeschlagen();
+						.filter((character) -> (character.getDistance()
+								+ character.getPlayer().getPlayerId() * DistanceBetweenSpawns)
+								% (DistanceBetweenSpawns * PlayerCount) == (possibleNewDistance
+										+ character.getPlayer().getPlayerId() * DistanceBetweenSpawns)
+										% (DistanceBetweenSpawns * PlayerCount))
+						.findAny().get().werdeGeschlagen();
 			}
-		}
-		else
-		{
+		} else {
 			throw new MoveNotAllowedException();
 		}
-
+		}
 	}
-
 
 	/**
 	 * returns all Characters in an ArrayList<IReadonlyCharacter>
@@ -210,12 +222,9 @@ public class Board implements IBoard {
 		// think modeling each house would be better.
 		Map<IPlayer, List<Character>> charactersByPlayer = getAllCharacters().stream()
 				.collect(Collectors.groupingBy(Character::getPlayer));
-		
-		return charactersByPlayer.keySet().stream()
-				.filter((player) -> allCharactersInHouse(player.getPlayerId())				)
-				.findAny()
-				.orElse(null);
-	}
 
+		return charactersByPlayer.keySet().stream().filter((player) -> allCharactersInHouse(player.getPlayerId()))
+				.findAny().orElse(null);
+	}
 
 }
