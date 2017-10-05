@@ -35,6 +35,8 @@ public class Protokoll {
 	public static final String SC_Stop = "Stop";
 	
 	public static final String Splitter = "#";
-	
-	
+	public static final String Base = "base";
+	public static final String Board = "board";
+	public static final String House = "house";
+	public static final String Starting = "starting";
 }

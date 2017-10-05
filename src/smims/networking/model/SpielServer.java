@@ -37,9 +37,10 @@ public class SpielServer extends Server {
 		// null)
 		System.out.println(pMessage);
 		String[] array = pMessage.split(Protokoll.Splitter);
-		switch (array[0]) {
+		Outer: switch (array[0]) {
 		case Protokoll.CS_Chat:
-			String message6 = Protokoll.SC_Chat + Protokoll.Splitter + getPlayerId(pClientIP) + Protokoll.Splitter + array[1];
+			String message6 = Protokoll.SC_Chat + Protokoll.Splitter + getPlayerId(pClientIP) + Protokoll.Splitter
+					+ array[1];
 			System.out.println(message6);
 			sendToAll(message6);
 			break;
@@ -59,17 +60,37 @@ public class SpielServer extends Server {
 			break;
 		case Protokoll.CS_MoveCharacter:
 			int pos;
+			StartingPositionBuilder spb = game.getStartingPositionBuilder(getPlayerId(pClientIP));
 			String message5;
 			try {
-				pos = Integer.parseInt(array[1]);
+				pos = Integer.parseInt(array[2]);
 			} catch (Exception e) {
 				String message1 = Protokoll.SC_ParseError;
 				sendMessage(pClientIP, pClientPort, message1);
 				break;
 			}
+			Position position;
+			switch (array[1]) {
+			case Protokoll.House:
+				position = spb.atHousePosition(pos);
+				break;
+			case Protokoll.Base:
+				position = spb.inBase();
+				break;
+			case Protokoll.Board:
+				position = spb.atPosition(pos);
+				break;
+			case Protokoll.Starting:
+				position = spb.atStartingPosition();
+				break;
+			default:
+				String message1 = Protokoll.SC_ParseError;
+				sendMessage(pClientIP, pClientPort, message1);
+				break Outer;
+			}
 			try {
 				message5 = Protokoll.SC_MoveOk;
-				game.moveCharacter(getPlayerId(pClientIP), pos);
+				game.moveCharacter(getPlayerId(pClientIP), position);
 			} catch (MoveNotAllowedException e) {
 				message5 = Protokoll.SC_MoveNotAllowed;
 			} catch (NotYourTurnException e) {
@@ -125,7 +146,7 @@ public class SpielServer extends Server {
 			String message4 = Protokoll.SC_OwnPlayerId + Protokoll.Splitter + getPlayerId(pClientIP);
 			sendMessage(pClientIP, pClientPort, message4);
 			break;
-		case Protokoll.CS_GetThrowsLeft: 
+		case Protokoll.CS_GetThrowsLeft:
 			String message1;
 			if (game != null) {
 				message1 = Protokoll.SC_ThrowsLeft + Protokoll.Splitter + game.getRemainingRolls();
