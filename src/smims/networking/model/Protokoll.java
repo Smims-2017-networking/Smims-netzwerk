@@ -16,6 +16,7 @@ public class Protokoll {
 	public static final String CS_FakeDiceResult = "csfakediceresult";
 	
 	public static final String SC_Welcome = "scGoedeDag!!!!!!";
+	public static final String SC_ServerDicht = "scserverdicht";
 	public static final String SC_Board = "scsendboard";
 	public static final String SC_DiceResult = "scsenddiceresult";
 	public static final String SC_PlayerTurn = "scplayerturn";

@@ -23,7 +23,7 @@ public class SpielServer extends Server {
 	private boolean wuerfelresult;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 2, 3);
+		new SpielServer(4242, 3, 3);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
@@ -220,6 +220,9 @@ public class SpielServer extends Server {
 			playerId++;
 			System.out.println(Protokoll.SC_Welcome);
 			send(pClientIP, pClientPort, Protokoll.SC_Welcome);
+		} else {
+			send(pClientIP, pClientPort, Protokoll.SC_ServerDicht);
+			closeConnection(pClientIP, pClientPort);
 		}
 	}
 
