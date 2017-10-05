@@ -36,7 +36,9 @@ public class SpielClient extends Client {
 			break;
 		
 		case Protokoll.SC_Board :
-				//myBoard = recieved Board NOT YET IMPLEMENTED
+			//Board tempBoard = ;//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
+			
+			//myBoard = recieved Board NOT YET IMPLEMENTED
 			break;
 		case Protokoll.SC_DiceResult :
 				myGUI.displayDiceResult(tags[1]);
@@ -63,7 +65,7 @@ public class SpielClient extends Client {
 				myGUI.setInfoText("Gut gemacht!"); 
 			break;
 		case Protokoll.SC_Exception :
-				myGUI.setInfoText("Unbekannter fehler aufgetaucht. Hier die nachricht vom Server: " + pMessage);
+				myGUI.setInfoText("Du kannst das nicht machen");
 			break;
 		case Protokoll.SC_NotYourTurn :
 				myGUI.setInfoText("Du bist nicht dran!");

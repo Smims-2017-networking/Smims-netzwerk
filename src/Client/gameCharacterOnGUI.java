@@ -19,4 +19,9 @@ public class gameCharacterOnGUI extends Button{
 		myCharacter = pNewCharacter;
 	}
 	
+	public void positionieren()
+	{
+		//if(myCharacter)
+	}
+	
 }
