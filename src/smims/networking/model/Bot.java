@@ -5,17 +5,20 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public abstract class Bot {
+public abstract class Bot implements IBot{
 	protected Player myPlayer;
-	protected Game myGame;
+	protected IBoard myBoard;
+	protected IGame myGame;
 	protected Collection<Character> allCharacters;
 	protected Collection<Character> myCharacters; // TODO: Zuweisung
 	protected Collection<Character> enemyCharacters;
+	protected Position aimedPosition;
 	// TODO: Setupcode
 
 	public Bot(Player player, Game game) {
 		myPlayer = player;
 		myGame = game;
+		myBoard = myGame.getBoard();
 		allCharacters = myGame.getBoard().getAllCharacters();
 		myCharacters = new ArrayList<Character>(allCharacters);//myCharacters und enemyCharacters sind Kopien der Liste allCharacters
 		myCharacters.removeIf((character) -> character.getPlayer().getPlayerId() != myPlayer.getPlayerId());
@@ -23,8 +26,19 @@ public abstract class Bot {
 		enemyCharacters.removeAll(myCharacters);
 	}
 	
+	protected void refreshBoard() {
+		myBoard = myGame.getBoard();
+	}
+	
+	public void rollDice() throws NotYourTurnException, MoveNotAllowedException {
+		myGame.rollDice(myPlayer.getPlayerId());
+	}
+	public Position getAimedPosition() {
+		return aimedPosition;
+	}
 	public void makeTurn() throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException {
 		while (myGame.whoseTurn() == myPlayer.getPlayerId()) {
+			refreshBoard();
 			if(myGame.getWinner() != null) {
 				if(myGame.getWinner().getPlayerId() == myPlayer.getPlayerId()) {
 					log("Yay, gewonnen");
@@ -45,7 +59,8 @@ public abstract class Bot {
 				log(myGame.getDiceResult() + " gewürfelt");
 			} else if (myGame.getCurrentTurnState() == TurnState.ExpectMove){ // Im Zug
 				//try {
-					moveCharacter();
+					decide();
+					myGame.moveCharacter(myPlayer.getPlayerId(), aimedPosition);
 				//} catch (Exception e) {
 				//2	log("We fucked up: " + e.toString());
 				//}
@@ -56,7 +71,7 @@ public abstract class Bot {
 		log("Nicht mehr mein Zug");
 	}
 
-	protected abstract void moveCharacter() throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException;
+	public abstract void decide() throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException;
 	/**
 	 * Decide on the Character to move depending on Game condition (characters in
 	 * base) using the local board and player objects
