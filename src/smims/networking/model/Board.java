@@ -116,8 +116,7 @@ public class Board implements IBoard {
 				&& getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null) {
 			Stream<Character> characterObject=charactersOnBoard.stream()
 					.filter((character) -> character.getPlayer().getPlayerId() == pCharacter.getPlayer().getPlayerId() && character.isInBase());
-					characterObject.findFirst().get().resetAtStartingPosition();
-					//TODO: reset at starting postion ?
+					characterObject.findFirst().get().moveForward(distance);
 		} else {
 			Position possibleNewDistance = pCharacter.getPosition().movedBy(distance)
 					.orElseThrow(() -> new MoveNotAllowedException());
