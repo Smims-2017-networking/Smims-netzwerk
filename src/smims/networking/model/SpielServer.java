@@ -25,6 +25,7 @@ public class SpielServer extends Server {
 
 	public static void main(String[] args) {
 		new SpielServer(4242, 2, 4);
+
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {

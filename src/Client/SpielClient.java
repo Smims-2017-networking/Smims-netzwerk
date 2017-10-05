@@ -69,7 +69,8 @@ public class SpielClient extends Client {
 			myGsonBuilder.registerTypeAdapter(BoardDescriptor.class, new BoardDescriptorDeserializer());
 			myGsonBuilder.registerTypeAdapter(Board.class, new BoardDeserializer());
 			Gson myGson = myGsonBuilder.create();
-			myGUI.updateBoard(myGson.fromJson(tags[1], Board.class));
+			Board newBoard = myGson.fromJson(tags[1], Board.class);
+			myGUI.updateBoard(newBoard);
 			//Board tempBoard = ;//TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO 
 				//myGUI.updateBoard(tempBoard);
 			//myBoard = recieved Board NOT YET IMPLEMENTED
@@ -117,7 +118,7 @@ public class SpielClient extends Client {
 			break;
 		}
 		}catch (Exception e) {
-			myGUI.setInfoText("Fehler: " + e.toString());
+			myGUI.setInfoText("Fehler: " + e.toString() + "Bei Befehl: "+ pMessage);
 		}
 		
 		
