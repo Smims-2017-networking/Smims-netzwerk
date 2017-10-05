@@ -128,15 +128,12 @@ public class Board implements IBoard {
 	}
 
 	private boolean couldLeaveStartingPositionButDoesnt(Character pCharacter, int distance) {
+		Character charAtStartingPosition = findAnyCharacterAtPosition(pCharacter.getPosition().resetToStartingPosition()).orElse(null);
 		return  anyCharacterOfSamePlayerIsInBase(pCharacter)
-				&& anyCharacterOfSamePlayerIsInStartingPosition(pCharacter)
-				&& canMoveByDistance(pCharacter, distance)
+				&& charAtStartingPosition != null
+				&& charAtStartingPosition.isOfSamePlayerAs(pCharacter)
+				&& canMoveByDistance(charAtStartingPosition, distance)
 				&& !pCharacter.isAtStartingPosition();
-	}
-
-	private boolean anyCharacterOfSamePlayerIsInStartingPosition(Character pCharacter) {
-		return getAllCharacters().stream()
-				.anyMatch(c -> c.isOfSamePlayerAs(pCharacter) && c.isAtStartingPosition());
 	}
 
 	private Optional<Character> findAnyCharacterAtPosition(Position possibleNewPosition) {
