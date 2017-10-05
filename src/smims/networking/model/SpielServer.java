@@ -28,6 +28,7 @@ public class SpielServer extends Server {
 
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
+		// TODO: Abfangen von NullPointerException, wenn Spiel noch nicht läuft
 		System.out.println(pMessage);
 		String[] array = pMessage.split(Protokoll.Splitter);
 		switch (array[0]) {
@@ -52,7 +53,7 @@ public class SpielServer extends Server {
 			String message5;
 			try {
 				pos = Integer.parseInt(array[1]);
-			} catch (NumberFormatException e) {
+			} catch (Exception e) {
 				send(pClientIP, pClientPort, Protokoll.SC_Exception + Protokoll.Splitter + "parse");
 				break;
 			}
@@ -70,9 +71,14 @@ public class SpielServer extends Server {
 			send(pClientIP, pClientPort, message5);
 			break;
 		case Protokoll.CS_GetTurnState:
-			String message3 = Protokoll.SC_TurnState + Protokoll.Splitter + game.getCurrentTurnState();
-			System.out.println(message3);
-			send(pClientIP, pClientPort, message3);
+			if (game != null) {
+				String message3 = Protokoll.SC_TurnState + Protokoll.Splitter + game.getCurrentTurnState();
+				System.out.println(message3);
+				send(pClientIP, pClientPort, message3);
+			} else {
+				System.out.println(Protokoll.SC_Error);
+				send(pClientIP, pClientPort, Protokoll.SC_Error);
+			}
 			break;
 		case Protokoll.CS_RollDice:
 			String message2;
@@ -88,9 +94,14 @@ public class SpielServer extends Server {
 			send(pClientIP, pClientPort, message2);
 			break;
 		case Protokoll.CS_WhoseTurn:
-			String message1 = Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn();
-			System.out.println(message1);
-			send(pClientIP, pClientPort, message1);
+			if (game != null) {
+				String message1 = Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn();
+				System.out.println(message1);
+				send(pClientIP, pClientPort, message1);
+			} else {
+				System.out.println(Protokoll.SC_Error);
+				send(pClientIP, pClientPort, Protokoll.SC_Error);
+			}
 			break;
 		case Protokoll.CS_Ready:
 			if (game == null) {
