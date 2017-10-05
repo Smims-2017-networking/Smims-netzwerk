@@ -75,7 +75,7 @@ public class SpielServer extends Server {
 				Gson gson = new Gson();
 				String message = Protokoll.SC_Board + Protokoll.Splitter + gson.toJson(game.getBoard());
 				sendMessage(pClientIP, pClientPort, message);
-			}else {
+			} else {
 				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
@@ -85,7 +85,7 @@ public class SpielServer extends Server {
 			if (game != null) {
 				String message = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
 				sendMessage(pClientIP, pClientPort, message);
-			}else {
+			} else {
 				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
@@ -135,8 +135,7 @@ public class SpielServer extends Server {
 					message5 = Protokoll.SC_NoSuchCharacter;
 				}
 				sendMessage(pClientIP, pClientPort, message5);
-				if(change)
-				{
+				if (change) {
 					sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
 				}
 			} else {
@@ -163,7 +162,7 @@ public class SpielServer extends Server {
 					message2 = Protokoll.SC_NotYourTurn;
 				}
 				sendMessage(pClientIP, pClientPort, message2);
-			}else {
+			} else {
 				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
@@ -194,17 +193,13 @@ public class SpielServer extends Server {
 			sendMessage(pClientIP, pClientPort, message4);
 			break;
 		case Protokoll.CS_GetThrowsLeft:
+			String message1;
 			if (game != null) {
-				String message1;
-				if (game != null) {
-					message1 = Protokoll.SC_ThrowsLeft + Protokoll.Splitter + game.getRemainingRolls();
-				} else {
-					message1 = Protokoll.SC_Error;
-				}
-				sendMessage(pClientIP, pClientPort, message1);
-			}else {
-				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
+				message1 = Protokoll.SC_ThrowsLeft + Protokoll.Splitter + game.getRemainingRolls();
+			} else {
+				message1 = Protokoll.SC_Error;
 			}
+			sendMessage(pClientIP, pClientPort, message1);
 			break;
 		case Protokoll.CS_FakeDiceResult:
 			if (game != null) {
@@ -220,7 +215,7 @@ public class SpielServer extends Server {
 				} else {
 					sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 				}
-			}else {
+			} else {
 				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
