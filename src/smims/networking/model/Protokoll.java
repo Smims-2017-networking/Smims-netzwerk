@@ -28,7 +28,6 @@ public class Protokoll {
 	public static final String SC_MoveOk = "scmoveok";
 	public static final String SC_Chat = "scchat";
 	
-	public static final String SC_Exception = "scFEHLER!!!";
 	public static final String SC_NotYourTurn = "scnotyourturn";
 	public static final String SC_TurnState = "scturnstate";
 	public static final String SC_NoSuchCharacter = "scnosuchcharacter";

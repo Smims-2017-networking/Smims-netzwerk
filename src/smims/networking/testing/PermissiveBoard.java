@@ -95,4 +95,10 @@ public class PermissiveBoard implements IBoard {
 		return false;
 	}
 
+	@Override
+	public boolean anyCharacterInHouseCanMove(IPlayer player) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
