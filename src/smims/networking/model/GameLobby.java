@@ -5,9 +5,9 @@ import java.util.ArrayList;
 public class GameLobby {
 	private final ArrayList<Player> players = new ArrayList<>();
 	private int spieleranzahl;
-	private final DiceRoller diceRoller;
+	private final IDiceRoller diceRoller;
 
-	public GameLobby(int spieleranzahl, DiceRoller diceRoller) {
+	public GameLobby(int spieleranzahl, IDiceRoller diceRoller) {
 		this.spieleranzahl = spieleranzahl;
 		this.diceRoller = diceRoller;
 	}
