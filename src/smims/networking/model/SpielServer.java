@@ -33,14 +33,14 @@ public class SpielServer extends Server {
 				@Override
 				public Integer apply(Integer t) {
 					Random random = new Random();
-					if(wuerfelresult) {
+					if (wuerfelresult) {
 						wuerfelresult = false;
 						return diceResult;
 					} else {
 						return random.nextInt(6) + 1;
 					}
 				}
-			})) ;
+			}));
 		} else {
 			lobby = new GameLobby(pSpieleranzahl);
 		}
@@ -55,7 +55,8 @@ public class SpielServer extends Server {
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
 		// TODO: Abfangen von NullPointerException, wenn Spiel noch nicht läuft
-		// TODO: NullPointerException bei fehlernder Wertemitlieferung (array[1] ==
+		// TODO: NullPointerException bei fehlernder Wertemitlieferung (array[1]
+		// ==
 		// null)
 		System.out.println(pMessage);
 		String[] array = pMessage.split(Protokoll.Splitter);
@@ -70,57 +71,77 @@ public class SpielServer extends Server {
 
 			break;
 		case Protokoll.CS_GetBoard: {
-			Gson gson = new Gson();
-			String message = Protokoll.SC_Board + Protokoll.Splitter + gson.toJson(game.getBoard());
-			sendMessage(pClientIP, pClientPort, message);
+			if (game != null) {
+				Gson gson = new Gson();
+				String message = Protokoll.SC_Board + Protokoll.Splitter + gson.toJson(game.getBoard());
+				sendMessage(pClientIP, pClientPort, message);
+			}else {
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
+			}
 			break;
 		}
 
 		case Protokoll.CS_GetDiceResult:
-			String message = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
-			sendMessage(pClientIP, pClientPort, message);
+			if (game != null) {
+				String message = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
+				sendMessage(pClientIP, pClientPort, message);
+			}else {
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
+			}
 			break;
 		case Protokoll.CS_MoveCharacter:
-			int pos;
-			StartingPositionBuilder spb = game.getStartingPositionBuilder(getPlayerId(pClientIP));
-			String message5;
-			try {
-				pos = Integer.parseInt(array[2]);
-			} catch (Exception e) {
-				String message1 = Protokoll.SC_ParseError;
-				sendMessage(pClientIP, pClientPort, message1);
-				break;
+			if (game != null) {
+				int pos;
+				boolean change = false;
+				StartingPositionBuilder spb = game.getStartingPositionBuilder(getPlayerId(pClientIP));
+				String message5;
+				try {
+					pos = Integer.parseInt(array[2]);
+				} catch (Exception e) {
+					String message1 = Protokoll.SC_ParseError;
+					sendMessage(pClientIP, pClientPort, message1);
+					break;
+				}
+				Position position;
+				switch (array[1]) {
+				case Protokoll.House:
+					position = spb.atHousePosition(pos);
+					break;
+				case Protokoll.Base:
+					position = spb.inBase();
+					break;
+				case Protokoll.Board:
+					position = spb.atPosition(pos);
+					break;
+				case Protokoll.Starting:
+					position = spb.atStartingPosition();
+					break;
+				default:
+					String message1 = Protokoll.SC_ParseError;
+					sendMessage(pClientIP, pClientPort, message1);
+					break Outer;
+				}
+				try {
+					message5 = Protokoll.SC_MoveOk;
+					game.moveCharacter(getPlayerId(pClientIP), position);
+					if (game.whoseTurn() != getPlayerId(pClientIP)) {
+						change = true;
+					}
+				} catch (MoveNotAllowedException e) {
+					message5 = Protokoll.SC_MoveNotAllowed;
+				} catch (NotYourTurnException e) {
+					message5 = Protokoll.SC_NotYourTurn;
+				} catch (NoSuchCharacterException e) {
+					message5 = Protokoll.SC_NoSuchCharacter;
+				}
+				sendMessage(pClientIP, pClientPort, message5);
+				if(change)
+				{
+					sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
+				}
+			} else {
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
-			Position position;
-			switch (array[1]) {
-			case Protokoll.House:
-				position = spb.atHousePosition(pos);
-				break;
-			case Protokoll.Base:
-				position = spb.inBase();
-				break;
-			case Protokoll.Board:
-				position = spb.atPosition(pos);
-				break;
-			case Protokoll.Starting:
-				position = spb.atStartingPosition();
-				break;
-			default:
-				String message1 = Protokoll.SC_ParseError;
-				sendMessage(pClientIP, pClientPort, message1);
-				break Outer;
-			}
-			try {
-				message5 = Protokoll.SC_MoveOk;
-				game.moveCharacter(getPlayerId(pClientIP), position);
-			} catch (MoveNotAllowedException e) {
-				message5 = Protokoll.SC_MoveNotAllowed;
-			} catch (NotYourTurnException e) {
-				message5 = Protokoll.SC_NotYourTurn;
-			} catch (NoSuchCharacterException e) {
-				message5 = Protokoll.SC_NoSuchCharacter;
-			}
-			sendMessage(pClientIP, pClientPort, message5);
 			break;
 		case Protokoll.CS_GetTurnState:
 			if (game != null) {
@@ -131,16 +152,20 @@ public class SpielServer extends Server {
 			}
 			break;
 		case Protokoll.CS_RollDice:
-			String message2;
-			try {
-				game.rollDice(getPlayerId(pClientIP));
-				message2 = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
-			} catch (MoveNotAllowedException e) {
-				message2 = Protokoll.SC_MoveNotAllowed;
-			} catch (NotYourTurnException e) {
-				message2 = Protokoll.SC_NotYourTurn;
+			if (game != null) {
+				String message2;
+				try {
+					game.rollDice(getPlayerId(pClientIP));
+					message2 = Protokoll.SC_DiceResult + Protokoll.Splitter + game.getDiceResult();
+				} catch (MoveNotAllowedException e) {
+					message2 = Protokoll.SC_MoveNotAllowed;
+				} catch (NotYourTurnException e) {
+					message2 = Protokoll.SC_NotYourTurn;
+				}
+				sendMessage(pClientIP, pClientPort, message2);
+			}else {
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
-			sendMessage(pClientIP, pClientPort, message2);
 			break;
 		case Protokoll.CS_WhoseTurn:
 			if (game != null) {
@@ -169,25 +194,33 @@ public class SpielServer extends Server {
 			sendMessage(pClientIP, pClientPort, message4);
 			break;
 		case Protokoll.CS_GetThrowsLeft:
-			String message1;
 			if (game != null) {
-				message1 = Protokoll.SC_ThrowsLeft + Protokoll.Splitter + game.getRemainingRolls();
-			} else {
-				message1 = Protokoll.SC_Error;
+				String message1;
+				if (game != null) {
+					message1 = Protokoll.SC_ThrowsLeft + Protokoll.Splitter + game.getRemainingRolls();
+				} else {
+					message1 = Protokoll.SC_Error;
+				}
+				sendMessage(pClientIP, pClientPort, message1);
+			}else {
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
-			sendMessage(pClientIP, pClientPort, message1);
 			break;
 		case Protokoll.CS_FakeDiceResult:
-			if (WUERFELBETUPPEN) {
-				try {
-					diceResult = Integer.parseInt(array[1]);
-					wuerfelresult = true;
-				} catch (Exception e) {
-					String message7 = Protokoll.SC_ParseError;
-					sendMessage(pClientIP, pClientPort, message7);
-					break;
+			if (game != null) {
+				if (WUERFELBETUPPEN) {
+					try {
+						diceResult = Integer.parseInt(array[1]);
+						wuerfelresult = true;
+					} catch (Exception e) {
+						String message7 = Protokoll.SC_ParseError;
+						sendMessage(pClientIP, pClientPort, message7);
+						break;
+					}
+				} else {
+					sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 				}
-			} else {
+			}else {
 				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			}
 			break;
