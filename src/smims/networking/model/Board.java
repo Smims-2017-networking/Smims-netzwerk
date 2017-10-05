@@ -110,7 +110,8 @@ public class Board implements IBoard {
 	 */
 	@Override
 	public void moveCharacter(Character pCharacter, int distance) throws MoveNotAllowedException {
-		if (couldLeaveBaseButDoesnt(pCharacter, distance))
+		if (couldLeaveBaseButDoesnt(pCharacter, distance)
+				|| couldLeaveStartingPositionButDoesnt(pCharacter, distance))
 			throw new MoveNotAllowedException();
 		else {
 			Position possibleNewPosition = calculatePositionAfterMove(pCharacter, distance);
@@ -126,6 +127,17 @@ public class Board implements IBoard {
 		}
 	}
 
+	private boolean couldLeaveStartingPositionButDoesnt(Character pCharacter, int distance) {
+		return  anyCharacterOfSamePlayerIsInBase(pCharacter)
+				&& anyCharacterOfSamePlayerIsInStartingPosition(pCharacter)
+				&& canMoveByDistance(pCharacter, distance);
+	}
+
+	private boolean anyCharacterOfSamePlayerIsInStartingPosition(Character pCharacter) {
+		return getAllCharacters().stream()
+				.anyMatch(c -> c.isOfSamePlayerAs(pCharacter) && c.isAtStartingPosition());
+	}
+
 	private Optional<Character> findAnyCharacterAtPosition(Position possibleNewPosition) {
 		return getAllCharacters().stream()
 				.filter(c -> c.isAtPosition(possibleNewPosition)).findAny();
@@ -136,9 +148,11 @@ public class Board implements IBoard {
 				.orElseThrow(() -> new MoveNotAllowedException());
 	}
 
-	private boolean couldLeaveBaseButDoesnt(Character pCharacter, int distance) {
-		return couldMoveCharacterOutOfBase(pCharacter, distance)
-				&& startingPositionIsNotOccupiedBySamePlayer(pCharacter) && anyCharacterOfSamePlayerIsInBase(pCharacter);
+	private boolean couldLeaveBaseButDoesnt(Character characterToMove, int distance) {
+		return couldMoveCharacterOutOfBase(characterToMove, distance)
+				&& anyCharacterOfSamePlayerIsInBase(characterToMove)
+				&& !startingPositionIsOccupiedBySamePlayer(characterToMove)
+				&& !characterToMove.isInBase();
 	}
 
 	private boolean anyCharacterOfSamePlayerIsInBase(Character pCharacter) {
@@ -146,7 +160,7 @@ public class Board implements IBoard {
 			.anyMatch((character) -> character.isOfSamePlayerAs(pCharacter) && character.isInBase());
 	}
 
-	private boolean startingPositionIsNotOccupiedBySamePlayer(Character pCharacter) {
+	private boolean startingPositionIsOccupiedBySamePlayer(Character pCharacter) {
 		return positionIsOccupiedByTeammateOf(pCharacter, pCharacter.getPosition().resetToStartingPosition());
 	}
 
