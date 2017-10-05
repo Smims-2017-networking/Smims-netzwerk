@@ -44,10 +44,12 @@ public class Board implements IBoard {
 		return playerId * boardSectionSize;
 	}
 	
+	@Override
 	public int getBoardSectionSize() {
 		return boardSectionSize;
 	}
 	
+	@Override
 	public BoardDescriptor getBoardDescriptor() {
 		return boardDescriptor;
 	}
@@ -74,7 +76,8 @@ public class Board implements IBoard {
 		return getCharacterAt(givenPosition);
 	}
 
-	Character getCharacterAt(Position givenPosition) {
+	@Override
+	public Character getCharacterAt(Position givenPosition) {
 		return charactersOnBoard.stream().filter((character) -> character.getPosition().equals(givenPosition)).findAny()
 				.orElse(null);
 	}

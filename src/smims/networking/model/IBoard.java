@@ -37,4 +37,10 @@ public interface IBoard {
 
 	boolean playerHasCharactersOnBoard(IPlayer player);
 
+	Character getCharacterAt(Position givenPosition);
+
+	BoardDescriptor getBoardDescriptor();
+
+	int getBoardSectionSize();
+
 }

@@ -2,10 +2,12 @@ package smims.networking.testing;
 
 import java.util.Collection;
 
+import smims.networking.model.BoardDescriptor;
 import smims.networking.model.Character;
 import smims.networking.model.IBoard;
 import smims.networking.model.IPlayer;
 import smims.networking.model.MoveNotAllowedException;
+import smims.networking.model.Position;
 
 /**
  * This Board implementation is configured to allow as many operations as 
@@ -61,6 +63,24 @@ public class PermissiveBoard implements IBoard {
 	
 	public void setPlayerHasCharactersOnBoard(boolean value) {
 		playerHasCharactersOnBoard = value;
+	}
+
+	@Override
+	public Character getCharacterAt(Position givenPosition) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BoardDescriptor getBoardDescriptor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getBoardSectionSize() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
