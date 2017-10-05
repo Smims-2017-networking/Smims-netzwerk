@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import smims.networking.model.Position.StartingPositionBuilder;
+
 public class Board implements IBoard {
 	private final BoardDescriptor boardDescriptor;
 	private final int boardSectionSize;
@@ -136,6 +138,11 @@ public class Board implements IBoard {
 
 		return charactersByPlayer.keySet().stream().filter((player) -> allCharactersInHouse(player.getPlayerId()))
 				.findAny().orElse(null);
+	}
+
+	@Override
+	public StartingPositionBuilder getStartingPositionBuilderFor(int playerId) {
+		return Position.on(boardDescriptor).startingAt(getStartingPosition(playerId));
 	}
 
 }
