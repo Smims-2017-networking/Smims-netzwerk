@@ -69,7 +69,7 @@ public class SpielServer extends Server {
 			sendToAll(message6);
 			break;
 		case Protokoll.CS_Welcome:
-
+			send(pClientIP, pClientPort, "Welkom speler " + getPlayerId(pClientIP) + "! Wij wensen je een vrolijke spel!");
 			break;
 		case Protokoll.CS_GetBoard: {
 			if (game != null) {
