@@ -1,12 +1,14 @@
 package smims.networking.model;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 public class TurnManager {
 	private Turn currentTurn;
 	private final ArrayList<Player> players;
 	private final IBoard board;
 	private final IDiceRoller diceRoller;
+	private Consumer<IPlayer> onNewTurn;
 	
 	public TurnManager(ArrayList<Player> players, IBoard board, IDiceRoller diceRoller) {
 		if (players == null || players.size() == 0 || board == null || diceRoller == null) {
@@ -19,8 +21,15 @@ public class TurnManager {
 		startNewTurn(players.get(0));
 	}
 	
+	public void registerOnNewTurn(Consumer<IPlayer> callback) {
+		onNewTurn = callback;
+	}
+	
 	private void startNewTurn(IPlayer player) {
 		currentTurn = new Turn(player, board, diceRoller);
+		if (onNewTurn != null) {
+			onNewTurn.accept(player);
+		}
 	}
 	
 	public Turn getCurrentTurn() {

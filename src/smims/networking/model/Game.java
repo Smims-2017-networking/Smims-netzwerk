@@ -1,6 +1,7 @@
 package smims.networking.model;
 
 import java.util.ArrayList;
+import java.util.function.Consumer;
 
 import smims.networking.model.Position.StartingPositionBuilder;
 
@@ -90,6 +91,11 @@ public class Game implements IGame {
 	@Override
 	public StartingPositionBuilder getStartingPositionBuilder(int playerId) {
 		return myBoard.getStartingPositionBuilderFor(playerId);
+	}
+
+	@Override
+	public void registerTurnChangedCallback(Consumer<IPlayer> callback) {
+		myTurnManager.registerOnNewTurn(callback);
 	}
 	
 }
