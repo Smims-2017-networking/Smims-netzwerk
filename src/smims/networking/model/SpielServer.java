@@ -1,9 +1,13 @@
 package smims.networking.model;
 
+import java.util.Random;
+import java.util.function.Function;
+
 import com.google.gson.Gson;
 
 import smims.networking.model.Position.BoardPositionBuilder;
 import smims.networking.model.Position.StartingPositionBuilder;
+import smims.networking.testing.LambdaDiceRoller;
 
 public class SpielServer extends Server {
 
@@ -14,14 +18,32 @@ public class SpielServer extends Server {
 	private int spieleranzahl, boardgroesse;
 	private Game game;
 	private BoardPositionBuilder bpb;
+	private int diceResult;
+	private static final boolean WUERFELBETUPPEN = true;
+	private boolean wuerfelresult;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 3, 3);
+		new SpielServer(4242, 2, 3);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
 		super(port);
-		lobby = new GameLobby(pSpieleranzahl);
+		if (WUERFELBETUPPEN) {
+			lobby = new GameLobby(pSpieleranzahl, new LambdaDiceRoller(new Function<Integer, Integer>() {
+				@Override
+				public Integer apply(Integer t) {
+					Random random = new Random();
+					if(wuerfelresult) {
+						wuerfelresult = false;
+						return diceResult;
+					} else {
+						return random.nextInt(6) + 1;
+					}
+				}
+			})) ;
+		} else {
+			lobby = new GameLobby(pSpieleranzahl);
+		}
 		spieleranzahl = pSpieleranzahl;
 		boardgroesse = pBoardgroesse;
 		if (boardgroesse < spieleranzahl) {
@@ -155,10 +177,25 @@ public class SpielServer extends Server {
 			}
 			sendMessage(pClientIP, pClientPort, message1);
 			break;
+		case Protokoll.CS_FakeDiceResult:
+			if (WUERFELBETUPPEN) {
+				try {
+					diceResult = Integer.parseInt(array[2]);
+					wuerfelresult = true;
+				} catch (Exception e) {
+					String message7 = Protokoll.SC_ParseError;
+					sendMessage(pClientIP, pClientPort, message7);
+					break;
+				}
+			} else {
+				sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
+			}
+			break;
 		default:
 			sendMessage(pClientIP, pClientPort, Protokoll.SC_Error);
 			break;
 		}
+
 	}
 
 	private void sendMessage(String ip, int port, String message) {

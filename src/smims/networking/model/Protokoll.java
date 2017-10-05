@@ -13,6 +13,7 @@ public class Protokoll {
 	public static final String CS_GetThrowsLeft = "csgetthrowsleft";
 	public static final String CS_GetOwnPlayerId = "csgetownplayerid";
 	public static final String CS_Chat = "cschat";
+	public static final String CS_FakeDiceResult = "csfakediceresult";
 	
 	public static final String SC_Welcome = "scGoedeDag!!!!!!";
 	public static final String SC_Board = "scsendboard";
