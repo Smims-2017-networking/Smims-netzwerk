@@ -55,7 +55,7 @@ public class Game implements IGame {
 	 * @throws Exception
 	 */
 	@Override
-	public void moveCharacter(int pPlayerID, int Position) throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException
+	public void moveCharacter(int pPlayerID, Position Position) throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException
 	{
 		myTurnManager.moveCharacter(pPlayerID, Position);
 	}

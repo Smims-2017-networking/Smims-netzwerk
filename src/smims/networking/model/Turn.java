@@ -20,9 +20,9 @@ public class Turn {
 		return player;
 	}
 	
-	public void moveCharacter(int characterPos, int playerId) throws MoveNotAllowedException, NoSuchCharacterException {
+	public void moveCharacter(Position position, int playerId) throws MoveNotAllowedException, NoSuchCharacterException {
 		EnsurePlayerCanMoveCharacter();
-		moveCharacterAtPosition(characterPos, playerId);
+		moveCharacterAtPosition(position, playerId);
 		if (diceRoller.getResult() == 6) {
 			transitionToRollingState();
 		} else {
@@ -30,10 +30,10 @@ public class Turn {
 		}
 	}
 	
-	private void moveCharacterAtPosition(int characterPos, int playerId) throws MoveNotAllowedException, NoSuchCharacterException {
-		Character selectedCharacter = board.getCharacterAt(characterPos, playerId);
+	private void moveCharacterAtPosition(Position position, int playerId) throws MoveNotAllowedException, NoSuchCharacterException {
+		Character selectedCharacter = board.getCharacterAt(position);
 		if (selectedCharacter == null) {
-			throw new NoSuchCharacterException("No character at position" + characterPos);
+			throw new NoSuchCharacterException("No character at position" + position);
 		}
 		
 		board.moveCharacter(selectedCharacter, diceRoller.getResult());

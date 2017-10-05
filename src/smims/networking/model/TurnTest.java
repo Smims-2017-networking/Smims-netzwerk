@@ -67,7 +67,7 @@ public class TurnTest {
 		Turn turn = new Turn(player, new PermissiveBoard(characters, false, true), new LambdaDiceRoller(x -> 3));
 		
 		turn.rollDice();
-		turn.moveCharacter(0, DefaultPlayerId);
+		//turn.moveCharacter(, DefaultPlayerId);
 
 		assertEquals(turn.getCurrentTurnState(), TurnState.Finished);
 	}
@@ -77,7 +77,7 @@ public class TurnTest {
 		Turn turn = new Turn(player, new PermissiveBoard(characters, false, true), new LambdaDiceRoller(x -> 6));
 		
 		turn.rollDice();
-		turn.moveCharacter(0, DefaultPlayerId);
+		//turn.moveCharacter(0, DefaultPlayerId);
 		
 		assertEquals(turn.getCurrentTurnState(), TurnState.ExpectRoll);
 		turn.rollDice();
