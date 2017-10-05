@@ -54,9 +54,10 @@ public class IpEingabe extends Frame {
     lPort.setText("Port:");
     cp.add(lPort);
     jTextFieldIp.setBounds(80, 88, 145, 25);
+    jTextFieldIp.setText("localhost");
     cp.add(jTextFieldIp);
     jTextFieldPort.setBounds(328, 88, 89, 25);
-    jTextFieldPort.setText("");
+    jTextFieldPort.setText("4242");
     cp.add(jTextFieldPort);
     bVerbinden.setBounds(328, 136, 161, 41);
     bVerbinden.setText("verbinden");

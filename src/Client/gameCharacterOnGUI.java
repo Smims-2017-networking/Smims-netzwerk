@@ -43,6 +43,7 @@ public class gameCharacterOnGUI extends Button{
 		
 	public void changeCharacter(Character pNewCharacter)
 	{		
+		System.out.println("changeCharacters");
 		myCharacter = pNewCharacter;
 		positionieren();
 	}
@@ -66,7 +67,7 @@ public class gameCharacterOnGUI extends Button{
 			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()- hoehe /2, breite, hoehe);
 		}
 		this.setBackground(myGUI.getColorByPlayerID(myCharacter.getPlayer().getPlayerId()));
-		
+		System.out.println("Figur Positioniert: " + tempPunkt.getX() + " , " + tempPunkt.getY());
 	}
 	
 	

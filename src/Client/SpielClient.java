@@ -3,6 +3,7 @@ package Client;
 
 
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,10 +50,15 @@ public class SpielClient extends Client {
 			e.printStackTrace();
 		}
 		myGUI.updateBoard(pBoard);
+		
+		myGUI.setInfoText("Das ist ein InfoText :D");
 	}
 	
 	
+	
+	
 	public void processMessage(String pMessage) {
+		EventQueue.invokeLater(()->{
 		System.out.println("Nachricht empfangen: " + pMessage);
 		String[] tags = pMessage.split(Protokoll.Splitter);
 		try {
@@ -75,7 +81,7 @@ public class SpielClient extends Client {
 			Board newBoard = myGson.fromJson(tags[1], Board.class);
 			System.out.println("myGson Board:  BoardSize: " + newBoard.getBoardDescriptor().getBoardSize() + " , HouseSize: " + newBoard.getBoardDescriptor().getHouseSize() );
 			myGUI.updateBoard(newBoard);
-	
+			System.out.println("SC_Board Empfangen");
 			
 			break;
 		case Protokoll.SC_DiceResult :
@@ -118,18 +124,12 @@ public class SpielClient extends Client {
 			break;
 		}
 		}catch (Exception e) {
-			if(pMessage != null)
-			{
-				myGUI.setInfoText("Fehler bei Befehl: "+ pMessage);
-			}
-			else
-			{
-				System.out.println("keine Message");
-			}
+			
+			System.out.println("Exception in SpielClient processMessage");
 			
 		}
 		
-		
+		});
 		
 		
 	}

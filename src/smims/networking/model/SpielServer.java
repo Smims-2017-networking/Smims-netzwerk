@@ -24,7 +24,7 @@ public class SpielServer extends Server {
 	private boolean wuerfelresult;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 2, 4);
+		new SpielServer(4242, 1, 4);
 
 	}
 
