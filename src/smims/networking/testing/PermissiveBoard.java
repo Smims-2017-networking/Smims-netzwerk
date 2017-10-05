@@ -8,6 +8,7 @@ import smims.networking.model.IBoard;
 import smims.networking.model.IPlayer;
 import smims.networking.model.MoveNotAllowedException;
 import smims.networking.model.Position;
+import smims.networking.model.Position.StartingPositionBuilder;
 
 /**
  * This Board implementation is configured to allow as many operations as 
@@ -81,6 +82,11 @@ public class PermissiveBoard implements IBoard {
 	public int getBoardSectionSize() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public StartingPositionBuilder getStartingPositionBuilderFor(int playerId) {
+		return Position.on(getBoardDescriptor()).startingAt(0);
 	}
 
 }
