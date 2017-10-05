@@ -49,4 +49,6 @@ public interface IBoard {
 	
 	Position.StartingPositionBuilder getStartingPositionBuilderFor(int playerId);
 
+	boolean canMoveByDistance(Character c, int result);
+
 }

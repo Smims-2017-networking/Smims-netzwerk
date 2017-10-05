@@ -60,5 +60,9 @@ public class Character  {
 	public boolean isAtPosition(Position otherPosition) {
 		return myPos.equals(otherPosition);
 	}
+
+	public boolean isOfPlayer(IPlayer otherPlayer) {
+		return player.equals(otherPlayer);
+	}
 	
 }

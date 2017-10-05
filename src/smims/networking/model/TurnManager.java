@@ -53,7 +53,7 @@ public class TurnManager {
 	
 	public void moveCharacter(int playerId, Position position) throws NotYourTurnException, MoveNotAllowedException, NoSuchCharacterException {
 		ensureIsPlayersTurn(playerId);
-		getCurrentTurn().moveCharacter(position, playerId);
+		getCurrentTurn().moveCharacter(position);
 		changeTurnIfOver();
 	}
 	

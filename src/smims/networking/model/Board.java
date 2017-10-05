@@ -1,12 +1,7 @@
 package smims.networking.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
+import java.util.stream.*;
 
 import smims.networking.model.Position.StartingPositionBuilder;
 
@@ -18,7 +13,7 @@ public class Board implements IBoard {
 	/**
 	 * 
 	 * @param players
-	 * @deprecated Use
+	 * @deprecated Use Board(BoardDescriptor, Collection<Character>, int)
 	 */
 	@Deprecated
 	public Board(Collection<Player> players, int pPlayerCount) {
@@ -81,8 +76,11 @@ public class Board implements IBoard {
 
 	@Override
 	public Character getCharacterAt(Position givenPosition) {
-		return charactersOnBoard.stream().filter((character) -> character.getPosition().equals(givenPosition)).findAny()
-				.orElse(null);
+		return getCharacterAtO(givenPosition).orElse(null);
+	}
+	
+	public Optional<Character> getCharacterAtO(Position givenPosition) {
+		return charactersOnBoard.stream().filter((character) -> character.getPosition().equals(givenPosition)).findAny();
 	}
 
 	@Override
@@ -140,7 +138,7 @@ public class Board implements IBoard {
 
 	private boolean couldLeaveBaseButDoesnt(Character pCharacter, int distance) {
 		return couldMoveCharacterOutOfBase(pCharacter, distance)
-				&& startingPositionIsFree(pCharacter) && anyCharacterOfSamePlayerIsInBase(pCharacter);
+				&& startingPositionIsNotOccupiedBySamePlayer(pCharacter) && anyCharacterOfSamePlayerIsInBase(pCharacter);
 	}
 
 	private boolean anyCharacterOfSamePlayerIsInBase(Character pCharacter) {
@@ -148,8 +146,8 @@ public class Board implements IBoard {
 			.anyMatch((character) -> character.isOfSamePlayerAs(pCharacter) && character.isInBase());
 	}
 
-	private boolean startingPositionIsFree(Character pCharacter) {
-		return getCharacterAt(pCharacter.getPosition().resetToStartingPosition()) == null;
+	private boolean startingPositionIsNotOccupiedBySamePlayer(Character pCharacter) {
+		return positionIsOccupiedByTeammateOf(pCharacter, pCharacter.getPosition().resetToStartingPosition());
 	}
 
 	private boolean couldMoveCharacterOutOfBase(Character pCharacter, int distance) {
@@ -170,7 +168,7 @@ public class Board implements IBoard {
 	public IPlayer getWinner() {
 		// HACK This is a pretty ugly way of checking which house is full; I
 		// think modeling each house would be better.
-		Map<IPlayer, List<Character>> charactersByPlayer = getAllCharacters().stream()
+		Map<IPlayer, java.util.List<Character>> charactersByPlayer = getAllCharacters().stream()
 				.collect(Collectors.groupingBy(Character::getPlayer));
 
 		return charactersByPlayer.keySet().stream().filter((player) -> allCharactersInHouse(player.getPlayerId()))
@@ -182,4 +180,15 @@ public class Board implements IBoard {
 		return Position.on(boardDescriptor).startingAt(getStartingPosition(playerId));
 	}
 
+	@Override
+	public boolean canMoveByDistance(Character character, int distance) {
+		Optional<Position> newPosition = character.getPosition().movedBy(distance);
+		return newPosition.isPresent() && !positionIsOccupiedByTeammateOf(character, newPosition.get());
+	}
+
+	private boolean positionIsOccupiedByTeammateOf(Character character, Position newPosition) {
+		return getCharacterAtO(character.getPosition().resetToStartingPosition())
+			.map(c -> c.isOfSamePlayerAs(character))
+			.orElse(false);
+	}
 }
