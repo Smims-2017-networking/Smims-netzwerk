@@ -30,11 +30,11 @@ public class SenderFrame extends Frame {
 	private JTextField Eingabe = new JTextField();
 	private JButton schicken = new JButton();
 
-	private StartClient meinClient;
+	private SpielClient meinClient;
 
 	// Ende Attribute
 
-	public SenderFrame(String title, StartClient pRechenClient) {
+	public SenderFrame(String title, SpielClient pRechenClient) {
 		// Frame-Initialisierung
 		super(title);
 		addWindowListener(new WindowAdapter() {

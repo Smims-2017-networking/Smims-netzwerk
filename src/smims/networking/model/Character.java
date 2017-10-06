@@ -11,6 +11,10 @@ public class Character  {
 		myPos = Position.on(boardDescriptor).startingAt(startingPosition).inBase();
 	}
 
+	public void setPosition(Position pPosition){
+		myPos = pPosition;
+	}
+	
 	public IPlayer getPlayer() {
 		return player;
 	}

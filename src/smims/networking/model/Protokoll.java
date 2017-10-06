@@ -33,8 +33,8 @@ public class Protokoll {
 	public static final String SC_TurnState = "scturnstate";
 	public static final String SC_NoSuchCharacter = "scnosuchcharacter";
 	public static final String SC_ParseError = "scparseerror";
-	
-	public static final String SC_Stop = "Stop";
+
+	public static final String SC_Stop = "Stop";						//--keine weitere Information--
 	
 	public static final String Splitter = "#";
 	public static final String Base = "base";
