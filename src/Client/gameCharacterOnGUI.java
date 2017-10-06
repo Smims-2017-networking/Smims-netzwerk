@@ -41,19 +41,19 @@ public class gameCharacterOnGUI extends Button{
 		myGUI.selectCharacter(myCharacter.getPosition());
 	}
 		
-	public void changeCharacter(Character pNewCharacter)
+	public void changeCharacter(Character pNewCharacter, int pPositionInBase)
 	{		
 		System.out.println("changeCharacters");
 		myCharacter = pNewCharacter;
-		positionieren();
+		positionieren(pPositionInBase);
 	}
 	
-	public void positionieren()
+	public void positionieren(int pPositionInBasis)
 	{
 		Punkt tempPunkt = new Punkt(0,0);
 		if(myCharacter.isInBase())
 		{
-			tempPunkt = myGUI.getPunktByBaseAndNumber(myCharacter.getPlayer().getPlayerId(),positionInBasis);
+			tempPunkt = myGUI.getPunktByBaseAndNumber(myCharacter.getPlayer().getPlayerId(),pPositionInBasis);
 			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()-hoehe/2, breite, hoehe);
 			System.out.println("in Base!!!");
 		}

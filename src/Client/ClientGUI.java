@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
-import javax.swing.event.*;
-
 import smims.networking.model.*;
 import smims.networking.model.Character;
 
@@ -244,7 +242,7 @@ public class ClientGUI extends JFrame {
 			for (int i = 0; i < pCharactersArrayList.size(); i++) {
 				System.out.println("Position i: " + i);
 				try {
-					gameCharacters.get(i).changeCharacter(pCharactersArrayList.get(i));
+					gameCharacters.get(i).changeCharacter(pCharactersArrayList.get(i),i);
 					System.out.println("Position: " + pCharactersArrayList.get(i).getPosition().isInBase());
 				}catch(Exception exc)
 				{
