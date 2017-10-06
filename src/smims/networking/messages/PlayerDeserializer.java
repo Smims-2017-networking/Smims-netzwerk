@@ -10,7 +10,7 @@ public class PlayerDeserializer implements JsonDeserializer<Player>{
 
 	@Override
 	public Player deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext jsonContext) throws JsonParseException {
-		Player player = new Player(json.getAsJsonObject().get("playerId").getAsInt());
+		Player player = new Player(json.getAsJsonObject().get("playerID").getAsInt());
 		if (json.getAsJsonObject().get("wantsToStartGame").getAsBoolean()) {
 			player.makePlayerWantToStartGame();
 		}

@@ -55,6 +55,7 @@ public class gameCharacterOnGUI extends Button{
 		{
 			tempPunkt = myGUI.getPunktByBaseAndNumber(myCharacter.getPlayer().getPlayerId(),positionInBasis);
 			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()-hoehe/2, breite, hoehe);
+			System.out.println("in Base!!!");
 		}
 		else if(myCharacter.isInHouse())
 		{
@@ -65,6 +66,7 @@ public class gameCharacterOnGUI extends Button{
 		{
 			tempPunkt = myGUI.getPunktByFieldNumber(myCharacter.getFieldNumber().get());
 			this.setBounds(tempPunkt.getX()-breite/2, tempPunkt.getY()- hoehe /2, breite, hoehe);
+			System.out.println("In Field");
 		}
 		this.setBackground(myGUI.getColorByPlayerID(myCharacter.getPlayer().getPlayerId()));
 		System.out.println("Figur Positioniert: " + tempPunkt.getX() + " , " + tempPunkt.getY());

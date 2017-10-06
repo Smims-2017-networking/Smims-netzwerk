@@ -61,7 +61,7 @@ public class ClientGUI extends JFrame {
 	private JScrollPane textAreaInfoScrollPane = new JScrollPane(textAreaInfo);
 	private JButton bAktuallisieren = new JButton();
 	private JButton bReady = new JButton();
-	private JButton bTest = new JButton();
+
 
 	private JTextField textFieldChatEingabe = new JTextField();
 	private JButton bSenden = new JButton();
@@ -121,17 +121,6 @@ public class ClientGUI extends JFrame {
 		});
 
 		Controlls.add(bSenden);
-
-		bTest.setBounds(40, 200, 120, 60);
-		bTest.setText("Testen!");
-		bTest.setMargin(new Insets(2, 2, 2, 2));
-		bTest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				bTest_ActionPerformed(evt);
-			}
-		});
-
-		Controlls.add(bTest);
 
 		bWuerfeln.setBounds(290, 0, 120, 60);
 		bWuerfeln.setText("würfeln");
@@ -246,12 +235,17 @@ public class ClientGUI extends JFrame {
 		System.out.println("Ding");
 		ArrayList<Character> pCharactersArrayList = new ArrayList<Character>(pCharacters);
 		
+		System.out.println(pCharactersArrayList.get(0).toString());
+		System.out.println(pCharactersArrayList.get(1).toString());
+		System.out.println(pCharactersArrayList.get(2).toString());
+		System.out.println(pCharactersArrayList.get(3).toString());
 
 		if (gameCharacters.size() == pCharactersArrayList.size()) {
 			for (int i = 0; i < pCharactersArrayList.size(); i++) {
 				System.out.println("Position i: " + i);
 				try {
 					gameCharacters.get(i).changeCharacter(pCharactersArrayList.get(i));
+					System.out.println("Position: " + pCharactersArrayList.get(i).getPosition().isInBase());
 				}catch(Exception exc)
 				{
 					System.out.println(exc.toString());
@@ -315,7 +309,7 @@ public class ClientGUI extends JFrame {
 	}
 
 	public void appendChat(String pText) {
-		textAreaChat.append(pText);
+		textAreaChat.append(pText + "\n");
 	}
 
 	public void setInfoText(String pText) {
@@ -365,9 +359,9 @@ public class ClientGUI extends JFrame {
 		bReady.setVisible(false);
 	}
 
-	public void bTest_ActionPerformed(ActionEvent evt) {
-		myClient.testFunction();
-	}
+	
+	
+	
 
 	public void bSenden_ActionPerformed(ActionEvent evt) {
 		myClient.send(Protokoll.CS_Chat + Protokoll.Splitter + textFieldChatEingabe.getText());
