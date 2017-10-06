@@ -25,7 +25,7 @@ public class SpielServer extends Server {
 	private boolean wuerfelresult;
 	private ArrayList<NetworkingBot> bots;
 	private ArrayList<Player> botPlayers;
-	private int botanzahl;
+	private int botanzahl; 
 
 	public static void main(String[] args) {
 		new SpielServer(4242, 4, 4, 2);
