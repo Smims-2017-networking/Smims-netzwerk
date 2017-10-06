@@ -24,7 +24,7 @@ public class SpielServer extends Server {
 	private boolean wuerfelresult;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 2, 4);
+		new SpielServer(4242, 2, 2);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
@@ -179,6 +179,7 @@ public class SpielServer extends Server {
 						public void accept(IPlayer t) {
 							if(game.getWinner() != null){
 								sendToAll(Protokoll.SC_Winner + Protokoll.Splitter + game.getWinner().getPlayerId());
+								sendToAll(Protokoll.CS_GetBoard + Protokoll.Splitter + game.getBoard());
 								close();
 							}
 							sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
