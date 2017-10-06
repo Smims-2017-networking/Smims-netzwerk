@@ -33,7 +33,7 @@ public class Position implements Comparable<Position> {
 
 	public Optional<Integer> getFieldNumber() {
 		if (isOnField()) {
-			return Optional.of(startingPosition + movedDistance);
+			return Optional.of((startingPosition + movedDistance)%boardDescriptor.getBoardSize());
 		} else {
 			return Optional.empty();
 		}
