@@ -1,0 +1,28 @@
+package Client;
+
+import javax.swing.*;
+
+import java.awt.*;
+import java.awt.event.*;
+
+import smims.networking.model.*;
+
+public class ClientGUI extends Frame {
+	/**
+	 * @wbp.nonvisual location=631,129
+	 */
+	private final JTextPane textPane = new JTextPane();
+	/**
+	 * @wbp.nonvisual location=412,229
+	 */
+	private final JTextField textField = new JTextField();
+	public ClientGUI() {
+		textField.setColumns(10);
+	}
+
+	public void displayBoard(Board pBoard)
+	{
+		//TO DO
+	}
+	
+}

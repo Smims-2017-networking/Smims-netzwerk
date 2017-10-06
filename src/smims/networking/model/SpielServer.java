@@ -55,7 +55,7 @@ public class SpielServer extends Server {
 
 	@Override
 	public void processMessage(String pClientIP, int pClientPort, String pMessage) {
-		// TODO: Abfangen von NullPointerException, wenn Spiel noch nicht l‰uft
+		// TODO: Abfangen von NullPointerException, wenn Spiel noch nicht l√§uft
 		// TODO: NullPointerException bei fehlernder Wertemitlieferung (array[1]
 		// ==
 		// null)

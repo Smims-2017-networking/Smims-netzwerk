@@ -52,9 +52,9 @@ public class Board implements IBoard {
 		return boardDescriptor;
 	}
 
-	public Board(BoardDescriptor boardDescriptor, Collection<Character> charactersOnBoard, int playerCount) {
+	public Board(BoardDescriptor boardDescriptor, Collection<Character> charactersOnBoard, int sectionSize) {
 		this.boardDescriptor = boardDescriptor;
-		this.boardSectionSize = boardDescriptor.getBoardSize() / playerCount;
+		this.boardSectionSize = sectionSize;
 		this.charactersOnBoard = charactersOnBoard;
 	}
 

@@ -9,14 +9,16 @@ import com.google.gson.reflect.TypeToken;
 
 import smims.networking.model.Board;
 import smims.networking.model.BoardDescriptor;
+import smims.networking.model.Character;
 
 public class BoardDeserializer implements JsonDeserializer<Board>{
 
 	@Override
 	public Board deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext jsonContext) throws JsonParseException {
-		Collection<smims.networking.model.Character> charsOnBoard = new ArrayList<Character>();
-		for(JsonElement jsonE : json.getAsJsonArray()) {
-			charsOnBoard.add(jsonContext.deserialize(jsonE, Character.class));
+		Collection<smims.networking.model.Character> charsOnBoard = new ArrayList<smims.networking.model.Character>();
+		JsonArray asJsonArray = json.getAsJsonObject().get("charactersOnBoard").getAsJsonArray();
+		for(JsonElement jsonE : asJsonArray) {
+			charsOnBoard.add(jsonContext.deserialize(jsonE.getAsJsonObject(), Character.class));
 		}
 		return new Board(
 				jsonContext.deserialize(json.getAsJsonObject().get("boardDescriptor"), BoardDescriptor.class),
