@@ -25,15 +25,17 @@ public class SpielServer extends Server {
 	private boolean wuerfelresult;
 	private ArrayList<NetworkingBot> bots;
 	private ArrayList<Player> botPlayers;
+	private int botanzahl;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 3, 4, 2);
+		new SpielServer(4242, 4, 4, 2);
 	}
 
 	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse, int botanzahl) {
 		super(port);
 		botPlayers = new ArrayList<>();
 		bots = new ArrayList<>();
+		this.botanzahl = botanzahl;
 		for (int i = pSpieleranzahl - botanzahl; i < pSpieleranzahl; i++) {
 			botPlayers.add(new Player(i));
 		}
@@ -195,7 +197,7 @@ public class SpielServer extends Server {
 							}
 							sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
 							int turn = game.whoseTurn();
-							if(turn == spieleranzahl - bots.size()) {
+							if(turn == spieleranzahl - botanzahl) {
 								executeBots();
 							}
 						}
@@ -273,7 +275,7 @@ public class SpielServer extends Server {
 	@Override
 	public void processNewConnection(String pClientIP, int pClientPort) {
 		// TODO Auto-generated method stub
-		if (playerId < spieleranzahl) {
+		if (playerId < spieleranzahl - botanzahl) {
 			lobby.registerPlayer(new Player(playerId));
 			ips[playerId] = pClientIP;
 			playerId++;
