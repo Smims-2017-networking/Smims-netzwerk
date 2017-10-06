@@ -77,4 +77,10 @@ public class IfElseBot extends Bot {
 		// }
 	}
 
+	@Override
+	public void decide() throws MoveNotAllowedException, NotYourTurnException, NoSuchCharacterException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

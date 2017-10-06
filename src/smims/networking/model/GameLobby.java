@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 public class GameLobby {
 	private final ArrayList<Player> players = new ArrayList<>();
-	private int spieleranzahl;
+	private int spieleranzahl, botanzahl;
 	private final IDiceRoller diceRoller;
 
-	public GameLobby(int spieleranzahl, IDiceRoller diceRoller) {
+	public GameLobby(int spieleranzahl, int botanzahl,IDiceRoller diceRoller) {
 		this.spieleranzahl = spieleranzahl;
 		this.diceRoller = diceRoller;
+		this.botanzahl = botanzahl;
 	}
 	
 	public GameLobby(int spieleranzahl) {
@@ -28,7 +29,7 @@ public class GameLobby {
 	}
 
 	public boolean readyToStart() {
-		if (players.size() == spieleranzahl) {
+		if (players.size() == (spieleranzahl - botanzahl)) {
 			for (IPlayer player : players) {
 				if (!player.wantsToStartGame())
 					return false;
@@ -44,7 +45,8 @@ public class GameLobby {
 		return players.get(playerId);
 	}
 
-	public Game startGame(int boardgroesse) {
+	public Game startGame(int boardgroesse, ArrayList<Player> bots) {
+		players.addAll(bots);
 		return new Game(players, boardgroesse, diceRoller);
 	}
 }
