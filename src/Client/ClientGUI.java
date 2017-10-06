@@ -328,6 +328,7 @@ public class ClientGUI extends JFrame {
 			myClient.send(
 					Protokoll.CS_MoveCharacter + Protokoll.Splitter + Protokoll.Starting + Protokoll.Splitter + "0");
 		}
+		bAktuallisieren_ActionPerformed(null);
 		System.out.println("Move Character");
 	}
 
@@ -367,6 +368,7 @@ public class ClientGUI extends JFrame {
 	}
 
 	public void bAktuallisieren_ActionPerformed(ActionEvent evt) {
+			GameField.repaint();
 		try {
 			myClient.send(Protokoll.CS_GetBoard);
 			TimeUnit.MILLISECONDS.sleep(10);
