@@ -242,7 +242,7 @@ public class ClientGUI extends JFrame {
 			for (int i = 0; i < pCharactersArrayList.size(); i++) {
 				System.out.println("Position i: " + i);
 				try {
-					gameCharacters.get(i).changeCharacter(pCharactersArrayList.get(i),i);
+					gameCharacters.get(i).changeCharacter(pCharactersArrayList.get(i),i%4);
 					System.out.println("Position: " + pCharactersArrayList.get(i).getPosition().isInBase());
 				}catch(Exception exc)
 				{
