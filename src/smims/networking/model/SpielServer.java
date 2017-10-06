@@ -1,5 +1,6 @@
 package smims.networking.model;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -22,15 +23,22 @@ public class SpielServer extends Server {
 	private int diceResult;
 	private static final boolean WUERFELBETUPPEN = true;
 	private boolean wuerfelresult;
+	private ArrayList<NetworkingBot> bots;
+	private ArrayList<Player> botPlayers;
 
 	public static void main(String[] args) {
-		new SpielServer(4242, 2, 4);
+		new SpielServer(4242, 3, 4, 2);
 	}
 
-	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse) {
+	public SpielServer(int port, int pSpieleranzahl, int pBoardgroesse, int botanzahl) {
 		super(port);
+		botPlayers = new ArrayList<>();
+		bots = new ArrayList<>();
+		for (int i = pSpieleranzahl - botanzahl; i < pSpieleranzahl; i++) {
+			botPlayers.add(new Player(i));
+		}
 		if (WUERFELBETUPPEN) {
-			lobby = new GameLobby(pSpieleranzahl, new LambdaDiceRoller(new Function<Integer, Integer>() {
+			lobby = new GameLobby(pSpieleranzahl, botanzahl, new LambdaDiceRoller(new Function<Integer, Integer>() {
 				@Override
 				public Integer apply(Integer t) {
 					Random random = new Random();
@@ -173,15 +181,23 @@ public class SpielServer extends Server {
 				int j = getPlayerId(pClientIP);
 				lobby.getPlayerAt(j).makePlayerWantToStartGame();
 				if (lobby.readyToStart()) {
-					game = lobby.startGame(boardgroesse);
+					game = lobby.startGame(boardgroesse, botPlayers);
+					for (Player player : botPlayers) {
+						bots.add(new NetworkingBot(player, game));
+					}
 					game.registerTurnChangedCallback(new Consumer<IPlayer>() {
 						@Override
 						public void accept(IPlayer t) {
+							System.out.println("thread");
 							if(game.getWinner() != null){
 								sendToAll(Protokoll.SC_Winner + Protokoll.Splitter + game.getWinner().getPlayerId());
 								close();
 							}
 							sendToAll(Protokoll.SC_PlayerTurn + Protokoll.Splitter + game.whoseTurn());
+							int turn = game.whoseTurn();
+							if(turn == spieleranzahl - bots.size()) {
+								executeBots();
+							}
 						}
 					});
 					bpb = Position.on(game.getBoard().getBoardDescriptor());
@@ -228,6 +244,17 @@ public class SpielServer extends Server {
 			break;
 		}
 
+	}
+	
+	private void executeBots() {
+		System.out.println(Thread.currentThread().getName());
+		try {
+			for (NetworkingBot networkingBot : bots) {
+				networkingBot.makeTurn();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void sendMessage(String ip, int port, String message) {

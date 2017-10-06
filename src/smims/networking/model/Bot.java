@@ -17,6 +17,7 @@ public abstract class Bot implements IBot{
 
 	public Bot(Player player, Game game) {
 		myPlayer = player;
+		myPlayer.wantsToStartGame();
 		myGame = game;
 		myBoard = myGame.getBoard();
 		allCharacters = myGame.getBoard().getAllCharacters();
@@ -26,6 +27,10 @@ public abstract class Bot implements IBot{
 		enemyCharacters.removeAll(myCharacters);
 	}
 	
+	public IPlayer getMyPlayer() {
+		return myPlayer;
+	}
+
 	protected void refreshBoard() {
 		myBoard = myGame.getBoard();
 	}
